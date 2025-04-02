@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-6](https://github.com/agrc/plss-review/compare/v1.0.0-5...v1.0.0-6) (2025-04-02)
+
+
+### Bug Fixes
+
+* add codebase tag to review functions ([6631c65](https://github.com/agrc/plss-review/commit/6631c652d0f96310ee908420069fa3389d24c971))
+
 ## [1.0.0-5](https://github.com/agrc/plss-review/compare/v1.0.0-4...v1.0.0-5) (2025-04-02)
 
 
