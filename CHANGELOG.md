@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-7](https://github.com/agrc/plss-review/compare/v1.0.0-6...v1.0.0-7) (2025-04-02)
+
+
+### Bug Fixes
+
+* add missing target to fix deploy ([ee2c04a](https://github.com/agrc/plss-review/commit/ee2c04a2225dea3cd235a1ffa708b7fbfc188cde))
+
 ## [1.0.0-6](https://github.com/agrc/plss-review/compare/v1.0.0-5...v1.0.0-6) (2025-04-02)
 
 
