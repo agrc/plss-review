@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "ut-dts-agrc-plss-dev"
+  },
+  "targets": {
+    "ut-dts-agrc-plss-dev": {
+      "hosting": {
+        "staff-review": [
+          "ut-dts-agrc-plss-dev-staff-review"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
