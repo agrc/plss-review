@@ -25,6 +25,7 @@
     "rules": "storage.rules"
   },
   "hosting": {
+    "target": "staff-review",
     "public": "dist",
     "ignore": [
       "firebase.json",
