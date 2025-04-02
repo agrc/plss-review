@@ -7,3 +7,5 @@
 /dist
 /public/assets
 CHANGELOG.md
+pnpm-*.yaml
+.emulator-data/

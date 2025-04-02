@@ -1,13 +1,13 @@
 {
   "name": "@ugrc/plss-review-functions",
   "private": true,
-  "main": "lib/index.js",
   "type": "module",
+  "main": "lib/index.js",
   "scripts": {
-    "clean": "rimraf lib",
     "build": "pnpm run clean && tsc",
     "build:watch": "tsc --watch",
     "check": "tsc -b",
+    "clean": "rimraf lib",
     "deploy": "firebase deploy --only functions",
     "lint": "eslint .",
     "logs": "firebase functions:log",
