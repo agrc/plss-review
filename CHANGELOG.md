@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-4](https://github.com/agrc/plss-review/compare/v1.0.0-3...v1.0.0-4) (2025-04-02)
+
+
+### Bug Fixes
+
+* add missing firestore index configuration ([c757f3e](https://github.com/agrc/plss-review/commit/c757f3e66dfa511039776e4bf951abcb06897793))
+
 ## [1.0.0-3](https://github.com/agrc/plss-review/compare/v1.0.0-2...v1.0.0-3) (2025-04-02)
 
 
