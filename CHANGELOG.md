@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-2](https://github.com/agrc/plss-review/compare/v1.0.0-1...v1.0.0-2) (2025-04-02)
+
+
+### Bug Fixes
+
+* replace npm command with pnpm ([5c1b47b](https://github.com/agrc/plss-review/commit/5c1b47b38561eb9714951ad6563f86aefe9e0382))
+
 ## [1.0.0-1](https://github.com/agrc/plss-review/compare/v1.0.0-0...v1.0.0-1) (2025-04-02)
 
 
