@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-8](https://github.com/agrc/plss-review/compare/v1.0.0-7...v1.0.0-8) (2025-04-02)
+
+
+### Bug Fixes
+
+* show the login page  by default or received if logged in ([bcb6557](https://github.com/agrc/plss-review/commit/bcb6557d78125c77b49795b275121d6639b27f14))
+
 ## [1.0.0-7](https://github.com/agrc/plss-review/compare/v1.0.0-6...v1.0.0-7) (2025-04-02)
 
 
