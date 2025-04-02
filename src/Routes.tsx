@@ -27,7 +27,7 @@ export default function AppRoutes() {
     <Routes>
       <Route element={<Layout />}>
         {/* Public routes */}
-        <Route path="login" element={isAuthenticated ? <Navigate to="/received" replace /> : <Login />} />
+        <Route index element={isAuthenticated ? <Navigate to="/received" replace /> : <Login />} />
 
         {/* Protected routes group */}
         <Route element={<ProtectedRouteLayout />}>
