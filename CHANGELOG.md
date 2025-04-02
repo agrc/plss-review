@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-5](https://github.com/agrc/plss-review/compare/v1.0.0-4...v1.0.0-5) (2025-04-02)
+
+
+### Bug Fixes
+
+* indexes need to match between these two projects 😢 ([10c0eb6](https://github.com/agrc/plss-review/commit/10c0eb6ef24bafa00397fdc31ad815d0a2fad038))
+
 ## [1.0.0-4](https://github.com/agrc/plss-review/compare/v1.0.0-3...v1.0.0-4) (2025-04-02)
 
 
