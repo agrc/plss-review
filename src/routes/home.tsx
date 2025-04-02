@@ -30,7 +30,6 @@ const defaultData: Submission[] = [
   },
 ];
 
-const fallbackData: Submission[] = [];
 const columnHelper = createColumnHelper<Submission>();
 const columns = [
   columnHelper.accessor('blmPointId', {
