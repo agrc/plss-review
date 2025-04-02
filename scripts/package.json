@@ -1,0 +1,10 @@
+{
+  "name": "@ugrc/plss-review-scripts",
+  "private": true,
+  "scripts": {
+    "authorize-users": "node createAuthorizedUsers.cjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.2.0"
+  }
+}
