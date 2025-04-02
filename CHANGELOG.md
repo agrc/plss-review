@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-1](https://github.com/agrc/plss-review/compare/v1.0.0-0...v1.0.0-1) (2025-04-02)
+
+
+### Bug Fixes
+
+* correct ci build ([633e7d4](https://github.com/agrc/plss-review/commit/633e7d4ddb68e1a6950f1194931ff779d2fd424a))
+
 ## 1.0.0-0 (2025-04-02)
 
 
