@@ -1,14 +1,11 @@
-import Polygon from '@arcgis/core/geometry/Polygon';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 import EsriMap from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import { LayerSelector, type LayerSelectorProps } from '@ugrc/utah-design-system';
+import { utahMercatorExtent } from '@ugrc/utilities/hooks';
 import { useEffect, useRef, useState } from 'react';
-import cityExtents from './data/cityExtents';
 import { useMap } from './hooks';
-import { randomize } from './utils';
 
-const { item: randomExtent } = randomize<__esri.GraphicProperties>(cityExtents);
 const urls = {
   landownership:
     'https://gis.trustlands.utah.gov/hosting/rest/services/Hosted/Land_Ownership_WM_VectorTile/VectorTileServer',
@@ -19,8 +16,8 @@ const urls = {
 export const MapContainer = ({ onClick }: { onClick?: __esri.ViewImmediateClickEventHandler }) => {
   const mapNode = useRef<HTMLDivElement | null>(null);
   const mapComponent = useRef<EsriMap | null>(null);
-  const mapView = useRef<MapView>();
-  const clickHandler = useRef<IHandle>();
+  const mapView = useRef<MapView>(null);
+  const clickHandler = useRef<IHandle>(null);
   const [selectorOptions, setSelectorOptions] = useState<LayerSelectorProps | null>(null);
   const { setMapView } = useMap();
 
@@ -35,7 +32,7 @@ export const MapContainer = ({ onClick }: { onClick?: __esri.ViewImmediateClickE
     mapView.current = new MapView({
       container: mapNode.current,
       map: mapComponent.current,
-      extent: new Polygon(randomExtent.geometry!).extent!,
+      extent: utahMercatorExtent,
       ui: {
         components: ['zoom'],
       },
@@ -63,11 +60,6 @@ export const MapContainer = ({ onClick }: { onClick?: __esri.ViewImmediateClickE
         referenceLayers: ['Address Points', 'Land Ownership'],
       },
     };
-
-    const { index: randomBaseMapIndex } = randomize(selectorOptions.options.baseLayers);
-
-    const removed = selectorOptions.options.baseLayers.splice(randomBaseMapIndex, 1);
-    selectorOptions.options.baseLayers.unshift(removed[0]!);
 
     setSelectorOptions(selectorOptions);
 

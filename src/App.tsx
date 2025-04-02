@@ -1,18 +1,7 @@
-import { isRouteErrorResponse } from 'react-router';
-import './index.css';
-
-export function ErrorBoundary({ error }: { error: Error }) {
-  let message = 'Oops!';
-  let details = 'An unexpected error occurred.';
+export function ErrorBoundary() {
+  const message = 'Oops!';
+  const details = 'An unexpected error occurred.';
   let stack: string | undefined;
-
-  if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? '404' : 'Error';
-    details = error.status === 404 ? 'The requested page could not be found.' : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
-  }
 
   return (
     <main className="container mx-auto p-4 pt-16">
