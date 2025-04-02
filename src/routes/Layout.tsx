@@ -20,12 +20,12 @@ const links = [
 ];
 
 export default function Layout() {
-  const { currentUser } = useFirebaseAuth();
+  const { currentUser, logout } = useFirebaseAuth();
 
   return (
     <>
       <main className="flex h-screen flex-col md:gap-2">
-        <Header links={links} currentUser={currentUser}>
+        <Header links={links} currentUser={currentUser} logout={logout}>
           <div className="flex h-full grow items-center gap-3">
             <UgrcLogo />
             <h2 className="font-heading text-3xl font-black text-zinc-600 sm:text-5xl dark:text-zinc-100">
