@@ -1,0 +1,45 @@
+{
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": [
+    "apos",
+    "arcgis",
+    "basemap",
+    "browserslist",
+    "cadastre",
+    "escaperegexp",
+    "esrijs",
+    "firebaserc",
+    "firestore",
+    "geocode",
+    "Geospatial",
+    "gnis",
+    "hostingchannels",
+    "lods",
+    "mrrc",
+    "noopener",
+    "noreferrer",
+    "packagejson",
+    "PLSS",
+    "predeploy",
+    "sgid",
+    "sitla",
+    "srid",
+    "startcase",
+    "tagname",
+    "tailwindcss",
+    "topo",
+    "tsconfigs",
+    "ugrc",
+    "usgs",
+    "USNG",
+    "vite",
+    "wkid"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true
+}
