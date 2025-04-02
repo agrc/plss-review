@@ -17,7 +17,7 @@ export default function ProtectedLayout() {
   const location = useLocation();
 
   if (!currentUser) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // Determine which tab is active based on the current route
@@ -29,8 +29,6 @@ export default function ProtectedLayout() {
       navigate(route);
     }
   };
-
-  console.log('protected layout', currentUser);
 
   return (
     <Tabs
