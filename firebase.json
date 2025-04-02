@@ -3,7 +3,7 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "default",
+      "codebase": "review",
       "ignore": [
         "node_modules",
         ".git",
