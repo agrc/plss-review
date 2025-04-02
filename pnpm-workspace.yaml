@@ -3,3 +3,5 @@ ignoredBuiltDependencies:
 onlyBuiltDependencies:
   - esbuild
   - protobufjs
+packages:
+  - functions

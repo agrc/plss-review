@@ -79,9 +79,10 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@swc/core",
+      "@firebase/util",
       "esbuild",
-      "protobufjs"
+      "protobufjs",
+      "re2"
     ],
     "overrides": {}
   }
