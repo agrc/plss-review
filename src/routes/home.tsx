@@ -51,7 +51,7 @@ const columns = [
   columnHelper.accessor('mrrc', {
     id: 'mrrc',
     header: () => 'MRRC',
-    cell: (info) => (info.getValue() ? 'Yes' : 'No'),
+    cell: (info: { getValue: () => boolean }) => (info.getValue() ? 'Yes' : 'No'),
   }),
 ];
 
