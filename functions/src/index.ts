@@ -17,9 +17,9 @@ initializeApp();
 
 const db = getFirestore();
 
-async function checkUser(event: AuthBlockingEvent) {
+async function authorizeUser(event: AuthBlockingEvent) {
   const email = event.data?.email;
-  logger.debug('checkUser', { email });
+  logger.debug('authorizeUser', { email });
 
   if (!email) {
     throw new HttpsError('invalid-argument', 'Email is required');
@@ -29,14 +29,14 @@ async function checkUser(event: AuthBlockingEvent) {
   const doc = await ref.get();
 
   if (!doc.exists) {
-    throw new HttpsError('permission-denied', `User (${email}) is not authorized`);
+    throw new HttpsError('permission-denied', `The email, ${email}, is not authorized to access this resource.`);
   }
 }
 
 // The PLSS submission app already has a blocking function to create profiles.
-// export const beforeCreated = beforeUserCreated(checkUser);
+// export const beforeCreated = beforeUserCreated(authorizeUser);
 
 /* This may not be necessary since beforeUserCreated fires before beforeUserSignedIn. Leaving it here in case it's needed for existing users.
  This also would be a good place to add additional checks for existing users.
  */
-export const beforeSignedIn = beforeUserSignedIn(checkUser);
+export const beforeSignedIn = beforeUserSignedIn(authorizeUser);
