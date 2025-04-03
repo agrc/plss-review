@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.0-9](https://github.com/agrc/plss-review/compare/v1.0.0-8...v1.0.0-9) (2025-04-03)
+
+
+### Features
+
+* **api:** create a blocking function to only allow specific users access ([1baf7fc](https://github.com/agrc/plss-review/commit/1baf7fc16ddd0a4ee4a3f210f9e35cf3f5444a99))
+
+
+### Bug Fixes
+
+* add plss social icon and correct urls ([9c429ba](https://github.com/agrc/plss-review/commit/9c429baded7e284a71a0c39fffc89bc1c9e134ac))
+
+
+### Documentation
+
+* correct website url ([097fcd6](https://github.com/agrc/plss-review/commit/097fcd67c37bbdc4325df5316f03b06c8d2a3da4))
+
 ## [1.0.0-8](https://github.com/agrc/plss-review/compare/v1.0.0-7...v1.0.0-8) (2025-04-02)
 
 
