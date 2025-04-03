@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: dev
-      url: https://atlas.dev.utah.gov
+      url: https://plss-review.dev.utah.gov
     if: github.event.release.prerelease == true || inputs.environment == 'dev'
 
     steps:
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: prod
-      url: https://atlas.utah.gov
+      url: https://plss-review.ugrc.utah.gov
     if: github.event.release.prerelease == false || inputs.environment == 'prod'
 
     steps:
