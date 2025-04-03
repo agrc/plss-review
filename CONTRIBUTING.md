@@ -1,6 +1,6 @@
-# How to contribute to plss.utah.gov
+# How to contribute to plss-review.ugrc.utah.gov
 
-The `dev` branch is published to [plss.dev.utah.gov](https://plss.dev.utah.gov) and the `main` branch is published to [plss.utah.gov](https://plss.utah.gov).
+The `dev` branch is published to [plss-review.dev.utah.gov](https://plss-review.dev.utah.gov) and the `main` branch is published to [plss-review.ugrc.utah.gov](https://plss-review.ugrc.utah.gov).
 
 All code should be developed on feature branches and pull requests should be made to `dev`.
 
