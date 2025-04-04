@@ -5,7 +5,7 @@ export type Submission = {
   county: string;
   submitter: string;
   date: string;
-  mrrc: boolean;
+  mrrc?: boolean;
 };
 
 export type Corner = {
