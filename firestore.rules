@@ -3,13 +3,14 @@ service cloud.firestore {
   function isAuthenticated() {
     return request.auth != null;
   }
-  function isCurrentUser(uid) {
-    return request.auth.uid == uid;
-  }
 
   match /databases/{database}/documents {
-    match /submitters/{uid}/points/{docId} {
-      allow delete: if isAuthenticated() && isCurrentUser(uid);
+    function isAuthorized() {
+      return exists(/databases/$(database)/documents/authorized-users/$(request.auth.token.email));
+    }
+
+    match /submissions/{document=**} {
+      allow read, update: if isAuthenticated() && isAuthorized();
     }
   }
 }
