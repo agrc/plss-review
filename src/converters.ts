@@ -21,7 +21,7 @@ export const asSubmission = {
       blmPointId: data.blm_point_id,
       county: data.county,
       date: dateFormatter.format(Date.parse(data.created_at.toDate().toISOString())),
-      mrrc: data.metadata.mrrc,
+      mrrc: data.metadata?.mrrc ?? undefined,
       submitter: data.submitted_by.name,
     };
   },

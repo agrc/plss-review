@@ -29,7 +29,14 @@ const columns = [
   columnHelper.accessor('mrrc', {
     id: 'mrrc',
     header: () => 'MRRC',
-    cell: (info) => (info.getValue() ? 'Yes' : 'No'),
+    cell: (info) => {
+      const value = info.getValue();
+      if (value === undefined) {
+        return 'Unknown';
+      }
+
+      return value ? 'Yep' : 'Nope';
+    },
   }),
 ];
 
