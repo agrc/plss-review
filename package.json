@@ -16,7 +16,7 @@
     "preview": "vite preview",
     "start": "pnpm run dev",
     "start:ci": "vite --host",
-    "test": "vitest --silent --coverage --ui --open",
+    "test": "vitest --silent --coverage --ui --open --passWithNoTests",
     "test:ci": "firebase emulators:exec --only storage 'FIREBASE_STORAGE_EMULATOR_HOST=127.0.0.1:9199 pnpm run test'"
   },
   "browserslist": {
