@@ -1,14 +1,15 @@
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef, type Row } from '@tanstack/react-table';
 import type { Submission } from './shared/types';
 
-const empty = [] as Submission[]; // use a stable reference for empty array
+const empty = [] as Submission[];
 export default function Table({
   data,
   columns,
   onClick,
 }: {
   data?: Submission[];
-  columns: ColumnDef<Submission, Submission>[];
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  columns: ColumnDef<Submission, any>[];
   onClick: (row: Row<Submission>) => void;
 }) {
   const table = useReactTable({
