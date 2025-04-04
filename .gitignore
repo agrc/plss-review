@@ -135,6 +135,12 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# OSX
 **/.DS_Store
+
+# esri
 public/assets/esri/*
 public/assets/components/*
+
+# Firebase
+.firebase/
