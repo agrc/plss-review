@@ -39,6 +39,8 @@ export default function Received() {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['received'],
     queryFn: async () => {
+      console.log('Fetching new submissions');
+
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
         where('status.ugrc.approved', '==', null),
