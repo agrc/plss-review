@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-11](https://github.com/agrc/plss-review/compare/v1.0.0-10...v1.0.0-11) (2025-04-04)
+
+
+### Bug Fixes
+
+* correct typescript types ([135d5ac](https://github.com/agrc/plss-review/commit/135d5ac02e887de8dd65ec4f996d1b18cfeff30c))
+
 ## [1.0.0-10](https://github.com/agrc/plss-review/compare/v1.0.0-9...v1.0.0-10) (2025-04-04)
 
 
