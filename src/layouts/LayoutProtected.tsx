@@ -4,10 +4,10 @@ import type { Key } from 'react-stately';
 import '../index.css';
 
 const tabRoutes = [
-  { id: 'received', path: '/received', label: 'Received' },
-  { id: 'county', path: '/county', label: 'Under County Review' },
-  { id: 'approved', path: '/approved', label: 'County Approved' },
-  { id: 'rejected', path: '/rejected', label: 'Rejected' },
+  { id: 'received', path: '/secure/received', label: 'Received' },
+  { id: 'county', path: '/secure/county', label: 'Under County Review' },
+  { id: 'approved', path: '/secure/approved', label: 'County Approved' },
+  { id: 'rejected', path: '/secure/rejected', label: 'Rejected' },
 ];
 
 export default function ProtectedLayout() {

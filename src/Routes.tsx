@@ -27,14 +27,14 @@ export default function AppRoutes() {
     <Routes>
       <Route element={<Layout />}>
         {/* Public routes */}
-        <Route index element={isAuthenticated ? <Navigate to="/received" replace /> : <Login />} />
+        <Route index element={isAuthenticated ? <Navigate to="/secure/received" replace /> : <Login />} />
 
         {/* Protected routes group */}
-        <Route element={<ProtectedRouteLayout />}>
           <Route path="received" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
           <Route path="county" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
           <Route path="approved" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
           <Route path="rejected" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
+        <Route path="secure" element={<ProtectedRouteLayout />}>
         </Route>
 
         <Route path="*" element={<ErrorBoundary />} />
