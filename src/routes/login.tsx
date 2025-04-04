@@ -1,4 +1,4 @@
-import { UtahIdLogin } from '@ugrc/utah-design-system';
+import { Banner, ExternalLink, UtahIdLogin } from '@ugrc/utah-design-system';
 
 export default function Login() {
   return (
@@ -20,14 +20,22 @@ export default function Login() {
         This app requires a UtahId account to review monument record sheets. Your name and email address will be shared
         with this application.
       </p>
-      <div className="flex items-center justify-self-center text-slate-500">
-        <span className="h-px w-60 flex-1 bg-slate-200 dark:bg-slate-600"></span>
-        <span className="mx-3 text-xs uppercase tracking-wide text-gray-700 dark:text-gray-200">continue with</span>
-        <span className="h-px flex-1 bg-slate-200 dark:bg-slate-600"></span>
-      </div>
-      <div className="flex justify-center">
-        <UtahIdLogin />
-      </div>
+      <UtahIdLogin
+        size="extraLarge"
+        errorRenderer={(error) => {
+          return (
+            <Banner>
+              <div className="grid gap-4">
+                {error}
+                <div>
+                  Did you want to login to the <ExternalLink href="https://plss.utah.gov">PLSS submission</ExternalLink>{' '}
+                  application instead?
+                </div>
+              </div>
+            </Banner>
+          );
+        }}
+      />
     </section>
   );
 }
