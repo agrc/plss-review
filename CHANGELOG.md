@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0-12](https://github.com/agrc/plss-review/compare/v1.0.0-11...v1.0.0-12) (2025-04-04)
+
+
+### Features
+
+* create the required index to query the collection ([83a9aca](https://github.com/agrc/plss-review/commit/83a9aca00a7bf195215b06995ddd83b8932a51e4))
+
+
+### Bug Fixes
+
+* order by the blm point id ([90c15c1](https://github.com/agrc/plss-review/commit/90c15c19eb7294febf401306eab0cb1f002842f4))
+
 ## [1.0.0-11](https://github.com/agrc/plss-review/compare/v1.0.0-10...v1.0.0-11) (2025-04-04)
 
 
