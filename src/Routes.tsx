@@ -1,13 +1,15 @@
 import { useFirebaseApp, useFirebaseAuth } from '@ugrc/utah-design-system';
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
-import { ErrorBoundary } from './App';
-import './index.css';
-import Dashboard from './routes/dashboard';
-import Layout from './routes/Layout';
-import ProtectedRouteLayout from './routes/LayoutProtected';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import Layout from './layouts/Layout';
+import ProtectedRouteLayout from './layouts/LayoutProtected';
+import Approved from './routes/approved';
+import County from './routes/county';
 import Login from './routes/login';
 import Received from './routes/received';
+import Rejected from './routes/rejected';
+import Review from './routes/review';
 
 export default function AppRoutes() {
   const { currentUser } = useFirebaseAuth();
@@ -31,11 +33,11 @@ export default function AppRoutes() {
         <Route index element={isAuthenticated ? <Navigate to="/secure/received" replace /> : <Login />} />
 
         {/* Protected routes group */}
-          <Route path="county" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
-          <Route path="approved" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
-          <Route path="rejected" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
         <Route path="secure" element={<ProtectedRouteLayout />}>
           <Route path="received" element={isAuthenticated ? <Received /> : <Navigate to="/" replace />} />
+          <Route path="county" element={isAuthenticated ? <County /> : <Navigate to="/" replace />} />
+          <Route path="approved" element={isAuthenticated ? <Approved /> : <Navigate to="/" replace />} />
+          <Route path="rejected" element={isAuthenticated ? <Rejected /> : <Navigate to="/" replace />} />
         </Route>
 
         <Route path="secure">
