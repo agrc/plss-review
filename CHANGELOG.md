@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0-10](https://github.com/agrc/plss-review/compare/v1.0.0-9...v1.0.0-10) (2025-04-04)
+
+
+### Features
+
+* query database for new submissions ([0920f4e](https://github.com/agrc/plss-review/commit/0920f4ee4cccfc9fb06009295d7c9c64992f3744))
+
+
+### Dependencies
+
+* update packages ([252237a](https://github.com/agrc/plss-review/commit/252237a3e92862bd9cf2f90fbed0c7d8a86e9446))
+
 ## [1.0.0-9](https://github.com/agrc/plss-review/compare/v1.0.0-8...v1.0.0-9) (2025-04-03)
 
 
