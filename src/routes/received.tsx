@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, useFirestore } from '@ugrc/utah-design-system';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { List } from 'react-content-loader';
 import { useNavigate } from 'react-router';
 import Table from '../components/Table';
@@ -44,6 +44,7 @@ export default function Received() {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
         where('status.ugrc.approved', '==', null),
+        orderBy('blm_point_id'),
       );
       const snapshot = await getDocs(q);
 
