@@ -7,6 +7,7 @@ import Dashboard from './routes/dashboard';
 import Layout from './routes/Layout';
 import ProtectedRouteLayout from './routes/LayoutProtected';
 import Login from './routes/login';
+import Received from './routes/received';
 
 export default function AppRoutes() {
   const { currentUser } = useFirebaseAuth();
@@ -30,13 +31,16 @@ export default function AppRoutes() {
         <Route index element={isAuthenticated ? <Navigate to="/secure/received" replace /> : <Login />} />
 
         {/* Protected routes group */}
-          <Route path="received" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
           <Route path="county" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
           <Route path="approved" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
           <Route path="rejected" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />} />
         <Route path="secure" element={<ProtectedRouteLayout />}>
+          <Route path="received" element={isAuthenticated ? <Received /> : <Navigate to="/" replace />} />
         </Route>
 
+        <Route path="secure">
+          <Route path="received/:id" element={isAuthenticated ? <Review /> : <Navigate to="/" replace />} />
+        </Route>
         <Route path="*" element={<ErrorBoundary />} />
       </Route>
     </Routes>
