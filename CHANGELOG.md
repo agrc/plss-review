@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-13](https://github.com/agrc/plss-review/compare/v1.0.0-12...v1.0.0-13) (2025-04-04)
+
+
+### Bug Fixes
+
+* allow mrrc values to be undefined ([1f6583f](https://github.com/agrc/plss-review/commit/1f6583f2f63f09ec78745c0044a64a09fb1705a9))
+
 ## [1.0.0-12](https://github.com/agrc/plss-review/compare/v1.0.0-11...v1.0.0-12) (2025-04-04)
 
 
