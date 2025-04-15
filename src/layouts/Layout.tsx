@@ -1,6 +1,5 @@
 import { Footer, Header, SocialMedia, UgrcLogo, useFirebaseAuth } from '@ugrc/utah-design-system';
 import { Outlet } from 'react-router';
-import '../index.css';
 
 const version = import.meta.env.PACKAGE_VERSION;
 

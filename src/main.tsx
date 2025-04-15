@@ -14,14 +14,15 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import { MapProvider } from './components/contexts';
+import './index.css';
 import Routes from './Routes';
 
-import './index.css';
+esriConfig.assetsPath = '/assets';
 
 const provider = new OAuthProvider('oidc.utahid');
 provider.addScope('profile');
 provider.addScope('email');
-esriConfig.assetsPath = './assets';
+
 initializeTheme();
 
 let firebaseConfig = {
