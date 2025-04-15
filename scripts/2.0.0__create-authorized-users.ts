@@ -1,19 +1,14 @@
-import * as admin from 'firebase-admin';
+import { initializeFirebase } from "./utils";
 
-try {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault()
-  });
-} catch (error: unknown) {
-  console.error('Error initializing Firebase:', error);
+const db = initializeFirebase(process.argv.slice(2));
+
+if (!db) {
   console.log('Make sure you have set up Application Default Credentials');
   process.exit(1);
 }
 
 const authorizedUsers: string[] = ['stdavis@utah.gov',
   'sgourley@utah.gov', 'sfernandez@utah.gov', 'denisepeterson@utah.gov', 'miriamseely@utah.gov', 'lault@utah.gov'];
-
-const db: admin.firestore.Firestore = admin.firestore();
 
 // Create promises for adding each user to the collection
 const promises: Promise<void>[] = authorizedUsers.map(email =>
