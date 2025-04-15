@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-17](https://github.com/agrc/plss-review/compare/v1.0.0-16...v1.0.0-17) (2025-04-15)
+
+
+### Bug Fixes
+
+* update ci secret tokens ([958ca1e](https://github.com/agrc/plss-review/commit/958ca1eba5b4fd2e36ed81a7f624c2b5c5ca38b1))
+
 ## [1.0.0-16](https://github.com/agrc/plss-review/compare/v1.0.0-15...v1.0.0-16) (2025-04-15)
 
 
