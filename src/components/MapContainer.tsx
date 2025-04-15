@@ -1,17 +1,9 @@
-import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 import EsriMap from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import { LayerSelector, type LayerSelectorProps } from '@ugrc/utah-design-system';
 import { utahMercatorExtent } from '@ugrc/utilities/hooks';
 import { useEffect, useRef, useState } from 'react';
 import { useMap } from './hooks';
-
-const urls = {
-  landownership:
-    'https://gis.trustlands.utah.gov/hosting/rest/services/Hosted/Land_Ownership_WM_VectorTile/VectorTileServer',
-  liteVector:
-    'https://www.arcgis.com/sharing/rest/content/items/77202507796a4d5796b7d8e6871e352e/resources/styles/root.json',
-};
 
 export const MapContainer = ({ onClick }: { onClick?: __esri.ViewImmediateClickEventHandler }) => {
   const mapNode = useRef<HTMLDivElement | null>(null);
@@ -44,20 +36,7 @@ export const MapContainer = ({ onClick }: { onClick?: __esri.ViewImmediateClickE
       options: {
         view: mapView.current,
         quadWord: import.meta.env.VITE_DISCOVER,
-        baseLayers: [
-          'Hybrid',
-          {
-            label: 'Lite',
-            function: () =>
-              new VectorTileLayer({
-                url: urls.liteVector,
-              }),
-          },
-          'Terrain',
-          'Topo',
-          'Color IR',
-        ],
-        referenceLayers: ['Address Points', 'Land Ownership'],
+        baseLayers: ['Hybrid'],
       },
     };
 
@@ -81,8 +60,8 @@ export const MapContainer = ({ onClick }: { onClick?: __esri.ViewImmediateClickE
   }, [onClick, mapView]);
 
   return (
-    <div ref={mapNode} className="size-full">
-      {selectorOptions && <LayerSelector {...selectorOptions}></LayerSelector>}
+    <div ref={mapNode} className="size-full rounded-lg border border-slate-400 shadow-sm">
+      {selectorOptions && <LayerSelector {...selectorOptions} />}
     </div>
   );
 };
