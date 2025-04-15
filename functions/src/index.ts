@@ -18,18 +18,30 @@ initializeApp();
 const db = getFirestore();
 
 async function authorizeUser(event: AuthBlockingEvent) {
-  const email = event.data?.email;
-  logger.debug('authorizeUser', { email });
+  const id = event.data?.uid;
+  logger.debug('authorizeUser', { id });
 
-  if (!email) {
-    throw new HttpsError('invalid-argument', 'Email is required');
+  if (!id) {
+    throw new HttpsError('invalid-argument', 'An account is required');
   }
 
-  const ref = db.collection('authorized-users').doc(email.trim().toLowerCase());
+  const ref = db.collection('submitters').doc(id.trim());
   const doc = await ref.get();
 
   if (!doc.exists) {
-    throw new HttpsError('permission-denied', `The email, ${email}, is not authorized to access this resource.`);
+    throw new HttpsError(
+      'permission-denied',
+      `The email, ${event.data?.email}, is not authorized to access this resource.`,
+    );
+  }
+
+  const data = doc.data();
+
+  if (!data?.elevated) {
+    throw new HttpsError(
+      'permission-denied',
+      `The email, ${event.data?.email}, is not authorized to access this resource.`,
+    );
   }
 }
 
