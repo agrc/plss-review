@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.0.0-15](https://github.com/agrc/plss-review/compare/v1.0.0-14...v1.0.0-15) (2025-04-15)
+
+
+### Features
+
+* create review page with pdf and map ([913cf55](https://github.com/agrc/plss-review/commit/913cf5582a1ca27c29ac7835c3e5497143ea5ebd))
+
+
+### Bug Fixes
+
+* correct esri asset path and css import location ([9e97675](https://github.com/agrc/plss-review/commit/9e9767526ff980cfe08dd8bbff3ea16b06663ed3))
+
+
+### Dependencies
+
+* **api:** update packages ([ca95e49](https://github.com/agrc/plss-review/commit/ca95e497d11bcdd5957104b0ee126b9c039ba2cc))
+* update dependencies ([177474e](https://github.com/agrc/plss-review/commit/177474ebdfb01012f879179597c5bda20f23b343))
+
+
+### Styles
+
+* update layout spacing ([4849c89](https://github.com/agrc/plss-review/commit/4849c8955a1c08db44d997a1b550102ef4e6327e))
+
 ## [1.0.0-14](https://github.com/agrc/plss-review/compare/v1.0.0-13...v1.0.0-14) (2025-04-15)
 
 
