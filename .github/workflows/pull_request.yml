@@ -88,6 +88,6 @@ jobs:
           build-command: pnpm run build --mode dev
           repo-token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          VITE_DISCOVER: ${{ secrets.VITE_DISCOVER }}
+          VITE_DISCOVER: ${{ secrets.VITE_DISCOVER_KEY }}
           VITE_WEB_API: ${{ secrets.VITE_WEB_API }}
           VITE_FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
