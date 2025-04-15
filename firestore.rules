@@ -6,7 +6,8 @@ service cloud.firestore {
 
   match /databases/{database}/documents {
     function isAuthorized() {
-      return exists(/databases/$(database)/documents/authorized-users/$(request.auth.token.email));
+      return exists(/databases/$(database)/documents/submitters/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/submitters/$(request.auth.uid)).data.elevated == true;
     }
 
     match /submissions/{document=**} {
