@@ -1,6 +1,7 @@
 import type { GeoPoint, Timestamp } from 'firebase/firestore';
 
 export type Submission = {
+  id: string;
   blmPointId: string;
   county: string;
   submitter: string;
@@ -9,6 +10,7 @@ export type Submission = {
 };
 
 export type Corner = {
+  id: string;
   blm_point_id: string;
   county:
     | 'beaver'

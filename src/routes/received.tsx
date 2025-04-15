@@ -10,6 +10,10 @@ import { asSubmission } from '../converters';
 
 const columnHelper = createColumnHelper<Submission>();
 const columns = [
+  columnHelper.accessor('id', {
+    id: 'id',
+    header: () => null, // Hide this header
+  }),
   columnHelper.accessor('blmPointId', {
     id: 'blmPointId',
     header: () => 'BLM Point Id',
@@ -85,7 +89,7 @@ export default function Received() {
         columns={columns}
         onClick={(row) => {
           console.log(row, 'row');
-          navigate(`/secure/received/${row.original.blmPointId}`);
+          navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
         }}
       />
     </div>

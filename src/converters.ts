@@ -18,6 +18,7 @@ export const asSubmission = {
     const data = snapshot.data(options);
 
     return {
+      id: snapshot.id,
       blmPointId: data.blm_point_id,
       county: data.county,
       date: dateFormatter.format(Date.parse(data.created_at.toDate().toISOString())),

@@ -41,7 +41,7 @@ export default function AppRoutes() {
         </Route>
 
         <Route path="secure">
-          <Route path="received/:id" element={isAuthenticated ? <Review /> : <Navigate to="/" replace />} />
+          <Route path="received/:blm/:id" element={isAuthenticated ? <Review /> : <Navigate to="/" replace />} />
         </Route>
         <Route path="*" element={<ErrorBoundary />} />
       </Route>
