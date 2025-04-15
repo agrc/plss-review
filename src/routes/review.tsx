@@ -85,121 +85,124 @@ export default function Received() {
 
   useEffect(() => {
     const processData = async () => {
-      const feature = featureSet.features[0];
-      if (!feature) {
-        console.warn('No features found for blm point id');
-        return;
-      }
+      if (ready && agolStatus === 'success' && firestoreStatus === 'success' && featureSet?.features.length > 0) {
+        const feature = featureSet.features[0];
+        if (!feature) {
+          console.warn('No features found for blm point id');
+          return;
+        }
 
-      const geometry = feature.geometry as __esri.Point;
-      if (!geometry) {
-        console.warn('No geometry found for blm point id');
-        return;
-      }
+        const geometry = feature.geometry as __esri.Point;
+        if (!geometry) {
+          console.warn('No geometry found for blm point id');
+          return;
+        }
 
-      if (!mapView) {
-        console.warn('MapView is not set yet');
+        if (!mapView) {
+          console.warn('MapView is not set yet');
 
-        return;
-      }
+          return;
+        }
 
-      const blmPointIdGraphic = new Graphic({
-        geometry: new Point({
-          ...geometry,
-          spatialReference: {
-            wkid: 4326,
-          },
-        }),
-        attributes: feature.attributes,
-        symbol: new SimpleMarkerSymbol({
-          color: '#2ecc40',
-          size: '5px',
-          outline: {
-            color: 'white',
-            width: 1,
-          },
-        }),
-      });
+        const blmPointIdGraphic = new Graphic({
+          geometry: new Point({
+            ...geometry,
+            spatialReference: {
+              wkid: 4326,
+            },
+          }),
+          attributes: feature.attributes,
+          symbol: new SimpleMarkerSymbol({
+            color: '#2ecc40',
+            size: '5px',
+            outline: {
+              color: 'white',
+              width: 1,
+            },
+          }),
+        });
 
-      const submissionGraphic = new Graphic({
-        geometry: new Point({
-          latitude: data.location.latitude,
-          longitude: data.location.longitude,
-          spatialReference: { wkid: 4326 },
-        }),
-        attributes: feature.attributes,
-        symbol: new SimpleMarkerSymbol({
-          color: '#f012be',
-          size: '10px',
-          outline: {
-            color: 'white',
-            width: 1,
-          },
-        }),
-      });
+        const submissionGraphic = new Graphic({
+          geometry: new Point({
+            latitude: data.location.latitude,
+            longitude: data.location.longitude,
+            spatialReference: { wkid: 4326 },
+          }),
+          attributes: feature.attributes,
+          symbol: new SimpleMarkerSymbol({
+            color: '#f012be',
+            size: '10px',
+            outline: {
+              color: 'white',
+              width: 1,
+            },
+          }),
+        });
 
-      const distanceGraphic = new Graphic({
-        geometry: new Polyline({
-          paths: [
-            [
-              [data.location.longitude, data.location.latitude],
-              [geometry.x, geometry.y],
+        const distanceGraphic = new Graphic({
+          geometry: new Polyline({
+            paths: [
+              [
+                [data.location.longitude, data.location.latitude],
+                [geometry.x, geometry.y],
+              ],
             ],
-          ],
-          spatialReference: { wkid: 4326 },
-        }),
-      });
+            spatialReference: { wkid: 4326 },
+          }),
+        });
 
-      if (!geodeticLengthOperator.isLoaded()) {
-        await geodeticLengthOperator.load();
+        if (!geodeticLengthOperator.isLoaded()) {
+          await geodeticLengthOperator.load();
+        }
+
+        const distance = geodeticLengthOperator.execute(distanceGraphic.geometry!);
+        let statusColor = 'white';
+        if (distance <= 100) {
+          statusColor = '#01ff70'; // green
+        }
+        if (distance > 100) {
+          statusColor = '#ffdc00'; // yellow
+        }
+        if (distance > 250) {
+          statusColor = '#ff851b'; // orange
+        }
+        if (distance > 1000) {
+          statusColor = '#ff4136'; // red
+        }
+
+        distanceGraphic.symbol = new SimpleLineSymbol({
+          color: statusColor,
+          width: 2,
+          style: 'solid',
+        });
+
+        const textSymbol = new TextSymbol({
+          text: `${distance.toFixed(2)}\nmeters`,
+          color: 'black',
+          haloColor: statusColor,
+          haloSize: 2,
+          font: {
+            size: 20,
+            family: 'sans-serif',
+            weight: 'bold',
+          },
+          yoffset: 40,
+        });
+
+        const labelGraphic = new Graphic({
+          geometry: blmPointIdGraphic.geometry,
+          symbol: textSymbol,
+        });
+
+        placeGraphic([distanceGraphic, labelGraphic, blmPointIdGraphic, submissionGraphic]);
+
+        zoom(
+          new Viewpoint({
+            targetGeometry: blmPointIdGraphic.geometry,
+            scale: 1000,
+          }),
+        );
       }
-      const distance = geodeticLengthOperator.execute(distanceGraphic.geometry!);
-      let statusColor = 'white';
-      if (distance <= 100) {
-        statusColor = '#01ff70'; // green
-      }
-      if (distance > 100) {
-        statusColor = '#ffdc00'; // yellow
-      }
-      if (distance > 250) {
-        statusColor = '#ff851b'; // orange
-      }
-      if (distance > 1000) {
-        statusColor = '#ff4136'; // red
-      }
-
-      distanceGraphic.symbol = new SimpleLineSymbol({
-        color: statusColor,
-        width: 2,
-        style: 'solid',
-      });
-
-      const textSymbol = new TextSymbol({
-        text: `${distance.toFixed(2)}\nmeters`,
-        color: 'black',
-        haloColor: statusColor,
-        haloSize: 2,
-        font: {
-          size: 20,
-          family: 'sans-serif',
-          weight: 'bold',
-        },
-        yoffset: 40,
-      });
-
-      const labelGraphic = new Graphic({
-        geometry: blmPointIdGraphic.geometry,
-        symbol: textSymbol,
-      });
-
-      placeGraphic([distanceGraphic, labelGraphic, blmPointIdGraphic, submissionGraphic]);
-
-      zoom(
-        new Viewpoint({
-          targetGeometry: blmPointIdGraphic.geometry,
-          scale: 1000,
-        }),
-      );
     };
 
     if (ready && agolStatus === 'success' && firestoreStatus === 'success' && featureSet?.features.length > 0) {
