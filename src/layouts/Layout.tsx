@@ -34,7 +34,7 @@ export default function Layout() {
         </Header>
         <section className="relative flex min-h-0 flex-1">
           <div className="relative flex flex-1 flex-col">
-            <div className="relative w-full flex-1 overflow-y-auto p-4 dark:rounded">
+            <div className="relative w-full flex-1 overflow-y-auto px-4 dark:rounded">
               <Outlet />
             </div>
             <SocialMedia />
