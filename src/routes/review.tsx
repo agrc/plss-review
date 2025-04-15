@@ -51,10 +51,6 @@ const getFirestoreDocument = async (id: string | undefined, firestore: Firestore
   } as Corner & { pdf: string };
 };
 
-if (!geodeticLengthOperator.isLoaded()) {
-  await geodeticLengthOperator.load();
-}
-
 export default function Received() {
   const { storage } = useFirebaseStorage();
   const { firestore } = useFirestore();
@@ -88,7 +84,7 @@ export default function Received() {
   });
 
   useEffect(() => {
-    if (ready && agolStatus === 'success' && firestoreStatus === 'success' && featureSet?.features.length > 0) {
+    const processData = async () => {
       const feature = featureSet.features[0];
       if (!feature) {
         console.warn('No features found for blm point id');
@@ -154,6 +150,9 @@ export default function Received() {
         }),
       });
 
+      if (!geodeticLengthOperator.isLoaded()) {
+        await geodeticLengthOperator.load();
+      }
       const distance = geodeticLengthOperator.execute(distanceGraphic.geometry!);
       let statusColor = 'white';
       if (distance <= 100) {
@@ -201,6 +200,10 @@ export default function Received() {
           scale: 1000,
         }),
       );
+    };
+
+    if (ready && agolStatus === 'success' && firestoreStatus === 'success' && featureSet?.features.length > 0) {
+      processData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, featureSet, agolStatus]);
