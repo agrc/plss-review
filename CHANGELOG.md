@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-14](https://github.com/agrc/plss-review/compare/v1.0.0-13...v1.0.0-14) (2025-04-15)
+
+
+### Features
+
+* **api:** migrate auth to uid from email ([acf8b4e](https://github.com/agrc/plss-review/commit/acf8b4e55924d085a5658c81eca97cb1ffc2d8d0))
+* **scripts:** create "migrations" ([7408d9c](https://github.com/agrc/plss-review/commit/7408d9c6dca5279671f1a553bfee5f69f9be638e))
+
 ## [1.0.0-13](https://github.com/agrc/plss-review/compare/v1.0.0-12...v1.0.0-13) (2025-04-04)
 
 
