@@ -48,7 +48,7 @@ export default function Received() {
   const { firestore } = useFirestore();
   const navigate = useNavigate();
   const { isPending, isError, data, error } = useQuery({
-    queryKey: ['received'],
+    queryKey: ['received', firestore],
     queryFn: async () => {
       console.log('Fetching new submissions');
 
@@ -88,7 +88,6 @@ export default function Received() {
         data={data}
         columns={columns}
         onClick={(row) => {
-          console.log(row, 'row');
           navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
         }}
       />

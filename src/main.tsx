@@ -7,6 +7,7 @@ import {
   FirebaseAppProvider,
   FirebaseAuthProvider,
   FirebaseFunctionsProvider,
+  FirebaseStorageProvider,
   FirestoreProvider,
 } from '@ugrc/utah-design-system';
 import { OAuthProvider } from 'firebase/auth';
@@ -53,16 +54,18 @@ createRoot(document.getElementById('root')!).render(
       <FirebaseAuthProvider provider={provider}>
         <FirebaseFunctionsProvider>
           <FirebaseAnalyticsProvider>
-            <FirestoreProvider>
-              <MapProvider>
-                <BrowserRouter>
-                  <QueryClientProvider client={queryClient}>
-                    <Routes />
-                    <ReactQueryDevtools initialIsOpen={false} />
-                  </QueryClientProvider>
-                </BrowserRouter>
-              </MapProvider>
-            </FirestoreProvider>
+            <FirebaseStorageProvider>
+              <FirestoreProvider>
+                <MapProvider>
+                  <BrowserRouter>
+                    <QueryClientProvider client={queryClient}>
+                      <Routes />
+                      <ReactQueryDevtools initialIsOpen={false} />
+                    </QueryClientProvider>
+                  </BrowserRouter>
+                </MapProvider>
+              </FirestoreProvider>
+            </FirebaseStorageProvider>
           </FirebaseAnalyticsProvider>
         </FirebaseFunctionsProvider>
       </FirebaseAuthProvider>
