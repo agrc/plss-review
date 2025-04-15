@@ -2,7 +2,7 @@ import { Banner, ExternalLink, UtahIdLogin } from '@ugrc/utah-design-system';
 
 export default function Login() {
   return (
-    <section className="grid flex-1 justify-center gap-4">
+    <section className="mb-10 grid flex-1 justify-center gap-4">
       <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">PLSS Monument Review</h2>
       <p className="max-w-prose text-justify text-lg text-gray-700 dark:text-gray-200">
         Welcome to the Public Land Survey System (PLSS) Monument Submission Application. This platform allows surveyors,
