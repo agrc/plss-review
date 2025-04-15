@@ -15,6 +15,11 @@ export default function Table({
   const table = useReactTable({
     data: data ?? empty, //also good to use a fallback array that is defined outside of the component (stable reference)
     columns,
+    state: {
+      columnVisibility: {
+        id: false,
+      },
+    },
     getCoreRowModel: getCoreRowModel(),
   });
 
