@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-16](https://github.com/agrc/plss-review/compare/v1.0.0-15...v1.0.0-16) (2025-04-15)
+
+
+### Bug Fixes
+
+* remove top level await that breaks the build ([5d7f3b4](https://github.com/agrc/plss-review/commit/5d7f3b441c90e373d0496155f18d59e2a9cdc5cb))
+
 ## [1.0.0-15](https://github.com/agrc/plss-review/compare/v1.0.0-14...v1.0.0-15) (2025-04-15)
 
 
