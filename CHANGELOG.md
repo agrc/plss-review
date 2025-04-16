@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-21](https://github.com/agrc/plss-review/compare/v1.0.0-20...v1.0.0-21) (2025-04-16)
+
+
+### Bug Fixes
+
+* **api:** allow default tenant as undefined ([21e7b6c](https://github.com/agrc/plss-review/commit/21e7b6c0a18cb81aca31f1ed05f5ee12cd086ed8))
+* set firebase tenant ([9cc9bca](https://github.com/agrc/plss-review/commit/9cc9bcaa911de9c8c71bbc3d9a64173fb3673462))
+
 ## [1.0.0-20](https://github.com/agrc/plss-review/compare/v1.0.0-19...v1.0.0-20) (2025-04-16)
 
 
