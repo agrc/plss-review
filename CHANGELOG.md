@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0-18](https://github.com/agrc/plss-review/compare/v1.0.0-17...v1.0.0-18) (2025-04-16)
+
+
+### Features
+
+* add busy indicator ([55ba623](https://github.com/agrc/plss-review/commit/55ba62321848a418f53f389c6c910832b0ca7183))
+
+
+### Bug Fixes
+
+* update storage rules to allow admin access ([dff1a51](https://github.com/agrc/plss-review/commit/dff1a51c67e80374903737e20d072420e9408644))
+
 ## [1.0.0-17](https://github.com/agrc/plss-review/compare/v1.0.0-16...v1.0.0-17) (2025-04-15)
 
 
