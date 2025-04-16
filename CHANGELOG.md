@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-20](https://github.com/agrc/plss-review/compare/v1.0.0-19...v1.0.0-20) (2025-04-16)
+
+
+### Bug Fixes
+
+* **api:** switch to a tenant provider ([909515e](https://github.com/agrc/plss-review/commit/909515e88bac085c53494639c381bf1e1f950371))
+
 ## [1.0.0-19](https://github.com/agrc/plss-review/compare/v1.0.0-18...v1.0.0-19) (2025-04-16)
 
 
