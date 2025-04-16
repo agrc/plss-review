@@ -15,7 +15,7 @@ export default function AppRoutes() {
   const { currentUser, auth } = useFirebaseAuth();
   const app = useFirebaseApp();
 
-  auth.tenantId = 'plss-review-keo70';
+  auth.tenantId = import.meta.env.VITE_FIREBASE_TENANT;
   const isAuthenticated = currentUser !== undefined;
 
   // initialize firebase performance metrics
