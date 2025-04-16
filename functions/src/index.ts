@@ -19,6 +19,16 @@ const db = getFirestore();
 
 async function authorizeUser(event: AuthBlockingEvent) {
   const id = event.data?.uid;
+  const provider = event.additionalUserInfo?.providerId;
+
+  if (!provider) {
+    throw new HttpsError('invalid-argument', 'No provider found');
+  }
+
+  if (provider === 'oidc.utahid') {
+    return;
+  }
+
   logger.debug('authorizeUser', { id });
 
   if (!id) {

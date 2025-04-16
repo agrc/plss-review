@@ -20,7 +20,7 @@ import Routes from './Routes';
 
 esriConfig.assetsPath = '/assets';
 
-const provider = new OAuthProvider('oidc.utahid');
+const provider = new OAuthProvider('oidc.plss-review');
 provider.addScope('profile');
 provider.addScope('email');
 
