@@ -19,13 +19,13 @@ const db = getFirestore();
 
 async function authorizeUser(event: AuthBlockingEvent) {
   const id = event.data?.uid;
-  const provider = event.additionalUserInfo?.providerId;
+  const tenant = event.data?.tenantId;
 
-  if (!provider) {
+  if (!tenant) {
     throw new HttpsError('invalid-argument', 'No provider found');
   }
 
-  if (provider === 'oidc.utahid') {
+  if (tenant !== 'plss-review-keo70') {
     return;
   }
 
