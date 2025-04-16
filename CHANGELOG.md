@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-22](https://github.com/agrc/plss-review/compare/v1.0.0-21...v1.0.0-22) (2025-04-16)
+
+
+### Bug Fixes
+
+* move tenant into secrets ([0d6932d](https://github.com/agrc/plss-review/commit/0d6932d7f51c62e3388fd430426a98c97b18a622))
+
 ## [1.0.0-21](https://github.com/agrc/plss-review/compare/v1.0.0-20...v1.0.0-21) (2025-04-16)
 
 
