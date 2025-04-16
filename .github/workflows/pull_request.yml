@@ -91,3 +91,4 @@ jobs:
           VITE_DISCOVER: ${{ secrets.VITE_DISCOVER_KEY }}
           VITE_WEB_API: ${{ secrets.VITE_WEB_API }}
           VITE_FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+          VITE_FIREBASE_TENANT: ${{ secrets.FIREBASE_TENANT }}
