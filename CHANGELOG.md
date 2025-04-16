@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-19](https://github.com/agrc/plss-review/compare/v1.0.0-18...v1.0.0-19) (2025-04-16)
+
+
+### Bug Fixes
+
+* use a separate provider for review login ([acddb51](https://github.com/agrc/plss-review/commit/acddb5151bc9fee08347eab8cf5ed3ef3d8995c7))
+
 ## [1.0.0-18](https://github.com/agrc/plss-review/compare/v1.0.0-17...v1.0.0-18) (2025-04-16)
 
 
