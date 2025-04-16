@@ -7,7 +7,7 @@ import { TextSymbol } from '@arcgis/core/symbols';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import { useQuery } from '@tanstack/react-query';
-import { useFirebaseStorage, useFirestore } from '@ugrc/utah-design-system';
+import { BusyBar, useFirebaseStorage, useFirestore } from '@ugrc/utah-design-system';
 import { useMapReady } from '@ugrc/utilities/hooks';
 import { doc, Firestore, getDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
@@ -51,7 +51,7 @@ const getFirestoreDocument = async (id: string | undefined, firestore: Firestore
   } as Corner & { pdf: string };
 };
 
-export default function Received() {
+export default function Review() {
   const { storage } = useFirebaseStorage();
   const { firestore } = useFirestore();
   const { id, blm } = useParams();
@@ -209,12 +209,13 @@ export default function Received() {
       processData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, featureSet, agolStatus]);
+  }, [ready, featureSet, agolStatus, firestoreStatus]);
 
   return (
     <div className="absolute inset-0 grid size-full grid-cols-2 gap-10 overflow-y-hidden px-4 pb-2">
       <div>{firestoreStatus === 'pending' ? <List /> : data?.pdf ? <ObjectPreview url={data.pdf} /> : <List />}</div>
       <MapContainer />
+      <BusyBar busy={agolStatus === 'pending' || firestoreStatus === 'pending'} />
     </div>
   );
 }
