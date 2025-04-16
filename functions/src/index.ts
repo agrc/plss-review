@@ -21,9 +21,6 @@ async function authorizeUser(event: AuthBlockingEvent) {
   const id = event.data?.uid;
   const tenant = event.data?.tenantId;
 
-  if (!tenant) {
-    throw new HttpsError('invalid-argument', 'No provider found');
-  }
 
   if (tenant !== 'plss-review-keo70') {
     return;
