@@ -44,6 +44,8 @@ export default function AppRoutes() {
           <Route path="county" Component={County} />
           <Route path="approved" Component={Approved} />
           <Route path="rejected" Component={Rejected} />
+        </Route>
+        <Route path="secure" Component={lazy(() => import('./layouts/LayoutProtectedEmpty'))}>
           <Route path="received/:blm/:id" Component={Review} />
         </Route>
 
