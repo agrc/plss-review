@@ -1,6 +1,17 @@
-import { Banner, ExternalLink, UtahIdLogin } from '@ugrc/utah-design-system';
+import { Banner, ExternalLink, useFirebaseAuth, UtahIdLogin } from '@ugrc/utah-design-system';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { currentUser } = useFirebaseAuth();
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/secure/received');
+    }
+  }, [currentUser, navigate]);
+
   return (
     <section className="mb-10 grid flex-1 justify-center gap-4">
       <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">PLSS Monument Review</h2>
