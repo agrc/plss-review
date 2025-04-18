@@ -1,5 +1,9 @@
 /// <reference types="vite/client" />
 
+interface ViteTypeOptions {
+  strictImportMetaEnv: unknown;
+}
+
 interface ImportMetaEnv {
   readonly VITE_DISCOVER: string;
   readonly VITE_WEB_API: string;
