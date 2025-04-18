@@ -56,7 +56,7 @@ export default function Received() {
         where('status.ugrc.approved', '==', null),
         orderBy('blm_point_id'),
       );
-      const snapshot = await Spinner.minDelay(getDocs(q), 700);
+      const snapshot = await Spinner.minDelay(getDocs(q));
 
       const items = snapshot.docs.map((doc) => doc.data());
 
