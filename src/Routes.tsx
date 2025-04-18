@@ -1,6 +1,17 @@
 import { useFirebaseApp, useFirebaseAuth } from '@ugrc/utah-design-system';
 import { lazy, useEffect } from 'react';
 import { Route, Routes } from 'react-router';
+import PageNotFound from './components/PageNotFound';
+
+const Layout = lazy(() => import('./layouts/Layout'));
+const ProtectedRouteLayout = lazy(() => import('./layouts/LayoutProtected'));
+const ProtectedRouteLayoutEmpty = lazy(() => import('./layouts/LayoutProtectedEmpty'));
+const Approved = lazy(() => import('./routes/approved'));
+const County = lazy(() => import('./routes/county'));
+const Login = lazy(() => import('./routes/login'));
+const Rejected = lazy(() => import('./routes/rejected'));
+const Review = lazy(() => import('./routes/review'));
+const Received = lazy(() => import('./routes/received'));
 
 export default function AppRoutes() {
   const { auth, ready } = useFirebaseAuth();
@@ -24,22 +35,22 @@ export default function AppRoutes() {
 
   return (
     <Routes>
-      <Route Component={lazy(() => import('./layouts/Layout'))}>
+      <Route element={<Layout />}>
         {/* Public routes */}
-        <Route index Component={lazy(() => import('./routes/login'))} />
+        <Route index Component={Login} />
 
         {/* Protected routes group */}
-        <Route path="secure" Component={lazy(() => import('./layouts/LayoutProtected'))}>
-          <Route path="received" Component={lazy(() => import('./routes/received'))} />
-          <Route path="county" Component={lazy(() => import('./routes/county'))} />
-          <Route path="approved" Component={lazy(() => import('./routes/approved'))} />
-          <Route path="rejected" Component={lazy(() => import('./routes/rejected'))} />
+        <Route path="secure" Component={ProtectedRouteLayout}>
+          <Route path="received" Component={Received} />
+          <Route path="county" Component={County} />
+          <Route path="approved" Component={Approved} />
+          <Route path="rejected" Component={Rejected} />
         </Route>
-        <Route path="secure" Component={lazy(() => import('./layouts/LayoutProtectedEmpty'))}>
-          <Route path="received/:blm/:id" Component={lazy(() => import('./routes/review'))} />
+        <Route path="secure" Component={ProtectedRouteLayoutEmpty}>
+          <Route path="received/:blm/:id" Component={Review} />
         </Route>
 
-        <Route path="*" Component={lazy(() => import('./components/PageNotFound'))} />
+        <Route path="*" Component={PageNotFound} />
       </Route>
     </Routes>
   );

@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import initializeTheme from '@ugrc/esri-theme-toggle';
 import {
+  BusyBar,
   FirebaseAnalyticsProvider,
   FirebaseAppProvider,
   FirebaseAuthProvider,
@@ -11,7 +12,7 @@ import {
   FirestoreProvider,
 } from '@ugrc/utah-design-system';
 import { OAuthProvider } from 'firebase/auth';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter } from 'react-router';
@@ -58,14 +59,16 @@ createRoot(document.getElementById('root')!).render(
             <FirebaseStorageProvider>
               <FirestoreProvider>
                 <MapProvider>
-                  <BrowserRouter>
-                    <QueryClientProvider client={queryClient}>
-                      <ErrorBoundary fallback={<p>⚠️ Something went wrong</p>}>
-                        <Routes />
-                      </ErrorBoundary>
-                      <ReactQueryDevtools initialIsOpen={false} />
-                    </QueryClientProvider>
-                  </BrowserRouter>
+                  <Suspense fallback={<BusyBar />}>
+                    <BrowserRouter>
+                      <QueryClientProvider client={queryClient}>
+                        <ErrorBoundary fallback={<p>⚠️ Something went wrong</p>}>
+                          <Routes />
+                        </ErrorBoundary>
+                        <ReactQueryDevtools initialIsOpen={false} />
+                      </QueryClientProvider>
+                    </BrowserRouter>
+                  </Suspense>
                 </MapProvider>
               </FirestoreProvider>
             </FirebaseStorageProvider>
