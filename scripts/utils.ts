@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 
-export function initializeFirebase(args: string[] = []): admin.firestore.Firestore {
+export function initializeFirebase(args: string[] = []): {db: admin.firestore.Firestore, auth: admin.auth.Auth} {
   let projectId = "ut-dts-agrc-plss-dev";
 
   const projectArg = args.find(arg => arg.startsWith('--project='));
@@ -15,5 +15,5 @@ export function initializeFirebase(args: string[] = []): admin.firestore.Firesto
     projectId: projectId,
   });
 
-  return admin.firestore();
+  return { db: admin.firestore(), auth: admin.auth() };
 }

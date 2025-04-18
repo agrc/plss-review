@@ -2,6 +2,7 @@
   "name": "@ugrc/plss-review-scripts",
   "private": true,
   "scripts": {
+    "local:seed": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./seed-emulator.ts",
     "local:authorize-users": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.0__create-authorized-users.ts",
     "local:update": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.1__add-elevated.ts",
     "local:elevate": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.2__elevate-authorized-users.ts",
