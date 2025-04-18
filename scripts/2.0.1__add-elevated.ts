@@ -29,6 +29,7 @@ async function elevate(): Promise<void> {
     snapshot.docs.map((doc) => {
       currentBatch.update(doc.ref, {
         elevated: false,
+        tenant: 'default'
       });
 
       operationsCount++;
