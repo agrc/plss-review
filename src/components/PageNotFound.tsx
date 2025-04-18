@@ -1,7 +1,7 @@
 import { Button } from '@ugrc/utah-design-system';
 import { useNavigate } from 'react-router';
 
-export function PageNotFound() {
+export default function PageNotFound() {
   const message = '404';
   const details = 'This page does not exist';
   let stack: string | undefined;
