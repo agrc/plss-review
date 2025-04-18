@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.0.0-23](https://github.com/agrc/plss-review/compare/v1.0.0-22...v1.0.0-23) (2025-04-18)
+
+
+### Features
+
+* add table loading animation ([541a81d](https://github.com/agrc/plss-review/commit/541a81d0fbc3db93b97b2d2f638b83f71f72461f))
+* **scripts:** create a script to seed tenant user ([0e81762](https://github.com/agrc/plss-review/commit/0e8176281d33ae8dfad6cb09a0cea9ed6c80bd76))
+
+
+### Bug Fixes
+
+* wait for auth before routing requests ([b07fd57](https://github.com/agrc/plss-review/commit/b07fd57060415c1018fccb4433890170be2a8d8f))
+
+
+### Dependencies
+
+* update packages ([e5b88df](https://github.com/agrc/plss-review/commit/e5b88df80c88e78b5a631122b9b8de2fe2062aea))
+
+
+### Styles
+
+* create empty layout for review page ([731d92e](https://github.com/agrc/plss-review/commit/731d92eb4566978aaefd238ae273fc74791096b1))
+* **review:** remove busy bar ([27b8d40](https://github.com/agrc/plss-review/commit/27b8d40b71a52a0da5d5d781e18e59f32666d2f8))
+
 ## [1.0.0-22](https://github.com/agrc/plss-review/compare/v1.0.0-21...v1.0.0-22) (2025-04-16)
 
 
