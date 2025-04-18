@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Banner, useFirestore } from '@ugrc/utah-design-system';
+import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
-import { List } from 'react-content-loader';
 import { useNavigate } from 'react-router';
 import Table from '../components/Table';
+import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
 import { asSubmission } from '../converters';
 
@@ -47,17 +47,16 @@ const columns = [
 export default function Received() {
   const { firestore } = useFirestore();
   const navigate = useNavigate();
-  const { isPending, isError, data, error } = useQuery({
+
+  const { status, data, error } = useQuery({
     queryKey: ['received', firestore],
     queryFn: async () => {
-      console.log('Fetching new submissions');
-
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
         where('status.ugrc.approved', '==', null),
         orderBy('blm_point_id'),
       );
-      const snapshot = await getDocs(q);
+      const snapshot = await Spinner.minDelay(getDocs(q), 700);
 
       const items = snapshot.docs.map((doc) => doc.data());
 
@@ -69,7 +68,7 @@ export default function Received() {
     gcTime: Infinity,
   });
 
-  if (isError) {
+  if (status === 'error') {
     return (
       <div className="grid w-full justify-center justify-items-center gap-4">
         <h2>There was some trouble fetching new submissions.</h2>
@@ -80,7 +79,9 @@ export default function Received() {
     );
   }
 
-  if (isPending) return <List />;
+  if (status === 'pending') {
+    return <TableLoader animate={true} speed={2} />;
+  }
 
   return (
     <div className="grid w-full gap-4 p-2">
