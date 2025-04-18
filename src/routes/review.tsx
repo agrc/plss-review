@@ -7,7 +7,7 @@ import { TextSymbol } from '@arcgis/core/symbols';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
 import { useQuery } from '@tanstack/react-query';
-import { BusyBar, Button, Spinner, useFirebaseStorage, useFirestore } from '@ugrc/utah-design-system';
+import { Button, Spinner, useFirebaseStorage, useFirestore } from '@ugrc/utah-design-system';
 import { useMapReady } from '@ugrc/utilities/hooks';
 import { doc, Firestore, getDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
@@ -95,7 +95,6 @@ export default function Review() {
 
   // show points on the map
   useEffect(() => {
-    console.log(ready, agolStatus, firestoreStatus, featureSet?.features.length, operatorLoaded);
     if (
       ready &&
       agolStatus === 'success' &&
@@ -224,7 +223,6 @@ export default function Review() {
 
   return (
     <>
-      <BusyBar busy={agolStatus === 'pending' || firestoreStatus === 'pending'} />
       <div className="absolute inset-0 grid size-full grid-cols-1 gap-2 overflow-y-hidden px-4 pb-2 md:grid-cols-[1fr_150px_1fr]">
         <div>
           {firestoreStatus === 'pending' ? (
