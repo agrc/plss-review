@@ -1,22 +1,22 @@
 import { useFirebaseApp, useFirebaseAuth } from '@ugrc/utah-design-system';
-import { useEffect } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import Layout from './layouts/Layout';
-import ProtectedRouteLayout from './layouts/LayoutProtected';
-import Approved from './routes/approved';
-import County from './routes/county';
-import Login from './routes/login';
-import Received from './routes/received';
-import Rejected from './routes/rejected';
-import Review from './routes/review';
+import { lazy, useEffect } from 'react';
+import { Route, Routes } from 'react-router';
+import { PageNotFound } from './components/PageNotFound';
+
+const Layout = lazy(() => import('./layouts/Layout'));
+const ProtectedRouteLayout = lazy(() => import('./layouts/LayoutProtected'));
+const Approved = lazy(() => import('./routes/approved'));
+const County = lazy(() => import('./routes/county'));
+const Login = lazy(() => import('./routes/login'));
+const Rejected = lazy(() => import('./routes/rejected'));
+const Review = lazy(() => import('./routes/review'));
+const Received = lazy(() => import('./routes/received'));
 
 export default function AppRoutes() {
-  const { currentUser, auth } = useFirebaseAuth();
+  const { auth, ready } = useFirebaseAuth();
   const app = useFirebaseApp();
 
   auth.tenantId = import.meta.env.VITE_FIREBASE_TENANT;
-  const isAuthenticated = currentUser !== undefined;
 
   // initialize firebase performance metrics
   useEffect(() => {
@@ -28,24 +28,26 @@ export default function AppRoutes() {
     initPerformance();
   }, [app]);
 
+  if (!ready) {
+    return null;
+  }
+
   return (
     <Routes>
       <Route element={<Layout />}>
         {/* Public routes */}
-        <Route index element={isAuthenticated ? <Navigate to="/secure/received" replace /> : <Login />} />
+        <Route index Component={Login} />
 
         {/* Protected routes group */}
-        <Route path="secure" element={<ProtectedRouteLayout />}>
-          <Route path="received" element={isAuthenticated ? <Received /> : <Navigate to="/" replace />} />
-          <Route path="county" element={isAuthenticated ? <County /> : <Navigate to="/" replace />} />
-          <Route path="approved" element={isAuthenticated ? <Approved /> : <Navigate to="/" replace />} />
-          <Route path="rejected" element={isAuthenticated ? <Rejected /> : <Navigate to="/" replace />} />
+        <Route path="secure" Component={ProtectedRouteLayout}>
+          <Route path="received" Component={Received} />
+          <Route path="county" Component={County} />
+          <Route path="approved" Component={Approved} />
+          <Route path="rejected" Component={Rejected} />
+          <Route path="received/:blm/:id" Component={Review} />
         </Route>
 
-        <Route path="secure">
-          <Route path="received/:blm/:id" element={isAuthenticated ? <Review /> : <Navigate to="/" replace />} />
-        </Route>
-        <Route path="*" element={<ErrorBoundary />} />
+        <Route path="*" Component={PageNotFound} />
       </Route>
     </Routes>
   );
