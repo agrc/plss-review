@@ -9,6 +9,7 @@ interface ImportMetaEnv {
   readonly VITE_WEB_API: string;
   readonly VITE_FIREBASE_CONFIG: string;
   readonly VITE_FIREBASE_TENANT: string;
+  readonly PACKAGE_VERSION: string;
 }
 
 interface ImportMeta {
