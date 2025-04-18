@@ -1,5 +1,6 @@
 import { Tab, TabList, Tabs, useFirebaseAuth } from '@ugrc/utah-design-system';
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router';
+import { useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import type { Key } from 'react-stately';
 import '../index.css';
 
@@ -16,9 +17,11 @@ export default function ProtectedLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  if (!currentUser) {
-    return <Navigate to="/" replace />;
-  }
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/');
+    }
+  }, [currentUser, navigate]);
 
   // Determine which tab is active based on the current route
   const activeTab = tabRoutes.find((tab) => location.pathname.includes(tab.path))?.id || 'received';
