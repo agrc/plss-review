@@ -13,6 +13,7 @@ import {
 import { OAuthProvider } from 'firebase/auth';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter } from 'react-router';
 import { MapProvider } from './components/contexts';
 import './index.css';
@@ -59,7 +60,9 @@ createRoot(document.getElementById('root')!).render(
                 <MapProvider>
                   <BrowserRouter>
                     <QueryClientProvider client={queryClient}>
-                      <Routes />
+                      <ErrorBoundary fallback={<p>⚠️ Something went wrong</p>}>
+                        <Routes />
+                      </ErrorBoundary>
                       <ReactQueryDevtools initialIsOpen={false} />
                     </QueryClientProvider>
                   </BrowserRouter>
