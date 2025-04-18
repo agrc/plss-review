@@ -21,33 +21,36 @@ async function authorizeUser(event: AuthBlockingEvent) {
   const id = event.data?.uid;
   const tenant = event.data?.tenantId;
 
-
   if (tenant !== 'plss-review-keo70') {
     return;
   }
 
-  logger.debug('authorizeUser', { id });
+  logger.debug('authorizeUser', { id, tenant });
 
   if (!id) {
-    throw new HttpsError('invalid-argument', 'An account is required');
+    throw new HttpsError('invalid-argument', 'E01: An account is required');
   }
 
   const ref = db.collection('submitters').doc(id.trim());
   const doc = await ref.get();
 
   if (!doc.exists) {
+    logger.debug('authorize failure', { id, reason: 'doc does not exist' });
+
     throw new HttpsError(
       'permission-denied',
-      `The email, ${event.data?.email}, is not authorized to access this resource.`,
+      `E02: The email, ${event.data?.email}, is not authorized to access this resource.`,
     );
   }
 
   const data = doc.data();
 
   if (!data?.elevated) {
+    logger.debug('authorize failure', { id, data, reason: 'elevated is false' });
+
     throw new HttpsError(
       'permission-denied',
-      `The email, ${event.data?.email}, is not authorized to access this resource.`,
+      `E03: The email, ${event.data?.email}, is not authorized to access this resource.`,
     );
   }
 }
