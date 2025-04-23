@@ -41,6 +41,9 @@ importers:
       ky:
         specifier: ^1.8.1
         version: 1.8.1
+      lucide-react:
+        specifier: ^0.503.0
+        version: 0.503.0(react@19.1.0)
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -62,6 +65,9 @@ importers:
       react-stately:
         specifier: ^3.37.0
         version: 3.37.0(react@19.1.0)
+      tailwind-merge:
+        specifier: 2.6.0
+        version: 2.6.0
     devDependencies:
       '@firebase/rules-unit-testing':
         specifier: ^4.0.1
