@@ -6,14 +6,26 @@ import * as geodeticLengthOperator from '@arcgis/core/geometry/operators/geodeti
 import { TextSymbol } from '@arcgis/core/symbols';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
-import { useQuery } from '@tanstack/react-query';
-import { Button, Spinner, useFirebaseStorage, useFirestore } from '@ugrc/utah-design-system';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  AlertDialog,
+  Button,
+  Modal,
+  Radio,
+  RadioGroup,
+  Spinner,
+  TextArea,
+  useFirebaseAuth,
+  useFirebaseStorage,
+  useFirestore,
+} from '@ugrc/utah-design-system';
 import { useMapReady } from '@ugrc/utilities/hooks';
-import { doc, Firestore, getDoc } from 'firebase/firestore';
+import type { User } from 'firebase/auth';
+import { doc, Firestore, getDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
 import ky from 'ky';
 import { useEffect, useState } from 'react';
-import { List } from 'react-content-loader';
+import { DialogTrigger } from 'react-aria-components';
 import { useNavigate, useParams } from 'react-router';
 import { MapContainer } from '../components/MapContainer';
 import { ObjectPreview } from '../components/ObjectPreview';
@@ -52,6 +64,52 @@ const getFirestoreDocument = async (id: string | undefined, firestore: Firestore
   } as Corner & { pdf: string };
 };
 
+type UgrcReview = {
+  'status.ugrc.reviewedAt': Date;
+  'status.ugrc.reviewedBy': string;
+  'status.ugrc.approved'?: boolean;
+  'status.ugrc.comments'?: string;
+};
+
+type UpdateDocumentParams = {
+  id: string;
+  approved: boolean;
+  firestore: Firestore;
+  currentUser?: User;
+  comments?: string;
+};
+
+const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, comments }: UpdateDocumentParams) => {
+  const submissionRef = doc(firestore, 'submissions', id);
+  const submissionSnap = await getDoc(submissionRef);
+
+  if (!submissionSnap.exists) {
+    throw new Error('Submission not found');
+  }
+
+  const submissionData = submissionSnap.data();
+
+  if (!submissionData) {
+    throw new Error('Submission data is empty');
+  }
+
+  if (submissionData.status.ugrc.approved !== null) {
+    throw new Error('Submission has already been reviewed');
+  }
+
+  const updates = {
+    'status.ugrc.reviewedAt': new Date(),
+    'status.ugrc.reviewedBy': currentUser!.email,
+    'status.ugrc.approved': approved,
+  } as UgrcReview;
+
+  if (comments) {
+    updates['status.ugrc.comments'] = comments;
+  }
+
+  await updateDoc(submissionRef, updates);
+};
+
 export default function Review() {
   const { storage } = useFirebaseStorage();
   const { firestore } = useFirestore();
@@ -59,12 +117,30 @@ export default function Review() {
   const { zoom, mapView, placeGraphic } = useMap();
   const ready = useMapReady(mapView);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { currentUser } = useFirebaseAuth();
   const [operatorLoaded, setOperatorLoaded] = useState<boolean>(geodeticLengthOperator.isLoaded());
 
   const { data, status: firestoreStatus } = useQuery({
     queryKey: ['firestore', id, firestore, storage],
     queryFn: () => getFirestoreDocument(id, firestore, storage),
     enabled: !!id,
+  });
+
+  const { mutate: updateStatus, status: mutateStatus } = useMutation({
+    mutationFn: (approved: boolean) =>
+      updateFirestoreDocument({
+        id: id!,
+        approved,
+        firestore,
+        currentUser,
+        comments: '',
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['received'] }).then(() => {
+        navigate('/secure/received');
+      });
+    },
   });
 
   const { data: featureSet, status: agolStatus } = useQuery<__esri.FeatureSet, Error>({
@@ -230,14 +306,45 @@ export default function Review() {
           ) : data?.pdf ? (
             <ObjectPreview url={data.pdf} />
           ) : (
-            <List />
+            <p>⚠️ The document could not be loaded</p>
           )}
         </div>
         <div className="order-first flex flex-col items-center gap-2 md:order-none">
-          <Button variant="primary">Approve</Button>
-          <Button variant="destructive">Reject</Button>
+          {firestoreStatus === 'success' && data?.status.ugrc.reviewedBy !== null && (
+            <>
+              <Button
+                variant="primary"
+                onPress={() => updateStatus(true)}
+                isDisabled={firestoreStatus !== 'success'}
+                isPending={mutateStatus === 'pending'}
+              >
+                Approve
+              </Button>
+              <DialogTrigger>
+                <Button
+                  variant="destructive"
+                  isDisabled={firestoreStatus !== 'success'}
+                  isPending={mutateStatus === 'pending'}
+                >
+                  Reject
+                </Button>
+                <Modal>
+                  <AlertDialog title="Reject submission" actionLabel="Reject" onAction={() => updateStatus(false)}>
+                    <div className="grid grid-cols-1 gap-4">
+                      <RadioGroup label="Reason">
+                        <Radio value="geometry-distance">Too far away</Radio>
+                        <Radio value="sheet-invalid">Invalid monument sheet</Radio>
+                        <Radio value="sheet-bad">Inappropriate images</Radio>
+                      </RadioGroup>
+                      <TextArea label="Notes" onChange={() => {}} />
+                    </div>
+                  </AlertDialog>
+                </Modal>
+              </DialogTrigger>
+            </>
+          )}
           <Button variant="secondary" onPress={() => navigate(-1)}>
-            Cancel
+            Back
           </Button>
         </div>
         <MapContainer />
