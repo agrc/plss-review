@@ -110,8 +110,9 @@ export type Corner = {
   status: {
     ugrc: {
       approved: string | null;
-      rejected: string | null;
       comments: string | null;
+      reviewedAt: Date | null;
+      reviewedBy: string | null;
     };
     county: {
       approved: string | null;
