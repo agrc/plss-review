@@ -1,4 +1,13 @@
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef, type Row } from '@tanstack/react-table';
+import {
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type Row,
+} from '@tanstack/react-table';
+import { ChevronDownIcon } from 'lucide-react';
+import { twJoin } from 'tailwind-merge';
 import type { Submission } from './shared/types';
 
 const empty = [] as Submission[];
@@ -12,15 +21,26 @@ export default function Table({
   columns: ColumnDef<Submission, any>[];
   onClick: (row: Row<Submission>) => void;
 }) {
-  const table = useReactTable({
-    data: data ?? empty, //also good to use a fallback array that is defined outside of the component (stable reference)
+  const { getHeaderGroups, getRowModel } = useReactTable({
+    debugTable: true,
     columns,
+    data: data ?? empty, //also good to use a fallback array that is defined outside of the component (stable reference)
+    // manualSorting: true,
+    initialState: {
+      sorting: [
+        {
+          id: 'blmPointId',
+          desc: false,
+        },
+      ],
+    },
     state: {
       columnVisibility: {
         id: false,
       },
     },
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   if (!data || data.length === 0) {
@@ -31,18 +51,34 @@ export default function Table({
   return (
     <table className="w-full">
       <thead>
-        {table.getHeaderGroups().map((headerGroup) => (
+        {getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
-              <th key={header.id} className="pointer-events-none text-left text-xl font-bold">
-                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+              <th key={header.id} className="relative select-none p-2 text-left text-xl font-bold">
+                {header.isPlaceholder ? null : (
+                  // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+                  <div
+                    className={twJoin(
+                      header.column.getCanSort() && 'flex cursor-pointer select-none items-center justify-between',
+                      header.column.getIsSorted() &&
+                        'before:absolute before:-bottom-1 before:left-0 before:z-10 before:block before:h-2 before:w-full before:rounded-full before:bg-secondary-500 before:transition-all before:duration-300',
+                    )}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {{
+                      asc: <ChevronDownIcon className="h-4 scale-x-[-1] scale-y-[-1] transition-transform" />,
+                      desc: <ChevronDownIcon className="h-4 transition-transform" />,
+                    }[header.column.getIsSorted().toString()] ?? null}
+                  </div>
+                )}
               </th>
             ))}
           </tr>
         ))}
       </thead>
       <tbody>
-        {table.getRowModel().rows.map((row) => (
+        {getRowModel().rows.map((row) => (
           <tr
             key={row.id}
             className="cursor-pointer odd:bg-white even:bg-gray-100 active:bg-gray-300 hover:bg-gray-200 dark:odd:bg-zinc-800 dark:even:bg-zinc-700 dark:active:bg-red-500 dark:odd:hover:bg-secondary-900/70 dark:even:hover:bg-secondary-800/70"

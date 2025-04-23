@@ -12,23 +12,27 @@ const columnHelper = createColumnHelper<Submission>();
 const columns = [
   columnHelper.accessor('id', {
     id: 'id',
-    header: () => null, // Hide this header
+    header: () => null,
   }),
   columnHelper.accessor('blmPointId', {
     id: 'blmPointId',
     header: () => 'BLM Point Id',
+    sortingFn: 'alphanumeric',
   }),
   columnHelper.accessor('county', {
     id: 'county',
     header: () => 'County',
+    sortingFn: 'alphanumeric',
   }),
   columnHelper.accessor('submitter', {
     id: 'submitter',
     header: () => 'Submitter',
+    enableSorting: false,
   }),
   columnHelper.accessor('date', {
     id: 'date',
     header: () => 'Submission Date',
+    enableSorting: false,
   }),
   columnHelper.accessor('mrrc', {
     id: 'mrrc',
@@ -41,6 +45,7 @@ const columns = [
 
       return value ? 'Yep' : 'Nope';
     },
+    enableSorting: false,
   }),
 ];
 

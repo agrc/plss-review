@@ -43,13 +43,15 @@
     "@ugrc/utilities": "^3.0.3",
     "firebase": "^11.6.0",
     "ky": "^1.8.1",
+    "lucide-react": "^0.503.0",
     "react": "^19.1.0",
     "react-aria-components": "^1.8.0",
     "react-content-loader": "^7.0.2",
     "react-dom": "^19.1.0",
     "react-error-boundary": "^5.0.0",
     "react-router": "^7.5.1",
-    "react-stately": "^3.37.0"
+    "react-stately": "^3.37.0",
+    "tailwind-merge": "2.6.0"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^4.0.1",
