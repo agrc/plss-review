@@ -25,37 +25,39 @@ async function elevate(): Promise<void> {
     let currentBatch = db.batch();
     let operationsCount = 0;
 
-    await Promise.all(snapshot.docs.map(async (doc) => {
-      const userEmail = doc.id;
-      const data = await db.collection('submitters').where('email', '==', userEmail).get();
+    await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const userEmail = doc.id;
+        const data = await db.collection('submitters').where('email', '==', userEmail).get();
 
-      if (data.empty) {
-        console.log(`No matching submitter found for ${userEmail}.`);
-        return;
-      }
-
-      if (data.size === 1) {
-        const submitterDoc = data.docs[0];
-
-        currentBatch.update(submitterDoc.ref, {
-          elevated: true,
-        });
-
-        operationsCount++;
-
-        if (operationsCount >= batchSize) {
-          batches.push(currentBatch);
-          currentBatch = db.batch();
-          operationsCount = 0;
+        if (data.empty) {
+          console.log(`No matching submitter found for ${userEmail}.`);
+          return;
         }
-      }
-    }));
+
+        if (data.size === 1) {
+          const submitterDoc = data.docs[0];
+
+          currentBatch.update(submitterDoc.ref, {
+            elevated: true,
+          });
+
+          operationsCount++;
+
+          if (operationsCount >= batchSize) {
+            batches.push(currentBatch);
+            currentBatch = db.batch();
+            operationsCount = 0;
+          }
+        }
+      }),
+    );
 
     if (operationsCount > 0) {
       batches.push(currentBatch);
     }
 
-    await Promise.all(batches.map(batch => batch.commit()));
+    await Promise.all(batches.map((batch) => batch.commit()));
 
     console.log('Successfully migrated all authorized users.');
   } catch (error) {
