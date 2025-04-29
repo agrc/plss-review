@@ -29,7 +29,7 @@ async function elevate(): Promise<void> {
     snapshot.docs.map((doc) => {
       currentBatch.update(doc.ref, {
         elevated: false,
-        tenant: 'default'
+        tenant: 'default',
       });
 
       operationsCount++;
@@ -43,10 +43,9 @@ async function elevate(): Promise<void> {
       if (operationsCount > 0) {
         batches.push(currentBatch);
       }
-    }
-  );
+    });
 
-    await Promise.all(batches.map(batch => batch.commit()));
+    await Promise.all(batches.map((batch) => batch.commit()));
 
     console.log('Successfully migrated.');
   } catch (error) {

@@ -1,4 +1,4 @@
-import { initializeFirebase } from "./utils";
+import { initializeFirebase } from './utils';
 
 const db = initializeFirebase(process.argv.slice(2));
 
@@ -7,13 +7,22 @@ if (!db) {
   process.exit(1);
 }
 
-const authorizedUsers: string[] = ['stdavis@utah.gov',
-  'sgourley@utah.gov', 'sfernandez@utah.gov', 'denisepeterson@utah.gov', 'miriamseely@utah.gov', 'lault@utah.gov'];
+const authorizedUsers: string[] = [
+  'stdavis@utah.gov',
+  'sgourley@utah.gov',
+  'sfernandez@utah.gov',
+  'denisepeterson@utah.gov',
+  'miriamseely@utah.gov',
+  'lault@utah.gov',
+];
 
 // Create promises for adding each user to the collection
-const promises: Promise<void>[] = authorizedUsers.map(email =>
-  db.collection('authorized-users').doc(email).set({})
-    .then(() => console.log(`Successfully added ${email} to authorized-users collection`))
+const promises: Promise<void>[] = authorizedUsers.map((email) =>
+  db
+    .collection('authorized-users')
+    .doc(email)
+    .set({})
+    .then(() => console.log(`Successfully added ${email} to authorized-users collection`)),
 );
 
 // Wait for all promises to complete

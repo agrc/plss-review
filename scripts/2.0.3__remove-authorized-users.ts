@@ -41,7 +41,7 @@ async function removeAuthorizedUsers(): Promise<void> {
       batches.push(currentBatch);
     }
 
-    await Promise.all(batches.map(batch => batch.commit()));
+    await Promise.all(batches.map((batch) => batch.commit()));
 
     console.log('Successfully removed all authorized users.');
   } catch (error) {
