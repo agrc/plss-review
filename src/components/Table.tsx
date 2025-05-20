@@ -25,15 +25,6 @@ export default function Table({
     debugTable: true,
     columns,
     data: data ?? empty, //also good to use a fallback array that is defined outside of the component (stable reference)
-    // manualSorting: true,
-    initialState: {
-      sorting: [
-        {
-          id: 'blmPointId',
-          desc: false,
-        },
-      ],
-    },
     state: {
       columnVisibility: {
         id: false,
@@ -54,7 +45,11 @@ export default function Table({
         {getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
-              <th key={header.id} className="relative select-none p-2 text-left text-xl font-bold">
+              <th
+                key={header.id}
+                className="relative select-none p-2 text-left text-xl font-bold"
+                style={{ width: `${header.getSize()}px` }}
+              >
                 {header.isPlaceholder ? null : (
                   // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
                   <div

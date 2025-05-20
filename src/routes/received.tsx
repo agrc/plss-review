@@ -18,11 +18,13 @@ const columns = [
     id: 'blmPointId',
     header: () => 'BLM Point Id',
     sortingFn: 'alphanumeric',
+    size: 215,
   }),
   columnHelper.accessor('county', {
     id: 'county',
     header: () => 'County',
     sortingFn: 'alphanumeric',
+    size: 160,
   }),
   columnHelper.accessor('submitter', {
     id: 'submitter',
