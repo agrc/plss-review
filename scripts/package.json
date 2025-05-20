@@ -2,19 +2,20 @@
   "name": "@ugrc/plss-review-scripts",
   "private": true,
   "scripts": {
-    "local:seed": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./seed-emulator.ts",
-    "local:authorize-users": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.0__create-authorized-users.ts",
-    "local:update": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.1__add-elevated.ts",
-    "local:elevate": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.2__elevate-authorized-users.ts",
-    "local:remove-authorized": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.3__remove-authorized-users.ts",
     "dev:authorize-users": "ts-node ./2.0.0__create-authorized-users.ts",
-    "dev:update": "ts-node ./2.0.1__add-elevated.ts",
     "dev:elevate": "ts-node ./2.0.2__elevate-authorized-users.ts",
     "dev:remove-authorized": "ts-node ./2.0.3__remove-authorized-users.ts",
+    "dev:update": "ts-node ./2.0.1__add-elevated.ts",
+    "local:authorize-users": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.0__create-authorized-users.ts",
+    "local:elevate": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.2__elevate-authorized-users.ts",
+    "local:remove-authorized": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.3__remove-authorized-users.ts",
+    "local:seed": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./seed-emulator.ts",
+    "local:seed-contacts": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./seed-contacts.ts",
+    "local:update": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' ts-node ./2.0.1__add-elevated.ts",
     "prod:authorize-users": "ts-node ./2.0.0__create-authorized-users.ts --project=ut-dts-agrc-plss-prod",
-    "prod:update": "ts-node ./2.0.1__add-elevated.ts --project=ut-dts-agrc-plss-prod",
     "prod:elevate": "ts-node ./2.0.2__elevate-authorized-users.ts --project=ut-dts-agrc-plss-prod",
-    "prod:remove-authorized": "ts-node ./2.0.3__remove-authorized-users.ts --project=ut-dts-agrc-plss-prod"
+    "prod:remove-authorized": "ts-node ./2.0.3__remove-authorized-users.ts --project=ut-dts-agrc-plss-prod",
+    "prod:update": "ts-node ./2.0.1__add-elevated.ts --project=ut-dts-agrc-plss-prod"
   },
   "dependencies": {
     "firebase-admin": "^13.2.0"
