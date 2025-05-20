@@ -22,3 +22,22 @@ export const safelyInitializeApp = () => {
 
   return app;
 };
+
+/**
+ * Get the URL of a given v2 cloud function.
+ *
+ * @param {string} name the function's name
+ * @param {string} location the function's location
+ * @return {Promise<string>} The URL of the function
+ */
+export async function getFunctionUrl(name: string, location = 'us-central1') {
+  if (process.env.FUNCTIONS_EMULATOR === 'true') {
+    return undefined;
+  }
+  const projectId = process.env.FIREBASE_CONFIG
+    ? JSON.parse(process.env.FIREBASE_CONFIG).projectId
+    : process.env.PROJECT_ID;
+
+  // gen2 cloud run url format
+  return `https://${location}-${projectId}.cloudfunctions.net/${name}`;
+}
