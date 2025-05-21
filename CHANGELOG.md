@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-33](https://github.com/agrc/plss-review/compare/v1.0.0-32...v1.0.0-33) (2025-05-21)
+
+
+### Bug Fixes
+
+* allow reject alert on the county page to be dismissed ([4f987ae](https://github.com/agrc/plss-review/commit/4f987aebccb551129ad8bd8bdcd3577b96d06e96))
+
 ## [1.0.0-32](https://github.com/agrc/plss-review/compare/v1.0.0-31...v1.0.0-32) (2025-05-21)
 
 
