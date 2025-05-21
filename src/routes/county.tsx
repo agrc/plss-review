@@ -115,10 +115,8 @@ export default function County() {
         ),
         orderBy('blm_point_id'),
       );
-      await Spinner.minDelay(new Promise((resolve) => setTimeout(resolve, 1000)));
-      // const snapshot = await Spinner.minDelay(getDocs(q));
 
-      const snapshot = await getDocs(q);
+      const snapshot = await Spinner.minDelay(getDocs(q));
       const items = snapshot.docs.map((doc) => doc.data());
 
       return items;
