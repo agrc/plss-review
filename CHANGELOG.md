@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-30](https://github.com/agrc/plss-review/compare/v1.0.0-29...v1.0.0-30) (2025-05-21)
+
+
+### Bug Fixes
+
+* correct rejected query ([c467666](https://github.com/agrc/plss-review/commit/c467666f4c60e7a54426adf5b36bfe42f8ecca33))
+
 ## [1.0.0-29](https://github.com/agrc/plss-review/compare/v1.0.0-28...v1.0.0-29) (2025-05-21)
 
 
