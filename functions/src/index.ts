@@ -39,7 +39,7 @@ const sendGridApiKey = defineSecret('SENDGRID_API_KEY');
 
 const db = getFirestore();
 const bucket = getStorage().bucket();
-const wait = process.env.GCLOUD_PROJECT?.includes('dev') ? { minutes: 5 } : { days: 10 };
+const wait = process.env.GCLOUD_PROJECT?.includes('dev') ? { hours: 1 } : { days: 10 };
 
 logger.debug('[tasks queue] duration', wait, {
   structuredData: true,
