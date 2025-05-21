@@ -96,6 +96,7 @@ export default function Received() {
       <Table
         data={data}
         columns={columns}
+        emptyMessage="☀️🌻There are no new submissions. Go play in the sun!🌻☀️"
         onClick={(row) => {
           navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
         }}

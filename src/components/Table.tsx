@@ -15,11 +15,13 @@ export default function Table({
   data,
   columns,
   onClick,
+  emptyMessage,
 }: {
   data?: Submission[];
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   columns: ColumnDef<Submission, any>[];
   onClick: (row: Row<Submission>) => void;
+  emptyMessage: string;
 }) {
   const { getHeaderGroups, getRowModel } = useReactTable({
     debugTable: true,
@@ -35,9 +37,7 @@ export default function Table({
   });
 
   if (!data || data.length === 0) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">No new submissions. Go play in the sandbox!</div>
-    );
+    return <h3 className="mt-5 flex h-full w-full items-center justify-center">{emptyMessage}</h3>;
   }
   return (
     <table className="w-full">

@@ -124,6 +124,7 @@ export default function County() {
       <Table
         data={data}
         columns={columns}
+        emptyMessage="⏳⏳There are no submissions waiting on the county.⏳⏳"
         onClick={(row) => {
           navigate(`/secure/county/${row.original.blmPointId}/${row.original.id}`);
         }}
