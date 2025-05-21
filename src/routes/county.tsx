@@ -84,7 +84,11 @@ export default function County() {
     queryFn: async () => {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
-        and(where('status.county.approved', '==', null), where('status.ugrc.approved', '==', true)),
+        and(
+          where('status.ugrc.approved', '==', true),
+          where('status.county.approved', '==', null),
+          where('status.user.cancelled', '==', null),
+        ),
         orderBy('blm_point_id'),
       );
       const snapshot = await Spinner.minDelay(getDocs(q));

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { and, collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useNavigate } from 'react-router';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
@@ -60,7 +60,7 @@ export default function Received() {
     queryFn: async () => {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
-        where('status.ugrc.approved', '==', null),
+        and(where('status.ugrc.approved', '==', null), where('status.user.cancelled', '==', null)),
         orderBy('blm_point_id'),
       );
       const snapshot = await Spinner.minDelay(getDocs(q));
