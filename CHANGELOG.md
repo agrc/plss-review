@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-29](https://github.com/agrc/plss-review/compare/v1.0.0-28...v1.0.0-29) (2025-05-21)
+
+
+### Bug Fixes
+
+* correct rejected tab query and indexes ([9dc3c4c](https://github.com/agrc/plss-review/commit/9dc3c4cde20f2344140bfa0f49d8a01679a51e52))
+
 ## [1.0.0-28](https://github.com/agrc/plss-review/compare/v1.0.0-27...v1.0.0-28) (2025-05-21)
 
 
