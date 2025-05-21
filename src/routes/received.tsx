@@ -56,15 +56,17 @@ export default function Received() {
   const navigate = useNavigate();
 
   const { status, data, error } = useQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: ['monuments', { type: 'received' }],
+    queryKey: ['monuments', { type: 'received' }, firestore],
     queryFn: async () => {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
         and(where('status.ugrc.approved', '==', null), where('status.user.cancelled', '==', null)),
         orderBy('blm_point_id'),
       );
-      const snapshot = await Spinner.minDelay(getDocs(q));
+      await Spinner.minDelay(new Promise((resolve) => setTimeout(resolve, 1000)));
+      // const snapshot = await Spinner.minDelay(getDocs(q));
+
+      const snapshot = await getDocs(q);
 
       const items = snapshot.docs.map((doc) => doc.data());
 
@@ -77,6 +79,8 @@ export default function Received() {
   });
 
   if (status === 'error') {
+    console.error('Error querying firebase:', error);
+
     return (
       <div className="grid w-full justify-center justify-items-center gap-4">
         <h2>There was some trouble fetching new submissions.</h2>

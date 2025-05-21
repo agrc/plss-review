@@ -23,10 +23,11 @@ import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
 import ky from 'ky';
 import { useEffect, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 import { MapContainer } from '../components/MapContainer';
 import { ObjectPreview } from '../components/ObjectPreview';
-import RejectionReasons from '../components/RejectionReasons';
+import { RejectionReasons, type FormValues } from '../components/RejectionReasons';
 import { ImageLoader } from '../components/TableLoader';
 import { useMap } from '../components/hooks';
 import type { Corner } from '../components/shared/types';
@@ -117,6 +118,12 @@ export default function Review() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { currentUser } = useFirebaseAuth();
+  const { control, handleSubmit } = useForm<FormValues>({
+    defaultValues: {
+      reason: 'missing-photo',
+      notes: '',
+    },
+  });
   const [operatorLoaded, setOperatorLoaded] = useState<boolean>(geodeticLengthOperator.isLoaded());
 
   const { data, status: firestoreStatus } = useQuery({
@@ -126,17 +133,18 @@ export default function Review() {
   });
 
   const { mutate: updateStatus, status: mutateStatus } = useMutation({
-    mutationFn: (approved: boolean) =>
+    mutationFn: ({ approved, comments = '' }: { approved: boolean; comments?: string }) =>
       updateFirestoreDocument({
         id: id!,
         approved,
         firestore,
         currentUser,
-        comments: '',
+        comments,
       }),
-    onSuccess: async (_, approved) => {
-      if (approved) {
-        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'received' }] });
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'received' }] });
+
+      if (variables.approved) {
         await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'county' }] });
       } else {
         await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'rejected' }] });
@@ -300,6 +308,17 @@ export default function Review() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, featureSet, agolStatus, firestoreStatus, operatorLoaded]);
 
+  const reject = (data: { reason: string; notes: string }) => {
+    console.log('Rejecting submission', data);
+
+    let comments = data.reason;
+    if (data.notes) {
+      comments += ` - ${data.notes}`;
+    }
+
+    updateStatus({ approved: false, comments });
+  };
+
   return (
     <>
       <div className="absolute inset-0 grid size-full grid-cols-1 gap-2 overflow-y-hidden px-4 pb-2 md:grid-cols-[1fr_150px_1fr]">
@@ -317,7 +336,7 @@ export default function Review() {
             <>
               <Button
                 variant="primary"
-                onPress={() => updateStatus(true)}
+                onPress={() => updateStatus({ approved: true })}
                 isDisabled={firestoreStatus !== 'success'}
                 isPending={mutateStatus === 'pending'}
               >
@@ -336,9 +355,9 @@ export default function Review() {
                     title="Reject submission"
                     variant="destructive"
                     actionLabel="Reject"
-                    onAction={() => updateStatus(false)}
+                    onAction={() => handleSubmit(reject)()}
                   >
-                    <RejectionReasons />
+                    <RejectionReasons control={control} />
                   </AlertDialog>
                 </Modal>
               </DialogTrigger>
