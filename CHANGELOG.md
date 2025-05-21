@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-31](https://github.com/agrc/plss-review/compare/v1.0.0-30...v1.0.0-31) (2025-05-21)
+
+
+### Features
+
+* store rejection reasons ([f9ea8f5](https://github.com/agrc/plss-review/commit/f9ea8f5503865473fb1d2df2583c80087f2dade0))
+
 ## [1.0.0-30](https://github.com/agrc/plss-review/compare/v1.0.0-29...v1.0.0-30) (2025-05-21)
 
 
