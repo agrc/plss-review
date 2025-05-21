@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-27](https://github.com/agrc/plss-review/compare/v1.0.0-26...v1.0.0-27) (2025-05-21)
+
+
+### Bug Fixes
+
+* **api:** rename queue ([9525b02](https://github.com/agrc/plss-review/commit/9525b0265aea87bf48572f9d3526c78d821306e7))
+
 ## [1.0.0-26](https://github.com/agrc/plss-review/compare/v1.0.0-25...v1.0.0-26) (2025-05-21)
 
 
