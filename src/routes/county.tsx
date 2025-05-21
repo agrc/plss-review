@@ -241,7 +241,7 @@ export default function County() {
           navigate(`/secure/county/${row.original.blmPointId}/${row.original.id}`);
         }}
       />
-      <DialogTrigger isOpen={dialogOpen}>
+      <DialogTrigger isOpen={dialogOpen} onOpenChange={setDialogOpen}>
         <Modal>
           <AlertDialog
             title="Reject submission"
