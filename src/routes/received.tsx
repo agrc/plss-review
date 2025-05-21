@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
-import { asSubmission } from '../converters';
+import { asNewSubmission } from '../converters';
 
 const columnHelper = createColumnHelper<Submission>();
 const columns = [
@@ -59,7 +59,7 @@ export default function Received() {
     queryKey: ['monuments', { type: 'received' }, firestore],
     queryFn: async () => {
       const q = query(
-        collection(firestore, 'submissions').withConverter(asSubmission),
+        collection(firestore, 'submissions').withConverter(asNewSubmission),
         and(where('status.ugrc.approved', '==', null), where('status.user.cancelled', '==', null)),
         orderBy('blm_point_id'),
       );

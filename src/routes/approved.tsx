@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
-import { asSubmission } from '../converters';
+import { asNewSubmission } from '../converters';
 
 const columnHelper = createColumnHelper<Submission>();
 
@@ -62,7 +62,7 @@ export default function Approved() {
     queryKey: ['monuments', { type: 'approved' }, firestore],
     queryFn: async () => {
       const q = query(
-        collection(firestore, 'submissions').withConverter(asSubmission),
+        collection(firestore, 'submissions').withConverter(asNewSubmission),
         and(
           where('status.ugrc.approved', '==', true),
           where('status.county.approved', '==', true),

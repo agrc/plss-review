@@ -11,7 +11,7 @@ import { RejectionReasons, type FormValues } from '../components/RejectionReason
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
-import { asSubmission } from '../converters';
+import { asNewSubmission } from '../converters';
 
 type CountyReview = {
   'status.county.reviewedAt': Date;
@@ -107,7 +107,7 @@ export default function County() {
     queryKey: ['monuments', { type: 'county' }, firestore],
     queryFn: async () => {
       const q = query(
-        collection(firestore, 'submissions').withConverter(asSubmission),
+        collection(firestore, 'submissions').withConverter(asNewSubmission),
         and(
           where('status.ugrc.approved', '==', true),
           where('status.county.approved', '==', null),
