@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-32](https://github.com/agrc/plss-review/compare/v1.0.0-31...v1.0.0-32) (2025-05-21)
+
+
+### Bug Fixes
+
+* publish only necessary indexes ([9c2c370](https://github.com/agrc/plss-review/commit/9c2c37000297aeb8fcf7e8d62ced16710a977210))
+
 ## [1.0.0-31](https://github.com/agrc/plss-review/compare/v1.0.0-30...v1.0.0-31) (2025-05-21)
 
 
