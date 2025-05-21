@@ -89,7 +89,7 @@ export default function County() {
   );
 
   const { status, data, error } = useQuery({
-    queryKey: ['county', firestore],
+    queryKey: ['monuments', firestore, { type: 'county' }],
     queryFn: async () => {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
