@@ -41,7 +41,7 @@
     "@ugrc/esri-theme-toggle": "^1.1.1",
     "@ugrc/utah-design-system": "^1.27.1",
     "@ugrc/utilities": "^3.0.4",
-    "firebase": "^11.7.3",
+    "firebase": "^11.8.0",
     "ky": "^1.8.1",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
@@ -56,7 +56,7 @@
   "devDependencies": {
     "@firebase/rules-unit-testing": "^4.0.1",
     "@tanstack/eslint-plugin-query": "^5.74.7",
-    "@types/react": "^19.1.4",
+    "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "@ugrc/tailwind-preset": "^1.2.0",
     "@ugrc/tsconfigs": "^1.0.3",
