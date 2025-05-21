@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.0-24](https://github.com/agrc/plss-review/compare/v1.0.0-23...v1.0.0-24) (2025-05-21)
+
+
+### Features
+
+* allow blm point id and county to be sorted ([4eee173](https://github.com/agrc/plss-review/commit/4eee173b7e6a6ccea7f8007606c8d1debbe0262e))
+* **api:** notify county when a submission is saved ([7f80d0b](https://github.com/agrc/plss-review/commit/7f80d0bb3f6b3ce6c0a747e917afcd3b64703ea8))
+* **api:** use cloud tasks to queue county approval ([f5d1abd](https://github.com/agrc/plss-review/commit/f5d1abdf735b0d28585f7b991e6390c0d0b4c927))
+* implement county review table ([5df8975](https://github.com/agrc/plss-review/commit/5df89757e488c81efc5183a195acb800bd477e72))
+* persist approval and reject responses ([a684a83](https://github.com/agrc/plss-review/commit/a684a83caabcbf1583d4afddd0e88eb1cb17fac9))
+
+
+### Dependencies
+
+* update packages ([5e2f5dd](https://github.com/agrc/plss-review/commit/5e2f5dd26700278e35c86d72cca5916d18fd84ce))
+* update packages ([a61b73a](https://github.com/agrc/plss-review/commit/a61b73ae3777de3cbe440cee604e913a19753beb))
+
+
+### Styles
+
+* update table column sizes ([2eb3219](https://github.com/agrc/plss-review/commit/2eb32198c63b7d1219c1ad05f80f814956064231))
+
 ## [1.0.0-23](https://github.com/agrc/plss-review/compare/v1.0.0-22...v1.0.0-23) (2025-04-18)
 
 
