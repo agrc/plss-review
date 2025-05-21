@@ -10,6 +10,18 @@ export type Submission = {
   actions?: string;
 };
 
+export type RejectedSubmission = Omit<Submission, 'mrrc' | 'actions'> & {
+  rejectedBy: string;
+  reason: string;
+};
+
+type Status = {
+  approved: boolean | null;
+  comments: string | null;
+  reviewedAt: Timestamp | null;
+  reviewedBy: string | null;
+};
+
 export type Corner = {
   id: string;
   blm_point_id: string;
@@ -109,17 +121,8 @@ export type Corner = {
   };
   monument: string;
   status: {
-    ugrc: {
-      approved: string | null;
-      comments: string | null;
-      reviewedAt: Date | null;
-      reviewedBy: string | null;
-    };
-    county: {
-      approved: string | null;
-      rejected: string | null;
-      comments: string | null;
-    };
+    ugrc: Status;
+    county: Status;
     sgid: {
       approved: string | null;
     };

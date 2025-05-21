@@ -8,21 +8,20 @@ import {
 } from '@tanstack/react-table';
 import { ChevronDownIcon } from 'lucide-react';
 import { twJoin } from 'tailwind-merge';
-import type { Submission } from './shared/types';
 
-const empty = [] as Submission[];
-export default function Table({
+export default function Table<T>({
   data,
   columns,
   onClick,
   emptyMessage,
 }: {
-  data?: Submission[];
+  data?: T[];
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  columns: ColumnDef<Submission, any>[];
-  onClick: (row: Row<Submission>) => void;
+  columns: ColumnDef<T, any>[];
+  onClick?: (row: Row<T>) => void;
   emptyMessage: string;
 }) {
+  const empty = [] as T[]; // use a stable reference for empty array
   const { getHeaderGroups, getRowModel } = useReactTable({
     columns,
     data: data ?? empty, //also good to use a fallback array that is defined outside of the component (stable reference)
@@ -75,8 +74,12 @@ export default function Table({
         {getRowModel().rows.map((row) => (
           <tr
             key={row.id}
-            className="cursor-pointer odd:bg-white even:bg-gray-100 active:bg-gray-300 hover:bg-gray-200 dark:odd:bg-zinc-800 dark:even:bg-zinc-700 dark:active:bg-red-500 dark:odd:hover:bg-secondary-900/70 dark:even:hover:bg-secondary-800/70"
-            onClick={() => onClick(row)}
+            className={twJoin(
+              onClick &&
+                'active:bg-gray-300 hover:bg-gray-200 dark:active:bg-red-500 dark:odd:hover:bg-secondary-900/70 dark:even:hover:bg-secondary-800/70',
+              'cursor-default odd:bg-white even:bg-gray-100 dark:odd:bg-zinc-800 dark:even:bg-zinc-700',
+            )}
+            {...(onClick && { onClick: () => onClick(row) })}
           >
             {row.getVisibleCells().map((cell) => (
               <td key={cell.id} className="border-b border-gray-200 p-2 dark:border-gray-600">

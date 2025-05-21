@@ -5,10 +5,10 @@ import { collection, getDocs, or, orderBy, query, where } from 'firebase/firesto
 import { useMemo } from 'react';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
-import type { Submission } from '../components/shared/types';
-import { asSubmission } from '../converters';
+import type { RejectedSubmission } from '../components/shared/types';
+import { asRejectedSubmission } from '../converters';
 
-const columnHelper = createColumnHelper<Submission>();
+const columnHelper = createColumnHelper<RejectedSubmission>();
 
 export default function Rejected() {
   const { firestore } = useFirestore();
@@ -38,20 +38,17 @@ export default function Rejected() {
       }),
       columnHelper.accessor('date', {
         id: 'date',
-        header: () => 'Submission Date',
+        header: () => 'Rejected Date',
         enableSorting: false,
       }),
-      columnHelper.accessor('mrrc', {
-        id: 'mrrc',
-        header: () => 'MRRC',
-        cell: (info) => {
-          const value = info.getValue();
-          if (value === undefined) {
-            return 'Unknown';
-          }
-
-          return value ? 'Yep' : 'Nope';
-        },
+      columnHelper.accessor('rejectedBy', {
+        id: 'rejectedBy',
+        header: () => 'Rejected by',
+        enableSorting: false,
+      }),
+      columnHelper.accessor('reason', {
+        id: 'reason',
+        header: () => 'Reason',
         enableSorting: false,
       }),
     ],
@@ -62,7 +59,7 @@ export default function Rejected() {
     queryKey: ['monuments', { type: 'rejected' }, firestore],
     queryFn: async () => {
       const q = query(
-        collection(firestore, 'submissions').withConverter(asSubmission),
+        collection(firestore, 'submissions').withConverter(asRejectedSubmission),
         or(
           where('status.ugrc.approved', '==', false),
           where('status.county.approved', '==', false),
@@ -105,7 +102,6 @@ export default function Rejected() {
         data={data}
         columns={columns}
         emptyMessage="🙏🙏There are no rejected submissions. Everyone is doing a great job!🙏🙏"
-        onClick={() => {}}
       />
     </div>
   );
