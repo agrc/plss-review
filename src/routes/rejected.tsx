@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
-import { and, collection, getDocs, or, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, or, orderBy, query, where } from 'firebase/firestore';
 import { useMemo } from 'react';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
@@ -65,7 +65,8 @@ export default function Rejected() {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
         or(
-          and(where('status.ugrc.approved', '==', false), where('status.county.approved', '==', false)),
+          where('status.ugrc.approved', '==', false),
+          where('status.county.approved', '==', false),
           where('status.user.cancelled', '==', true),
         ),
         orderBy('blm_point_id'),
