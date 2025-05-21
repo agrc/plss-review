@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.0.0-28](https://github.com/agrc/plss-review/compare/v1.0.0-27...v1.0.0-28) (2025-05-21)
+
+
+### Features
+
+* add customizable empty message ([d5d1b9c](https://github.com/agrc/plss-review/commit/d5d1b9cc22331c3ae0593c0af26770a4bceafe1f))
+* general approved and rejected tab implementations ([6186748](https://github.com/agrc/plss-review/commit/61867480ab93d70a5c7915dbfa9093eda252cb4f))
+
+
+### Bug Fixes
+
+* add county firestore index ([2ffae24](https://github.com/agrc/plss-review/commit/2ffae24c9f6868be8fa1ebed856967a02b00249a))
+* correct query invalidation ([3b9c936](https://github.com/agrc/plss-review/commit/3b9c936fade44203f8140fcd9b363b3f6686338f))
+* update firestore indexes to handle table queries ([896cb48](https://github.com/agrc/plss-review/commit/896cb48f55c11381df1443763fb69e2542f30451))
+* update query invalidation ([3360b83](https://github.com/agrc/plss-review/commit/3360b834c40b8e86215389cd0b8012015aa89b3f))
+
+
+### Dependencies
+
+* update packages ([6ee625f](https://github.com/agrc/plss-review/commit/6ee625fa1e7f2220e4a76b9c978ef6bc01839a19))
+
+
+### Documentation
+
+* add dbot edge cases ([c349339](https://github.com/agrc/plss-review/commit/c3493394bfb9a16ae9505890c96174d9b9a1329b))
+
 ## [1.0.0-27](https://github.com/agrc/plss-review/compare/v1.0.0-26...v1.0.0-27) (2025-05-21)
 
 
