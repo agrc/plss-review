@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-26](https://github.com/agrc/plss-review/compare/v1.0.0-25...v1.0.0-26) (2025-05-21)
+
+
+### Dependencies
+
+* **api:** add missing package ([c0ab94b](https://github.com/agrc/plss-review/commit/c0ab94bdd3a1accbebbc04fc9d23aa1d6f1adf63))
+
 ## [1.0.0-25](https://github.com/agrc/plss-review/compare/v1.0.0-24...v1.0.0-25) (2025-05-21)
 
 
