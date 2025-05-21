@@ -59,8 +59,7 @@ export default function Approved() {
   );
 
   const { status, data, error } = useQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: ['monuments', { type: 'approved' }],
+    queryKey: ['monuments', { type: 'approved' }, firestore],
     queryFn: async () => {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
@@ -71,7 +70,10 @@ export default function Approved() {
         ),
         orderBy('blm_point_id'),
       );
-      const snapshot = await Spinner.minDelay(getDocs(q));
+      await Spinner.minDelay(new Promise((resolve) => setTimeout(resolve, 1000)));
+      // const snapshot = await Spinner.minDelay(getDocs(q));
+
+      const snapshot = await getDocs(q);
 
       const items = snapshot.docs.map((doc) => doc.data());
 
@@ -84,9 +86,11 @@ export default function Approved() {
   });
 
   if (status === 'error') {
+    console.error('Error querying firebase:', error);
+
     return (
       <div className="grid w-full justify-center justify-items-center gap-4">
-        <h2>There was some trouble fetching new submissions.</h2>
+        <h2>There was some trouble fetching approved submissions.</h2>
         <Banner>
           <div className="whitespace-pre-wrap">{JSON.stringify(error, null, 2)}</div>
         </Banner>

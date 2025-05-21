@@ -24,7 +24,6 @@ export default function Table({
   emptyMessage: string;
 }) {
   const { getHeaderGroups, getRowModel } = useReactTable({
-    debugTable: true,
     columns,
     data: data ?? empty, //also good to use a fallback array that is defined outside of the component (stable reference)
     state: {
