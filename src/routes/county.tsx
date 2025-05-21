@@ -80,7 +80,8 @@ export default function County() {
   );
 
   const { status, data, error } = useQuery({
-    queryKey: ['monuments', firestore, { type: 'county' }],
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: ['monuments', { type: 'county' }],
     queryFn: async () => {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),

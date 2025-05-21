@@ -56,7 +56,8 @@ export default function Received() {
   const navigate = useNavigate();
 
   const { status, data, error } = useQuery({
-    queryKey: ['monuments', firestore, { type: 'received' }],
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: ['monuments', { type: 'received' }],
     queryFn: async () => {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),
