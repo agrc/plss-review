@@ -56,7 +56,7 @@ export default function Received() {
   const navigate = useNavigate();
 
   const { status, data, error } = useQuery({
-    queryKey: ['received', firestore],
+    queryKey: ['monuments', firestore, { type: 'received' }],
     queryFn: async () => {
       const q = query(
         collection(firestore, 'submissions').withConverter(asSubmission),

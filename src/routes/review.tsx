@@ -136,10 +136,15 @@ export default function Review() {
         currentUser,
         comments: '',
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['received'] }).then(() => {
-        navigate('/secure/received');
-      });
+    onSuccess: async (_, approved) => {
+      if (approved) {
+        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'received' }] });
+        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'county' }] });
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'rejected' }] });
+      }
+
+      await navigate('/secure/received');
     },
   });
 
@@ -329,7 +334,12 @@ export default function Review() {
                   Reject
                 </Button>
                 <Modal>
-                  <AlertDialog title="Reject submission" actionLabel="Reject" onAction={() => updateStatus(false)}>
+                  <AlertDialog
+                    title="Reject submission"
+                    variant="destructive"
+                    actionLabel="Reject"
+                    onAction={() => updateStatus(false)}
+                  >
                     <div className="grid grid-cols-1 gap-4">
                       <RadioGroup label="Reason">
                         <Radio value="geometry-distance">Too far away</Radio>
