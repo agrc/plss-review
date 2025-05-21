@@ -233,8 +233,8 @@ async function enqueueDelayedApproval(
     return false;
   }
 
-  const queue = getFunctions().taskQueue('autoApprove');
-  const targetUri = await getFunctionUrl('autoApprove');
+  const queue = getFunctions().taskQueue('autoApprovals');
+  const targetUri = await getFunctionUrl('autoApprovals');
   const scheduleTime = DateTime.now().plus(wait).toJSDate();
 
   logger.info('[queueDelayedApproval] queuing auto-approval task', `${event.params.docId}-auto-approval-task`, {
@@ -307,8 +307,8 @@ export const notifyCounty = onDocumentUpdated(
   { document: 'submissions/{docId}', secrets: [sendGridApiKey] },
   countyNotification,
 );
-export const enqueueCountyAutoApproval = onDocumentUpdated({ document: 'submissions/{docId}' }, enqueueDelayedApproval);
-export const autoApprove = onTaskDispatched(
+export const queueCountyAutoApproval = onDocumentUpdated({ document: 'submissions/{docId}' }, enqueueDelayedApproval);
+export const autoApprovals = onTaskDispatched(
   {
     retryConfig: {
       maxAttempts: 3,
