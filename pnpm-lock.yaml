@@ -165,6 +165,9 @@ importers:
       base64-stream:
         specifier: ^1.0.0
         version: 1.0.0
+      firebase:
+        specifier: ^11.7.3
+        version: 11.7.3
       firebase-admin:
         specifier: ^13.2.0
         version: 13.4.0(encoding@0.1.13)
