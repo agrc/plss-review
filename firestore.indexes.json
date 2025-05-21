@@ -23,6 +23,10 @@
           "order": "ASCENDING"
         },
         {
+          "fieldPath": "status.user.cancelled",
+          "order": "ASCENDING"
+        },
+        {
           "fieldPath": "blm_point_id",
           "order": "ASCENDING"
         }
@@ -38,6 +42,10 @@
         },
         {
           "fieldPath": "status.county.approved",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status.user.cancelled",
           "order": "ASCENDING"
         },
         {
