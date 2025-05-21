@@ -4,7 +4,8 @@
   "type": "module",
   "main": "lib/index.js",
   "scripts": {
-    "build": "pnpm run clean && tsc",
+    "build": "tsc",
+    "build:clean": "pnpm run clean && pnpm run build",
     "build:watch": "tsc --watch",
     "check": "tsc -b",
     "clean": "rimraf lib",
