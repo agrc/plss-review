@@ -1,20 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import {
-  AlertDialog,
-  Banner,
-  Button,
-  Modal,
-  Radio,
-  RadioGroup,
-  Spinner,
-  TextArea,
-  useFirestore,
-} from '@ugrc/utah-design-system';
+import { AlertDialog, Banner, Button, Modal, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { and, collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useMemo, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
 import { useNavigate } from 'react-router';
+import RejectionReasons from '../components/RejectionReasons';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
@@ -142,14 +133,7 @@ export default function County() {
               setDialogOpen(false);
             }}
           >
-            <div className="grid grid-cols-1 gap-4">
-              <RadioGroup label="Reason">
-                <Radio value="geometry-distance">Too far away</Radio>
-                <Radio value="sheet-invalid">Invalid monument sheet</Radio>
-                <Radio value="sheet-bad">Inappropriate images</Radio>
-              </RadioGroup>
-              <TextArea label="Notes" onChange={() => {}} />
-            </div>
+            <RejectionReasons />
           </AlertDialog>
         </Modal>
       </DialogTrigger>

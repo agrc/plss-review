@@ -11,10 +11,7 @@ import {
   AlertDialog,
   Button,
   Modal,
-  Radio,
-  RadioGroup,
   Spinner,
-  TextArea,
   useFirebaseAuth,
   useFirebaseStorage,
   useFirestore,
@@ -29,6 +26,7 @@ import { DialogTrigger } from 'react-aria-components';
 import { useNavigate, useParams } from 'react-router';
 import { MapContainer } from '../components/MapContainer';
 import { ObjectPreview } from '../components/ObjectPreview';
+import RejectionReasons from '../components/RejectionReasons';
 import { ImageLoader } from '../components/TableLoader';
 import { useMap } from '../components/hooks';
 import type { Corner } from '../components/shared/types';
@@ -340,14 +338,7 @@ export default function Review() {
                     actionLabel="Reject"
                     onAction={() => updateStatus(false)}
                   >
-                    <div className="grid grid-cols-1 gap-4">
-                      <RadioGroup label="Reason">
-                        <Radio value="geometry-distance">Too far away</Radio>
-                        <Radio value="sheet-invalid">Invalid monument sheet</Radio>
-                        <Radio value="sheet-bad">Inappropriate images</Radio>
-                      </RadioGroup>
-                      <TextArea label="Notes" onChange={() => {}} />
-                    </div>
+                    <RejectionReasons />
                   </AlertDialog>
                 </Modal>
               </DialogTrigger>
