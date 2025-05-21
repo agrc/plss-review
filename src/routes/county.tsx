@@ -71,8 +71,7 @@ export default function County() {
       columnHelper.accessor('actions', {
         id: 'actions',
         header: () => '',
-        cell: (info) => {
-          const row = info.row.original;
+        cell: () => {
           return (
             <div className="flex gap-1">
               <Button variant="secondary" size="small">
@@ -139,9 +138,6 @@ export default function County() {
             title="Reject submission"
             variant="destructive"
             actionLabel="Reject"
-            onCancel={() => {
-              setDialogOpen(false);
-            }}
             onAction={() => {
               setDialogOpen(false);
             }}

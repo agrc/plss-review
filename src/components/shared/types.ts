@@ -7,6 +7,7 @@ export type Submission = {
   submitter: string;
   date: string;
   mrrc?: boolean;
+  actions?: string;
 };
 
 export type Corner = {
