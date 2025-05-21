@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-25](https://github.com/agrc/plss-review/compare/v1.0.0-24...v1.0.0-25) (2025-05-21)
+
+
+### Bug Fixes
+
+* **api:** fix missing build step execution ([25d7c3f](https://github.com/agrc/plss-review/commit/25d7c3f1e1ab8fb0735c260d0fc6372b7ea82637))
+
 ## [1.0.0-24](https://github.com/agrc/plss-review/compare/v1.0.0-23...v1.0.0-24) (2025-05-21)
 
 
