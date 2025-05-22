@@ -76,9 +76,9 @@ export default function County() {
   });
 
   const { mutate: updateStatus, status: mutateStatus } = useMutation({
-    mutationFn: ({ approved, comments = '' }: { approved: boolean; comments?: string }) =>
+    mutationFn: ({ id, approved, comments = '' }: { id?: string; approved: boolean; comments?: string }) =>
       updateFirestoreDocument({
-        id: activeRow!,
+        id: activeRow || id || '',
         approved,
         firestore,
         currentUser,
@@ -94,6 +94,12 @@ export default function County() {
       }
 
       await navigate('/secure/received');
+    },
+    onError: (error) => {
+      console.error('Error updating submission:', error);
+    },
+    onSettled: () => {
+      setActiveRow(null);
     },
   });
 
@@ -170,7 +176,9 @@ export default function County() {
             <div className="flex gap-1">
               <Button
                 variant="primary"
-                onPress={() => updateStatus({ approved: true })}
+                onPress={() => {
+                  updateStatus({ id: data.row.original.id, approved: true });
+                }}
                 isDisabled={mutateStatus !== 'idle'}
                 isPending={mutateStatus === 'pending'}
                 size="small"
