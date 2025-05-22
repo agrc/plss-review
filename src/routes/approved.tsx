@@ -3,10 +3,10 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { and, collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useMemo } from 'react';
+import type { Submission } from '../components/shared/types';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
-import type { Submission } from '../components/shared/types';
-import { asNewSubmission } from '../converters';
+import { asApprovalSubmission } from '../converters';
 
 const columnHelper = createColumnHelper<Submission>();
 
@@ -38,7 +38,7 @@ export default function Approved() {
       }),
       columnHelper.accessor('date', {
         id: 'date',
-        header: () => 'Submission Date',
+        header: () => 'Approved Date',
         enableSorting: false,
       }),
       columnHelper.accessor('mrrc', {
@@ -62,7 +62,7 @@ export default function Approved() {
     queryKey: ['monuments', { type: 'approved' }, firestore],
     queryFn: async () => {
       const q = query(
-        collection(firestore, 'submissions').withConverter(asNewSubmission),
+        collection(firestore, 'submissions').withConverter(asApprovalSubmission),
         and(
           where('status.ugrc.approved', '==', true),
           where('status.county.approved', '==', true),
@@ -105,7 +105,6 @@ export default function Approved() {
         data={data}
         columns={columns}
         emptyMessage="⏳⏳There are no approved submissions. Start approving the received submissions first!⏳⏳"
-        onClick={() => {}}
       />
     </div>
   );

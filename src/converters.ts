@@ -28,6 +28,29 @@ export const asNewSubmission = {
   },
 };
 
+export const asApprovalSubmission = {
+  toFirestore(): Corner {
+    throw new Error('toFirestore is not implemented');
+  },
+  fromFirestore(snapshot: QueryDocumentSnapshot<Corner>, options: SnapshotOptions): Submission {
+    const data = snapshot.data(options);
+    let date = null;
+
+    if (data.status.county.reviewedAt) {
+      date = dateFormatter.format(Date.parse(data.status.county.reviewedAt.toDate().toISOString()));
+    }
+
+    return {
+      id: snapshot.id,
+      blmPointId: data.blm_point_id,
+      county: data.county,
+      date: date ?? 'Unknown',
+      mrrc: data.metadata?.mrrc ?? undefined,
+      submitter: data.submitted_by.name,
+    };
+  },
+};
+
 export const asRejectedSubmission = {
   toFirestore(): Corner {
     throw new Error('toFirestore is not implemented');

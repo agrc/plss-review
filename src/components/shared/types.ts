@@ -15,6 +15,8 @@ export type RejectedSubmission = Omit<Submission, 'mrrc' | 'actions'> & {
   reason: string;
 };
 
+export type ApprovedSubmission = Omit<Submission, 'mrrc' | 'actions'>;
+
 type Status = {
   approved: boolean | null;
   comments: string | null;
