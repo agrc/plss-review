@@ -4,7 +4,7 @@ import { Base64Encode } from 'base64-stream';
 import type { Firestore } from 'firebase-admin/firestore';
 import { logger } from 'firebase-functions/v2';
 
-type Contact = {
+export type Contact = {
   name: string;
   email: string;
 };
