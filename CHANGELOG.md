@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-35](https://github.com/agrc/plss-review/compare/v1.0.0-34...v1.0.0-35) (2025-05-22)
+
+
+### Features
+
+* send status change emails ([12da187](https://github.com/agrc/plss-review/commit/12da18710e1e9d80f105fd394e61523e96800c3b)), closes [#51](https://github.com/agrc/plss-review/issues/51)
+
 ## [1.0.0-34](https://github.com/agrc/plss-review/compare/v1.0.0-33...v1.0.0-34) (2025-05-22)
 
 
