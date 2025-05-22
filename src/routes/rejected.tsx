@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
-import { collection, getDocs, or, orderBy, query, where } from 'firebase/firestore';
+import { getDocs } from 'firebase/firestore';
 import { useMemo } from 'react';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { RejectedSubmission } from '../components/shared/types';
-import { asRejectedSubmission } from '../converters';
+import { forRejectedSubmissions } from './queries';
 
 const columnHelper = createColumnHelper<RejectedSubmission>();
 
@@ -58,17 +58,7 @@ export default function Rejected() {
   const { status, data, error } = useQuery({
     queryKey: ['monuments', { type: 'rejected' }, firestore],
     queryFn: async () => {
-      const q = query(
-        collection(firestore, 'submissions').withConverter(asRejectedSubmission),
-        or(
-          where('status.ugrc.approved', '==', false),
-          where('status.county.approved', '==', false),
-          where('status.user.cancelled', '==', true),
-        ),
-        orderBy('blm_point_id'),
-      );
-
-      const snapshot = await Spinner.minDelay(getDocs(q));
+      const snapshot = await Spinner.minDelay(getDocs(forRejectedSubmissions(firestore)));
       const items = snapshot.docs.map((doc) => doc.data());
 
       return items;

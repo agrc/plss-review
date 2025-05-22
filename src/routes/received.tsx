@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
-import { and, collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
-import { asNewSubmission } from '../converters';
+import { forNewSubmissions } from './queries';
 
 const columnHelper = createColumnHelper<Submission>();
 const columns = [
@@ -58,13 +58,7 @@ export default function Received() {
   const { status, data, error } = useQuery({
     queryKey: ['monuments', { type: 'received' }, firestore],
     queryFn: async () => {
-      const q = query(
-        collection(firestore, 'submissions').withConverter(asNewSubmission),
-        and(where('status.ugrc.approved', '==', null), where('status.user.cancelled', '==', null)),
-        orderBy('blm_point_id'),
-      );
-
-      const snapshot = await Spinner.minDelay(getDocs(q));
+      const snapshot = await Spinner.minDelay(getDocs(forNewSubmissions(firestore)));
       const items = snapshot.docs.map((doc) => doc.data());
 
       return items;
