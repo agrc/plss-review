@@ -1,3 +1,4 @@
+import type Graphic from '@arcgis/core/Graphic';
 import type { GeoPoint, Timestamp } from 'firebase/firestore';
 
 export type Submission = {
@@ -17,7 +18,7 @@ export type RejectedSubmission = Omit<Submission, 'mrrc' | 'actions'> & {
 
 export type ApprovedSubmission = Omit<Submission, 'mrrc' | 'actions'>;
 
-type Status = {
+export type Status = {
   approved: boolean | null;
   comments: string | null;
   reviewedAt: Timestamp | null;
@@ -138,4 +139,17 @@ export type Corner = {
     ref: string;
   };
   type: 'new' | 'existing';
+};
+
+export type GraphicOptions = Graphic | Graphic[] | null;
+
+export type FormValues = {
+  reason:
+    | 'missing-photo'
+    | 'incomplete-location'
+    | 'illegible-scan'
+    | 'incomplete-description'
+    | 'incomplete-sheet'
+    | 'other';
+  notes: string;
 };
