@@ -1,32 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AlertDialog, Banner, Button, Modal, Spinner, useFirebaseAuth, useFirestore } from '@ugrc/utah-design-system';
-import type { User } from 'firebase/auth';
-import { doc, Firestore, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { useMemo, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import { RejectionReasons, type FormValues } from '../components/RejectionReasons';
+import { RejectionReasons } from '../components/RejectionReasons';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
-import type { Submission } from '../components/shared/types';
+import type { FormValues, Submission } from '../components/shared/types';
+import type { CountyReview, UpdateDocumentParams } from '../types';
 import { forCountySubmissions } from './queries';
-
-type CountyReview = {
-  'status.county.reviewedAt': Date;
-  'status.county.reviewedBy': string;
-  'status.county.approved'?: boolean;
-  'status.county.comments'?: string;
-};
-
-type UpdateDocumentParams = {
-  id: string;
-  approved: boolean;
-  firestore: Firestore;
-  currentUser?: User;
-  comments?: string;
-};
 
 const columnHelper = createColumnHelper<Submission>();
 
@@ -50,13 +35,10 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
 
   const updates = {
     'status.county.reviewedAt': new Date(),
-    'status.county.reviewedBy': currentUser!.email,
+    'status.county.reviewedBy': currentUser!.email!,
     'status.county.approved': approved,
-  } as CountyReview;
-
-  if (comments) {
-    updates['status.county.comments'] = comments;
-  }
+    'status.county.comments': comments,
+  } satisfies CountyReview;
 
   await updateDoc(submissionRef, updates);
 };

@@ -21,10 +21,10 @@ export default function Table<T>({
   onClick?: (row: Row<T>) => void;
   emptyMessage: string;
 }) {
-  const empty = [] as T[]; // use a stable reference for empty array
+  const empty = [] as T[];
   const { getHeaderGroups, getRowModel } = useReactTable({
     columns,
-    data: data ?? empty, //also good to use a fallback array that is defined outside of the component (stable reference)
+    data: data ?? empty,
     state: {
       columnVisibility: {
         id: false,

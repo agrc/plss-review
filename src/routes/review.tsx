@@ -17,7 +17,6 @@ import {
   useFirestore,
 } from '@ugrc/utah-design-system';
 import { useMapReady } from '@ugrc/utilities/hooks';
-import type { User } from 'firebase/auth';
 import { doc, Firestore, getDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
 import ky from 'ky';
@@ -27,10 +26,11 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 import { MapContainer } from '../components/MapContainer';
 import { ObjectPreview } from '../components/ObjectPreview';
-import { RejectionReasons, type FormValues } from '../components/RejectionReasons';
+import { RejectionReasons } from '../components/RejectionReasons';
 import { ImageLoader } from '../components/TableLoader';
 import { useMap } from '../components/hooks';
-import type { Corner } from '../components/shared/types';
+import type { Corner, FormValues } from '../components/shared/types';
+import type { UgrcReview, UpdateDocumentParams } from '../types';
 
 const getFirestoreDocument = async (id: string | undefined, firestore: Firestore, storage: FirebaseStorage) => {
   if (!id) {
@@ -63,21 +63,6 @@ const getFirestoreDocument = async (id: string | undefined, firestore: Firestore
   } as Corner & { pdf: string };
 };
 
-type UgrcReview = {
-  'status.ugrc.reviewedAt': Date;
-  'status.ugrc.reviewedBy': string;
-  'status.ugrc.approved'?: boolean;
-  'status.ugrc.comments'?: string;
-};
-
-type UpdateDocumentParams = {
-  id: string;
-  approved: boolean;
-  firestore: Firestore;
-  currentUser?: User;
-  comments?: string;
-};
-
 const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, comments }: UpdateDocumentParams) => {
   const submissionRef = doc(firestore, 'submissions', id);
   const submissionSnap = await getDoc(submissionRef);
@@ -98,13 +83,10 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
 
   const updates = {
     'status.ugrc.reviewedAt': new Date(),
-    'status.ugrc.reviewedBy': currentUser!.email,
+    'status.ugrc.reviewedBy': currentUser!.email!,
     'status.ugrc.approved': approved,
-  } as UgrcReview;
-
-  if (comments) {
-    updates['status.ugrc.comments'] = comments;
-  }
+    'status.ugrc.comments': comments,
+  } satisfies UgrcReview;
 
   await updateDoc(submissionRef, updates);
 };
