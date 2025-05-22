@@ -440,7 +440,7 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
           },
           personalizations: [
             {
-              to: payload.surveyor,
+              to: [payload.surveyor],
               dynamic_template_data: templateData,
             },
           ],
@@ -451,11 +451,32 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
         structuredData: true,
       });
 
-      const result = await notify(process.env.SENDGRID_API_KEY ?? 'empty', template);
+      try {
+        const result = await notify(process.env.SENDGRID_API_KEY ?? 'empty', template);
 
-      logger.debug('[sendMail] mail sent with status', result[0].statusCode, {
-        structuredData: true,
-      });
+        logger.debug('[sendMail] mail sent with status', result[0].statusCode, {
+          structuredData: true,
+        });
+      } catch (error) {
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'response' in (error as { response?: { body?: { errors?: unknown[] } } }) &&
+          (error as { response: { body: { errors: unknown[] } } }).response.body?.errors
+        ) {
+          logger.error(
+            '[sendMail] failed to send rejection email',
+            {
+              errors: (error as { response: { body: { errors: unknown[] } } }).response.body.errors,
+            },
+            { structuredData: true },
+          );
+        } else {
+          logger.error('[sendMail] failed to send rejection email', error, { structuredData: true });
+        }
+
+        throw error;
+      }
 
       break;
     }
