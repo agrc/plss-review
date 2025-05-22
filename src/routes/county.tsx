@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AlertDialog, Banner, Button, Modal, Spinner, useFirebaseAuth, useFirestore } from '@ugrc/utah-design-system';
 import type { User } from 'firebase/auth';
-import { and, collection, doc, Firestore, getDoc, getDocs, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { doc, Firestore, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { useMemo, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
@@ -11,7 +11,7 @@ import { RejectionReasons, type FormValues } from '../components/RejectionReason
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
-import { asNewSubmission } from '../converters';
+import { forCountySubmissions } from './queries';
 
 type CountyReview = {
   'status.county.reviewedAt': Date;
@@ -106,17 +106,7 @@ export default function County() {
   const { status, data, error } = useQuery({
     queryKey: ['monuments', { type: 'county' }, firestore],
     queryFn: async () => {
-      const q = query(
-        collection(firestore, 'submissions').withConverter(asNewSubmission),
-        and(
-          where('status.ugrc.approved', '==', true),
-          where('status.county.approved', '==', null),
-          where('status.user.cancelled', '==', null),
-        ),
-        orderBy('blm_point_id'),
-      );
-
-      const snapshot = await Spinner.minDelay(getDocs(q));
+      const snapshot = await Spinner.minDelay(getDocs(forCountySubmissions(firestore)));
       const items = snapshot.docs.map((doc) => doc.data());
 
       return items;
