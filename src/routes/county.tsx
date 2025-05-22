@@ -35,19 +35,16 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
   const submissionSnap = await getDoc(submissionRef);
 
   if (!submissionSnap.exists) {
-    console.log('throwing');
     throw new Error('Submission not found');
   }
 
   const submissionData = submissionSnap.data();
 
   if (!submissionData) {
-    console.log('throwing');
     throw new Error('Submission data is empty');
   }
 
   if (submissionData.status.county.approved !== null) {
-    console.log('throwing');
     throw new Error('Submission has already been reviewed');
   }
 
@@ -61,7 +58,6 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
     updates['status.county.comments'] = comments;
   }
 
-  console.log('Updating submission', { id, updates });
   await updateDoc(submissionRef, updates);
 };
 
@@ -80,16 +76,14 @@ export default function County() {
   });
 
   const { mutate: updateStatus, status: mutateStatus } = useMutation({
-    mutationFn: ({ approved, comments = '' }: { approved: boolean; comments?: string }) => {
-      console.log('Updating status', { activeRow, approved, comments });
-      return updateFirestoreDocument({
+    mutationFn: ({ approved, comments = '' }: { approved: boolean; comments?: string }) =>
+      updateFirestoreDocument({
         id: activeRow!,
         approved,
         firestore,
         currentUser,
         comments,
-      });
-    },
+      }),
     onSuccess: async (_, variables) => {
       await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'county' }] });
 
@@ -177,7 +171,7 @@ export default function County() {
               <Button
                 variant="primary"
                 onPress={() => updateStatus({ approved: true })}
-                isDisabled={mutateStatus !== 'success'}
+                isDisabled={mutateStatus !== 'idle'}
                 isPending={mutateStatus === 'pending'}
                 size="small"
               >
@@ -219,8 +213,6 @@ export default function County() {
   }
 
   const reject = (data: { reason: string; notes: string }) => {
-    console.log('Rejecting submission', data);
-
     let comments = data.reason;
     if (data.notes) {
       comments += ` - ${data.notes}`;
@@ -231,14 +223,7 @@ export default function County() {
 
   return (
     <div className="grid w-full gap-4 p-2">
-      <Table
-        data={data}
-        columns={columns}
-        emptyMessage="⏳⏳There are no submissions waiting on the county.⏳⏳"
-        onClick={(row) => {
-          navigate(`/secure/county/${row.original.blmPointId}/${row.original.id}`);
-        }}
-      />
+      <Table data={data} columns={columns} emptyMessage="⏳⏳There are no submissions waiting on the county.⏳⏳" />
       <DialogTrigger isOpen={dialogOpen} onOpenChange={setDialogOpen}>
         <Modal>
           <AlertDialog
