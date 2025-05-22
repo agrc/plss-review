@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-36](https://github.com/agrc/plss-review/compare/v1.0.0-35...v1.0.0-36) (2025-05-22)
+
+
+### Bug Fixes
+
+* **api:** correct sendgrid rejection email ([f9b032a](https://github.com/agrc/plss-review/commit/f9b032a158ce989b6186aaec33c39c8de0218475))
+* **api:** remove duplicate data fetch ([7ad8931](https://github.com/agrc/plss-review/commit/7ad8931e3740a281d49e13cce844dc5a4588ee6e))
+
 ## [1.0.0-35](https://github.com/agrc/plss-review/compare/v1.0.0-34...v1.0.0-35) (2025-05-22)
 
 
