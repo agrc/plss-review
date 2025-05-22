@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-34](https://github.com/agrc/plss-review/compare/v1.0.0-33...v1.0.0-34) (2025-05-22)
+
+
+### Features
+
+* complete county review screen ([ca48df8](https://github.com/agrc/plss-review/commit/ca48df86051b155d0de4a3c1c2e913bad3aef7cd)), closes [#9](https://github.com/agrc/plss-review/issues/9)
+* complete rejected table columns ([fefb564](https://github.com/agrc/plss-review/commit/fefb564e4710964779349cb4274bb881e32e97e6)), closes [#40](https://github.com/agrc/plss-review/issues/40)
+
+
+### Bug Fixes
+
+* correct approved table schema ([cf38c6d](https://github.com/agrc/plss-review/commit/cf38c6d50caf3690edb3f844f701ecc1c8b7de97)), closes [#8](https://github.com/agrc/plss-review/issues/8)
+* fix county waiting approve button ([d73e820](https://github.com/agrc/plss-review/commit/d73e8200d450a7611b992b33475e44ef02e15653))
+
 ## [1.0.0-33](https://github.com/agrc/plss-review/compare/v1.0.0-32...v1.0.0-33) (2025-05-21)
 
 
