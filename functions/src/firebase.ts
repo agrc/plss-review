@@ -30,7 +30,7 @@ export const safelyInitializeApp = () => {
  * @param {string} location the function's location
  * @return {Promise<string>} The URL of the function
  */
-export async function getFunctionUrl(name: string, location = 'us-central1') {
+export function getFunctionUrl(name: string, location = 'us-central1') {
   if (process.env.FUNCTIONS_EMULATOR === 'true') {
     return undefined;
   }
