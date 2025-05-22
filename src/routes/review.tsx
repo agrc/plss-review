@@ -309,8 +309,6 @@ export default function Review() {
   }, [ready, featureSet, agolStatus, firestoreStatus, operatorLoaded]);
 
   const reject = (data: { reason: string; notes: string }) => {
-    console.log('Rejecting submission', data);
-
     let comments = data.reason;
     if (data.notes) {
       comments += ` - ${data.notes}`;
@@ -345,6 +343,7 @@ export default function Review() {
               <DialogTrigger>
                 <Button
                   variant="destructive"
+                  onPress={() => {}}
                   isDisabled={firestoreStatus !== 'success'}
                   isPending={mutateStatus === 'pending'}
                 >
