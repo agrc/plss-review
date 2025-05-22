@@ -25,8 +25,6 @@ export async function authorizeUser(event: AuthBlockingEvent) {
     return;
   }
 
-  logger.debug('authorizeUser', { id, tenant });
-
   if (!id) {
     throw new HttpsError('invalid-argument', 'E01: An account is required');
   }
@@ -82,6 +80,7 @@ export async function queueTasks(
 
     return false;
   }
+
   const approvalQueue = getFunctions().taskQueue('autoApprovals');
   const emailQueue = getFunctions().taskQueue('email');
 
@@ -259,20 +258,6 @@ export async function queueTasks(
           structuredData: true,
         });
 
-        const snap = await (after.submitted_by.ref as DocumentReference).get();
-        let surveyor = { email: 'noreply@utah.gov', name: 'unknown' };
-
-        if (snap.exists) {
-          const data = snap.data();
-
-          if (data) {
-            surveyor = {
-              name: data?.displayName,
-              email: data?.email,
-            };
-          }
-        }
-
         // county rejection send email
         try {
           await emailQueue.enqueue(
@@ -325,9 +310,10 @@ export async function queueTasks(
       break;
     }
     default: {
-      logger.debug('[queueTasks] skipping, unknown status change', statusChange, {
+      logger.error('[queueTasks] skipping, unknown status change', statusChange, {
         structuredData: true,
       });
+
       return false;
     }
   }
