@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/agrc/plss-review/compare/v1.0.0...v1.0.1) (2025-05-27)
+
+
+### Dependencies
+
+* bump the safe-dependencies group with 7 updates ([3685944](https://github.com/agrc/plss-review/commit/3685944873f814b0b8fbc60ab0ece6169dcfe5e8))
+* **dev:** bump rimraf ([f7adfc5](https://github.com/agrc/plss-review/commit/f7adfc5ae95a978e53cd80a36a730bac68261487))
+
 ## 1.0.0 (2025-05-27)
 
 
