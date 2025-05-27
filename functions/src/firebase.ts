@@ -17,7 +17,9 @@ export const safelyInitializeApp = () => {
   try {
     initializeApp(app);
   } catch {
-    /* empty */
+    if (!process.env.VITEST) {
+      throw 'Failed to initialize Firebase app. This is expected in unit tests.';
+    }
   }
 
   return app;
