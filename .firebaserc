@@ -9,6 +9,13 @@
           "ut-dts-agrc-plss-dev-staff-review"
         ]
       }
+    },
+    "ut-dts-agrc-plss-prod": {
+      "hosting": {
+        "staff-review": [
+          "ut-dts-agrc-plss-prod-staff-review"
+        ]
+      }
     }
   },
   "etags": {}
