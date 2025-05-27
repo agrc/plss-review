@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3-0](https://github.com/agrc/plss-review/compare/v1.0.2...v1.0.3-0) (2025-05-27)
+
+
+### Bug Fixes
+
+* show approve and reject when ugrc has not performed a review ([40e0fdb](https://github.com/agrc/plss-review/commit/40e0fdbf0a0e87ac4b90598fdb87357cb4dcf3a7))
+
 ## [1.0.2](https://github.com/agrc/plss-review/compare/v1.0.1...v1.0.2) (2025-05-27)
 
 
