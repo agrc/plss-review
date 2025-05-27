@@ -1,5 +1,99 @@
 # Changelog
 
+## 1.0.0 (2025-05-27)
+
+
+### Features
+
+* add busy indicator ([6b64baa](https://github.com/agrc/plss-review/commit/6b64baa49ae2e6a018efb0a260391d31daa2c79b))
+* add customizable empty message ([cb0f206](https://github.com/agrc/plss-review/commit/cb0f2069bfdae1423b1598de2608a5d05706dd4f))
+* add table loading animation ([bdf8f2d](https://github.com/agrc/plss-review/commit/bdf8f2de6f7e766600df484fbc7aa77531e583db))
+* allow blm point id and county to be sorted ([aff241e](https://github.com/agrc/plss-review/commit/aff241e276baf9b78e1d370fe0d9b0c90c3aad19))
+* **api:** create a blocking function to only allow specific users access ([0b7e4cc](https://github.com/agrc/plss-review/commit/0b7e4ccdf9d16000edc9ae6ddbe7fdf47340401b))
+* **api:** migrate auth to uid from email ([c5fd93f](https://github.com/agrc/plss-review/commit/c5fd93fb339593fa96310fa0f700d48fbcd5f2f0))
+* **api:** notify county when a submission is saved ([bc24763](https://github.com/agrc/plss-review/commit/bc24763616868d5d9c7b7ad62c4bf5c39c2292e6))
+* **api:** use cloud tasks to queue county approval ([1bb15f7](https://github.com/agrc/plss-review/commit/1bb15f73ae5b3570d1becc7df9beb697ae117be4))
+* bootstrap project ([fbefba3](https://github.com/agrc/plss-review/commit/fbefba396d4fa3ccaf835b3cba87ee9dd2026979))
+* complete county review screen ([d086184](https://github.com/agrc/plss-review/commit/d0861847fd38d53448cd6e5b2d52b7bbc89035c0)), closes [#9](https://github.com/agrc/plss-review/issues/9)
+* complete rejected table columns ([9eeaf95](https://github.com/agrc/plss-review/commit/9eeaf953ae3b4d8001ce7aff2ea9066213fd5a8b)), closes [#40](https://github.com/agrc/plss-review/issues/40)
+* create review page with pdf and map ([61626c9](https://github.com/agrc/plss-review/commit/61626c91472c15515dbf0daa3e86c6ccb880f2bf))
+* create the required index to query the collection ([ee3d3a9](https://github.com/agrc/plss-review/commit/ee3d3a93f83b37ecfd42465c9923e57bb224710a))
+* general approved and rejected tab implementations ([c14a73f](https://github.com/agrc/plss-review/commit/c14a73ff860dbc8be26cf1725672feff17df4997))
+* implement county review table ([a1637be](https://github.com/agrc/plss-review/commit/a1637be1067653abf8b2e50194fe6cdae1f67999))
+* persist approval and reject responses ([0e1b06b](https://github.com/agrc/plss-review/commit/0e1b06b5f311b3badb4bac85698a2e4ce4eb58a1))
+* query database for new submissions ([a502343](https://github.com/agrc/plss-review/commit/a5023439c1fa1656dd84994a8defd931b3e6eced))
+* **scripts:** create "migrations" ([8f9d04e](https://github.com/agrc/plss-review/commit/8f9d04e8c4a62f8153e047484fd2c75af72d9589))
+* **scripts:** create a script to seed tenant user ([94866d8](https://github.com/agrc/plss-review/commit/94866d86cd340e4b379715935c9090acfbca80ef))
+* send status change emails ([0f90377](https://github.com/agrc/plss-review/commit/0f903771ef1bcf0429a04f15e1db508ee2e0c901)), closes [#51](https://github.com/agrc/plss-review/issues/51)
+* store rejection reasons ([842142e](https://github.com/agrc/plss-review/commit/842142e597e6676c42287027ecca963e208b284d))
+
+
+### Bug Fixes
+
+* add codebase tag to review functions ([f937a91](https://github.com/agrc/plss-review/commit/f937a91c39792e90bf35d5aae166a6346a57c184))
+* add county firestore index ([a4c5233](https://github.com/agrc/plss-review/commit/a4c5233417c61b239d600f55fbbefc7e14b53b95))
+* add missing firestore index configuration ([d3dbcc4](https://github.com/agrc/plss-review/commit/d3dbcc492952fd973c05754f21e6233796eb9760))
+* add missing target to fix deploy ([cad5ba3](https://github.com/agrc/plss-review/commit/cad5ba37fb63b605607ffcd89826f2e5b7d6c195))
+* add plss social icon and correct urls ([8ee1740](https://github.com/agrc/plss-review/commit/8ee17403ca816fa29315c419966160a421bab1bc))
+* allow mrrc values to be undefined ([120ae0b](https://github.com/agrc/plss-review/commit/120ae0b4d23baf86a92c893f2c77eed7fd5ab189))
+* allow reject alert on the county page to be dismissed ([29cee24](https://github.com/agrc/plss-review/commit/29cee2492c7393cb95fbcecb6240ee4fca53d030))
+* **api:** allow default tenant as undefined ([f4569db](https://github.com/agrc/plss-review/commit/f4569db921735ce541d3fe129d5529f7439331e9))
+* **api:** correct sendgrid rejection email ([3be94d3](https://github.com/agrc/plss-review/commit/3be94d31dd795a2f85adb0fa80a02cb1ab75f6a9))
+* **api:** fix missing build step execution ([5dfe579](https://github.com/agrc/plss-review/commit/5dfe5794a33f41f84d90867794a023a58de5ffcc))
+* **api:** remove duplicate data fetch ([25e8ac7](https://github.com/agrc/plss-review/commit/25e8ac772fc7cf8b28cee63bb4f7fd098c567c08))
+* **api:** rename queue ([a260ce5](https://github.com/agrc/plss-review/commit/a260ce5bd2e5e565a0206d422690ef3aa9a1e775))
+* **api:** switch to a tenant provider ([6b5170f](https://github.com/agrc/plss-review/commit/6b5170fb603871daf96d993d684dc8f841b7d2b4))
+* correct approved table schema ([9ba1824](https://github.com/agrc/plss-review/commit/9ba182431b1019f2a2fa28b0fb9d058caab34727)), closes [#8](https://github.com/agrc/plss-review/issues/8)
+* correct ci build ([9c942ac](https://github.com/agrc/plss-review/commit/9c942ac1592f9a08759a6db4f4b711691c594bf3))
+* correct esri asset path and css import location ([789ae04](https://github.com/agrc/plss-review/commit/789ae04c09159eaa92960a03a79c9ce598d45e9d))
+* correct query invalidation ([ee6003c](https://github.com/agrc/plss-review/commit/ee6003c168719656bcdc2f33a6bd8c846f62b88c))
+* correct rejected query ([da4fbb2](https://github.com/agrc/plss-review/commit/da4fbb2c9f6b1930906dec01f10ad3761d74fc85))
+* correct rejected tab query and indexes ([43898ac](https://github.com/agrc/plss-review/commit/43898ac384113fd22b26b5f5eea83f7afdeca66c))
+* correct typescript types ([e57caaf](https://github.com/agrc/plss-review/commit/e57caaff3986b390eab392b43c6b47e0737f42c4))
+* fix county waiting approve button ([9e33086](https://github.com/agrc/plss-review/commit/9e3308614c52c16b1d0d98af58dae2ec06cad572))
+* indexes need to match between these two projects 😢 ([4c42773](https://github.com/agrc/plss-review/commit/4c4277356005561fad03f778a2018d61237a8e63))
+* move tenant into secrets ([f6bbce2](https://github.com/agrc/plss-review/commit/f6bbce2e2e5df192383d55081f37777384786973))
+* order by the blm point id ([d7dfb57](https://github.com/agrc/plss-review/commit/d7dfb578e4e417f3d0e05f4edf8e4b3e08305b03))
+* publish only necessary indexes ([1399c3e](https://github.com/agrc/plss-review/commit/1399c3e02a4814b9c9cd94c713f1bcd0eafc5f36))
+* remove top level await that breaks the build ([8ca858a](https://github.com/agrc/plss-review/commit/8ca858a3fdc8e96bd565e8b1e0e1231d58644d9c))
+* replace npm command with pnpm ([502738c](https://github.com/agrc/plss-review/commit/502738c5fe63d233a73d345b5e30dbb554a59725))
+* set firebase tenant ([898c2a2](https://github.com/agrc/plss-review/commit/898c2a25ab801494fa67cf94988cecb2502bf041))
+* show the login page  by default or received if logged in ([c7641ca](https://github.com/agrc/plss-review/commit/c7641caa6727bd6a32faecf5d4e693dc26d55981))
+* update ci secret tokens ([9d6edb5](https://github.com/agrc/plss-review/commit/9d6edb53a8c35edee3cb629001bcb73dd42e069a))
+* update firestore indexes to handle table queries ([2425652](https://github.com/agrc/plss-review/commit/242565236dbe1930a40cbb468b50ece1a021c510))
+* update query invalidation ([e6dcf9e](https://github.com/agrc/plss-review/commit/e6dcf9eca1f093cc795049fd0ed786e737b3d085))
+* update storage rules to allow admin access ([52232bd](https://github.com/agrc/plss-review/commit/52232bd86d0bfcf317b8bbd63bd205a60accb898))
+* use a separate provider for review login ([4b1419e](https://github.com/agrc/plss-review/commit/4b1419e5e3db76ebdeb9c816080744065135bf3c))
+* wait for auth before routing requests ([526e6b2](https://github.com/agrc/plss-review/commit/526e6b205d01ba7c4d9a71af2ae3156231d2b076))
+
+
+### Dependencies
+
+* add missing packages ([0f9f09c](https://github.com/agrc/plss-review/commit/0f9f09c846ce348550da0ff043ccee3432be2ffc))
+* **api:** add missing package ([c74e1e4](https://github.com/agrc/plss-review/commit/c74e1e4328b133964a88184dbb1866eaed79a142))
+* **api:** update packages ([c4ad09f](https://github.com/agrc/plss-review/commit/c4ad09f939a7e1e034e1bd93ecfd806d23e016a6))
+* convert to pnpm workspace ([22badb9](https://github.com/agrc/plss-review/commit/22badb99c8f3b2f4ab5f788872d83d048f1eec93))
+* update dependencies ([7fec4a8](https://github.com/agrc/plss-review/commit/7fec4a8ea907af8ca94449d71f2a7f90b227addc))
+* update packages ([4adbfba](https://github.com/agrc/plss-review/commit/4adbfbaa662fde90d7d3d4f8b23805c3ffe39da3))
+* update packages ([c847771](https://github.com/agrc/plss-review/commit/c847771f86cc4167dc2110675ce43566b81da53f))
+* update packages ([c669ff8](https://github.com/agrc/plss-review/commit/c669ff8ba55694f2722d7f8f0b4854ca8fa83b2d))
+* update packages ([fbed671](https://github.com/agrc/plss-review/commit/fbed671f3f56cee7694340282a318297188ff697))
+* update packages ([f5070cf](https://github.com/agrc/plss-review/commit/f5070cff0cf03486eac8aefe07eeae438d874b31))
+
+
+### Documentation
+
+* add dbot edge cases ([3bc4d6b](https://github.com/agrc/plss-review/commit/3bc4d6b646f78f25b7c156f48109b76fe3e58050))
+* correct website url ([e57eac1](https://github.com/agrc/plss-review/commit/e57eac167f910b9982fd9d67ed3534008d30d082))
+
+
+### Styles
+
+* create empty layout for review page ([425c58f](https://github.com/agrc/plss-review/commit/425c58f58082c70e17e3be037113387949d7cd83))
+* **review:** remove busy bar ([3c8b5c8](https://github.com/agrc/plss-review/commit/3c8b5c819b56a7c9061682803a0ffc2fae0515f6))
+* update layout spacing ([39f003a](https://github.com/agrc/plss-review/commit/39f003ab7dac936508d16b0c46f80c79dc0c49bf))
+* update table column sizes ([93203ab](https://github.com/agrc/plss-review/commit/93203aba3398fd6b46e6e1f6d0b964683ac5385d))
+
 ## [1.0.0-36](https://github.com/agrc/plss-review/compare/v1.0.0-35...v1.0.0-36) (2025-05-22)
 
 
