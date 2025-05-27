@@ -7,7 +7,7 @@ if (!db) {
   process.exit(1);
 }
 
-const testEmail = 'sgourley';
+const testEmail = 'ugrc-plss-reviewers';
 
 db.collection('contacts')
   .doc('admin')
