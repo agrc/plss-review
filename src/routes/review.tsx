@@ -312,7 +312,7 @@ export default function Review() {
           )}
         </div>
         <div className="order-first flex flex-col items-center gap-2 md:order-none">
-          {firestoreStatus === 'success' && data?.status.ugrc.reviewedBy !== null && (
+          {firestoreStatus === 'success' && data?.status.ugrc.reviewedBy === null && (
             <>
               <Button
                 variant="primary"
