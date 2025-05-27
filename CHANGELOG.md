@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/agrc/plss-review/compare/v1.0.1...v1.0.2) (2025-05-27)
+
+
+### Bug Fixes
+
+* update firebase target ([d5f3945](https://github.com/agrc/plss-review/commit/d5f3945ab64a23580372034b14824061e099bae8))
+
 ## [1.0.1](https://github.com/agrc/plss-review/compare/v1.0.0...v1.0.1) (2025-05-27)
 
 
