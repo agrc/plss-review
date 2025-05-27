@@ -2,9 +2,9 @@ export const ObjectPreview = ({ url }: { url: string }) => {
   return (
     <div className="size-full overflow-hidden rounded-lg border border-slate-400 shadow-sm">
       {url.search(/\.pdf\?/i) > -1 ? (
-        <object className="size-full" data={url} type="application/pdf">
+        <iframe className="size-full" src={url} title="PDF preview" allow="fullscreen">
           PDF preview
-        </object>
+        </iframe>
       ) : (
         <img src={url} alt="upload preview" className="m-2 max-w-[300px] self-center rounded-t" />
       )}
