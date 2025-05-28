@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AlertDialog, Banner, Button, Modal, Spinner, useFirebaseAuth, useFirestore } from '@ugrc/utah-design-system';
 import { doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
@@ -34,7 +35,7 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
   }
 
   const updates = {
-    'status.county.reviewedAt': new Date(),
+    'status.county.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
     'status.county.reviewedBy': currentUser!.email!,
     'status.county.approved': approved,
     'status.county.comments': comments,

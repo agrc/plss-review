@@ -4,7 +4,7 @@ import { getStorage } from 'firebase-admin/storage';
 import { HttpsError, type AuthBlockingEvent } from 'firebase-functions/identity';
 import { logger } from 'firebase-functions/v2';
 import { Change, type FirestoreEvent, type QueryDocumentSnapshot } from 'firebase-functions/v2/firestore';
-import * as luxon from 'luxon';
+import { DateTime } from 'luxon';
 import { getBase64EncodedAttachment, getContactsToNotify, notify } from './emailHelper.js';
 import { getFunctionUrl, safelyInitializeApp } from './firebase.js';
 import type { CountyReview, EmailEvent, SubmissionInCountyEvent, SubmissionRejectedEvent } from './types.js';
@@ -21,7 +21,7 @@ export async function authorizeUser(event: AuthBlockingEvent) {
   const id = event.data?.uid;
   const tenant = event.data?.tenantId;
 
-  if (tenant !== 'plss-review-keo70') {
+  if (tenant !== 'plss-review-keo70' && tenant !== 'plss-review-maptv') {
     return;
   }
 
@@ -114,7 +114,7 @@ export async function queueTasks(
             },
             {
               id: `submission-auto-approval-${event.params.docId}`,
-              scheduleTime: luxon.DateTime.now().plus(wait).toJSDate(),
+              scheduleTime: DateTime.now().plus(wait).toJSDate(),
               uri: getFunctionUrl('autoApprovals'),
             },
           );
@@ -346,7 +346,7 @@ export async function approveCounty(event: { data: { documentId: string } }): Pr
   }
 
   const updates = {
-    'status.county.reviewedAt': new Date(),
+    'status.county.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
     'status.county.reviewedBy': 'auto-approved',
     'status.county.approved': true,
   } as CountyReview;

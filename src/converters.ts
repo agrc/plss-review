@@ -7,7 +7,6 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
   hour: 'numeric',
   minute: 'numeric',
-  timeZone: 'MST',
 });
 
 export const asNewSubmission = {
