@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.3-1](https://github.com/agrc/plss-review/compare/v1.0.3-0...v1.0.3-1) (2025-05-28)
+
+
+### Bug Fixes
+
+* show correct times ([67069b6](https://github.com/agrc/plss-review/commit/67069b65b3b176603e85d37cbb3c73cc6ac8fbb9))
+
+
+### Documentation
+
+* document click-op steps ([512250a](https://github.com/agrc/plss-review/commit/512250aca6146c1f147f3189ad97ed40e0b5947a))
+
 ## [1.0.3-0](https://github.com/agrc/plss-review/compare/v1.0.2...v1.0.3-0) (2025-05-27)
 
 
