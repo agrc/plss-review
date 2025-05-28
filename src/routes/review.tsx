@@ -20,6 +20,7 @@ import { useMapReady } from '@ugrc/utilities/hooks';
 import { doc, Firestore, getDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
 import ky from 'ky';
+import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
@@ -82,7 +83,7 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
   }
 
   const updates = {
-    'status.ugrc.reviewedAt': new Date(),
+    'status.ugrc.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
     'status.ugrc.reviewedBy': currentUser!.email!,
     'status.ugrc.approved': approved,
     'status.ugrc.comments': comments,

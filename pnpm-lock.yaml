@@ -44,6 +44,9 @@ importers:
       lucide-react:
         specifier: ^0.511.0
         version: 0.511.0(react@19.1.0)
+      luxon:
+        specifier: ^3.6.1
+        version: 3.6.1
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -78,6 +81,9 @@ importers:
       '@tanstack/eslint-plugin-query':
         specifier: ^5.74.7
         version: 5.78.0(eslint@9.27.0(jiti@1.21.7))(typescript@5.8.3)
+      '@types/luxon':
+        specifier: ^3.6.2
+        version: 3.6.2
       '@types/react':
         specifier: ^19.1.5
         version: 19.1.6

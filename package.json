@@ -44,6 +44,7 @@
     "firebase": "^11.8.0",
     "ky": "^1.8.1",
     "lucide-react": "^0.511.0",
+    "luxon": "^3.6.1",
     "react": "^19.1.0",
     "react-aria-components": "^1.9.0",
     "react-content-loader": "^7.0.2",
@@ -57,6 +58,7 @@
   "devDependencies": {
     "@firebase/rules-unit-testing": "^4.0.1",
     "@tanstack/eslint-plugin-query": "^5.74.7",
+    "@types/luxon": "^3.6.2",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "@ugrc/tailwind-preset": "^1.2.0",
