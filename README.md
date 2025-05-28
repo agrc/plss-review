@@ -8,6 +8,12 @@ A website to view and approve to monument record sheet submissions
    - `pnpm start`
 1. Browse to the [development server](http://localhost:5173/) and login as `Staff Reviewer`
 
+## Deployment
+
+1. Create a site in firebase hosting
+1. Enable multi tenancy in the Google Identity platform
+1. Update the authentication blocking functions after deployment
+
 ## :robot: Dependabot
 
 ### Tailwind
