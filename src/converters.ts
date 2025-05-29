@@ -58,6 +58,7 @@ export const asRejectedSubmission = {
     const data = snapshot.data(options);
 
     let rejectedBy = '';
+    let rejectedFrom: 'User' | 'County' | 'UGRC' = 'User';
     let reason = 'No reason provided';
     let reviewedAt = null;
 
@@ -66,12 +67,14 @@ export const asRejectedSubmission = {
     } else if (data.status.ugrc.approved === false) {
       rejectedBy = data.status.ugrc.reviewedBy ||= 'UGRC';
       reason = data.status.ugrc.comments ?? 'No reason provided';
+      rejectedFrom = 'UGRC';
       if (data.status.ugrc.reviewedAt) {
         reviewedAt = dateFormatter.format(Date.parse(data.status.ugrc.reviewedAt.toDate().toISOString()));
       }
     } else if (data.status.county.approved === false) {
       rejectedBy = data.status.county.reviewedBy ||= 'County';
       reason = data.status.county.comments ?? 'No reason provided';
+      rejectedFrom = 'County';
       if (data.status.county.reviewedAt) {
         reviewedAt = dateFormatter.format(Date.parse(data.status.county.reviewedAt.toDate().toISOString()));
       }
@@ -82,6 +85,7 @@ export const asRejectedSubmission = {
       blmPointId: data.blm_point_id,
       county: data.county,
       rejectedBy,
+      rejectedFrom,
       reason,
       date: reviewedAt ?? 'Unknown',
       submitter: data.submitted_by.name,
