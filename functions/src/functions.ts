@@ -347,7 +347,7 @@ export async function approveCounty(event: { data: { documentId: string } }): Pr
 
   const updates = {
     'status.county.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
-    'status.county.reviewedBy': 'auto-approved',
+    'status.county.reviewedBy': 'County*',
     'status.county.approved': true,
   } as CountyReview;
 
