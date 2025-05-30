@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3-3](https://github.com/agrc/plss-review/compare/v1.0.3-2...v1.0.3-3) (2025-05-30)
+
+
+### Dependencies
+
+* update packages ([401c42a](https://github.com/agrc/plss-review/commit/401c42a4631fbf3d89d901fe6240f9341fe29fcd))
+
 ## [1.0.3-2](https://github.com/agrc/plss-review/compare/v1.0.3-1...v1.0.3-2) (2025-05-30)
 
 
