@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3-4](https://github.com/agrc/plss-review/compare/v1.0.3-3...v1.0.3-4) (2025-05-30)
+
+
+### Bug Fixes
+
+* Add missing firestore properties ([d8c86f0](https://github.com/agrc/plss-review/commit/d8c86f084ab639fe6ec37d6fa377303bc71218e4))
+
 ## [1.0.3-3](https://github.com/agrc/plss-review/compare/v1.0.3-2...v1.0.3-3) (2025-05-30)
 
 
