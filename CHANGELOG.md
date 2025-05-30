@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3-2](https://github.com/agrc/plss-review/compare/v1.0.3-1...v1.0.3-2) (2025-05-30)
+
+
+### Bug Fixes
+
+* display county as approver ([048a0e6](https://github.com/agrc/plss-review/commit/048a0e67c86919baa13b609b3980ba3165c86f7e)), closes [#6](https://github.com/agrc/plss-review/issues/6) [#40](https://github.com/agrc/plss-review/issues/40)
+
 ## [1.0.3-1](https://github.com/agrc/plss-review/compare/v1.0.3-0...v1.0.3-1) (2025-05-28)
 
 
