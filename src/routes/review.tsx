@@ -125,12 +125,30 @@ export default function Review() {
         comments,
       }),
     onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'received' }] });
+      await queryClient.invalidateQueries({
+        queryKey: ['monuments', { type: 'received' }],
+      });
+
+      await queryClient.prefetchQuery({
+        queryKey: ['monuments', { type: 'received' }],
+      });
 
       if (variables.approved) {
-        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'county' }] });
+        await queryClient.invalidateQueries({
+          queryKey: ['monuments', { type: 'county' }],
+        });
+
+        await queryClient.prefetchQuery({
+          queryKey: ['monuments', { type: 'county' }],
+        });
       } else {
-        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'rejected' }] });
+        await queryClient.invalidateQueries({
+          queryKey: ['monuments', { type: 'rejected' }],
+        });
+
+        await queryClient.prefetchQuery({
+          queryKey: ['monuments', { type: 'rejected' }],
+        });
       }
 
       await navigate('/secure/received');

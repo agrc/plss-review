@@ -44,6 +44,7 @@ export default function Rejected() {
       columnHelper.accessor('rejectedFrom', {
         id: 'rejectedFrom',
         header: () => 'Rejected by',
+        cell: (info) => <span aria-label={`Rejected by ${info.row.original.rejectedBy}`}>{info.getValue()}</span>,
         enableSorting: false,
       }),
       columnHelper.accessor('reason', {
