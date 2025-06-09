@@ -17,7 +17,7 @@ import {
   useFirestore,
 } from '@ugrc/utah-design-system';
 import { useMapReady } from '@ugrc/utilities/hooks';
-import { doc, Firestore, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, Firestore, getDoc, runTransaction, Transaction, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
 import ky from 'ky';
 import { DateTime } from 'luxon';
@@ -90,6 +90,20 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
   } satisfies UgrcReview;
 
   await updateDoc(submissionRef, updates);
+
+  if (submissionData.metadata.mrrc) {
+    const statsRef = doc(firestore, 'stats', 'mrrc');
+    const county = submissionData.county.toLowerCase().replace(/\s+/g, '-');
+
+    await runTransaction(firestore, async (transaction: Transaction) => {
+      const statsSnap = await transaction.get(statsRef);
+      const statsData: Record<string, number> = statsSnap.exists() ? statsSnap.data() : {};
+
+      statsData[county] = (statsData[county] ?? 0) + 1;
+
+      transaction.set(statsRef, statsData, { merge: true });
+    });
+  }
 };
 
 export default function Review() {
@@ -124,7 +138,7 @@ export default function Review() {
         currentUser,
         comments,
       }),
-    onSuccess: async (_, variables) => {
+    onSuccess: async (_: unknown, variables: { approved: boolean; comments?: string }) => {
       await queryClient.invalidateQueries({
         queryKey: ['monuments', { type: 'received' }],
       });
