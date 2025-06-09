@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.3-5](https://github.com/agrc/plss-review/compare/v1.0.3-4...v1.0.3-5) (2025-06-09)
+
+
+### Features
+
+* show mrrc submission stats ([e171e4b](https://github.com/agrc/plss-review/commit/e171e4babdfe3202a4dfec3b30f57ec494b16e1a)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+
+
+### Dependencies
+
+* update pacakges ([6907648](https://github.com/agrc/plss-review/commit/69076487d6e2e23f8c197f04b7daaa80845f1006))
+
 ## [1.0.3-4](https://github.com/agrc/plss-review/compare/v1.0.3-3...v1.0.3-4) (2025-05-30)
 
 
