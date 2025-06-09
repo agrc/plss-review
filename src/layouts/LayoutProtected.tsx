@@ -2,6 +2,7 @@ import { Tab, TabList, Tabs, useFirebaseAuth } from '@ugrc/utah-design-system';
 import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import type { Key } from 'react-stately';
+import SubmissionAnalytics from '../components/SubmissionAnalytics';
 import '../index.css';
 
 const tabRoutes = [
@@ -34,22 +35,25 @@ export default function ProtectedLayout() {
   };
 
   return (
-    <Tabs
-      orientation="vertical"
-      className="h-full flex-1 whitespace-nowrap"
-      selectedKey={activeTab}
-      onSelectionChange={handleTabChange}
-    >
-      <TabList aria-label="PLSS review stage">
-        {tabRoutes.map((tab) => (
-          <Tab key={tab.id} id={tab.id}>
-            {tab.label}
-          </Tab>
-        ))}
-      </TabList>
-      <div className="w-full overflow-y-auto">
-        <Outlet />
-      </div>
-    </Tabs>
+    <>
+      <SubmissionAnalytics />
+      <Tabs
+        orientation="vertical"
+        className="h-full flex-1 whitespace-nowrap"
+        selectedKey={activeTab}
+        onSelectionChange={handleTabChange}
+      >
+        <TabList aria-label="PLSS review stage">
+          {tabRoutes.map((tab) => (
+            <Tab key={tab.id} id={tab.id}>
+              {tab.label}
+            </Tab>
+          ))}
+        </TabList>
+        <div className="w-full overflow-y-auto">
+          <Outlet />
+        </div>
+      </Tabs>
+    </>
   );
 }
