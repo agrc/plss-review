@@ -155,7 +155,7 @@ export async function queueTasks(
               type: 'submission-in-county',
               payload: {
                 submissionId: event.params.docId,
-                monumentBucketPath: after.monument,
+                monumentBucketPath: `under-review/${after.blm_point_id}/${after.submitted_by.id}/${event.params.docId}.pdf`,
                 blmPointId: after.blm_point_id,
                 county: after.county,
                 surveyor,
