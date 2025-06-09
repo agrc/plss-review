@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0-1](https://github.com/agrc/plss-review/compare/v1.1.0-0...v1.1.0-1) (2025-06-09)
+
+
+### Bug Fixes
+
+* correct email attachments for new and existing notifications ([e3da78d](https://github.com/agrc/plss-review/commit/e3da78dc4797c03ea6995be5580c7998a4a89eb6))
+* correct email spelling ([65b43aa](https://github.com/agrc/plss-review/commit/65b43aa51e70c0b8a1b473dbbab0175611607658)), closes [#12](https://github.com/agrc/plss-review/issues/12)
+
 ## [1.1.0-0](https://github.com/agrc/plss-review/compare/v1.0.3-5...v1.1.0-0) (2025-06-09)
 
 
