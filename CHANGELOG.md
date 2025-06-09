@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0-0](https://github.com/agrc/plss-review/compare/v1.0.3-5...v1.1.0-0) (2025-06-09)
+
+
+### Features
+
+* collect stats by fiscal year ([f2c5a47](https://github.com/agrc/plss-review/commit/f2c5a47048020c3be15a4a7a5ebf73357fa6a3c9)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+
+
+### Bug Fixes
+
+* **migration:** add fiscal year to migration ([71a93ff](https://github.com/agrc/plss-review/commit/71a93ff09f15943d32028a3232c2e22313aa0ac2))
+
 ## [1.0.3-5](https://github.com/agrc/plss-review/compare/v1.0.3-4...v1.0.3-5) (2025-06-09)
 
 
