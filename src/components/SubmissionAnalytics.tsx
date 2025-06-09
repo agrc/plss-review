@@ -1,9 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { Disclosure, DisclosureHeader, DisclosurePanel, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { doc, Firestore, getDoc } from 'firebase/firestore';
+import { getFiscalYear } from '../utils';
+
+const fiscalYear = getFiscalYear(new Date());
 
 const getStatsFrom = async (firestore: Firestore) => {
-  const statsRef = doc(firestore, 'stats', 'mrrc');
+  const statsRef = doc(firestore, 'stats', `mrrc-${fiscalYear}`);
   const statsSnap = await getDoc(statsRef);
 
   if (!statsSnap.exists()) {
@@ -33,7 +36,7 @@ const SubmissionAnalytics: React.FC = () => {
 
   return (
     <Disclosure className="mb-4">
-      <DisclosureHeader>Submission counts by county</DisclosureHeader>
+      <DisclosureHeader>Submission counts by county (FY{fiscalYear})</DisclosureHeader>
       <DisclosurePanel className="data-open:p-2">
         {status === 'pending' && (
           <div className="size-4">

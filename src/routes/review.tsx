@@ -32,6 +32,7 @@ import { ImageLoader } from '../components/TableLoader';
 import { useMap } from '../components/hooks';
 import type { Corner, FormValues } from '../components/shared/types';
 import type { UgrcReview, UpdateDocumentParams } from '../types';
+import { getFiscalYear } from '../utils';
 
 const getFirestoreDocument = async (id: string | undefined, firestore: Firestore, storage: FirebaseStorage) => {
   if (!id) {
@@ -92,7 +93,8 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
   await updateDoc(submissionRef, updates);
 
   if (submissionData.metadata.mrrc) {
-    const statsRef = doc(firestore, 'stats', 'mrrc');
+    const fiscalYear = getFiscalYear(new Date());
+    const statsRef = doc(firestore, 'stats', `mrrc-${fiscalYear}`);
     const county = submissionData.county.toLowerCase().replace(/\s+/g, '-');
 
     await runTransaction(firestore, async (transaction: Transaction) => {
