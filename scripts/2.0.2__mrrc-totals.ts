@@ -1,4 +1,4 @@
-import { initializeFirebase } from './utils';
+import { getFiscalYear, initializeFirebase } from './utils';
 
 const { db } = initializeFirebase(process.argv.slice(2));
 
@@ -9,16 +9,17 @@ if (!db) {
 
 async function migrate(): Promise<void> {
   console.log('Starting creation of mrrc count...');
+  const fiscalYear = getFiscalYear(new Date());
 
   try {
-    const snapshot = await db.doc('stats/mrrc').get();
+    const snapshot = await db.doc(`stats/mrrc-${fiscalYear}`).get();
 
     if (snapshot.exists) {
       return;
     }
 
     console.log('creating document');
-    await db.doc('stats/mrrc').set({
+    await db.doc(`stats/mrrc-${fiscalYear}`).set({
       beaver: 0,
       boxElder: 0,
       cache: 0,
