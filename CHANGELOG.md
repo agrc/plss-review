@@ -1,5 +1,77 @@
 # Changelog
 
+## [1.1.0-1](https://github.com/agrc/plss-review/compare/v1.1.0-0...v1.1.0-1) (2025-06-09)
+
+
+### Bug Fixes
+
+* correct email attachments for new and existing notifications ([e3da78d](https://github.com/agrc/plss-review/commit/e3da78dc4797c03ea6995be5580c7998a4a89eb6))
+* correct email spelling ([65b43aa](https://github.com/agrc/plss-review/commit/65b43aa51e70c0b8a1b473dbbab0175611607658)), closes [#12](https://github.com/agrc/plss-review/issues/12)
+
+## [1.1.0-0](https://github.com/agrc/plss-review/compare/v1.0.3-5...v1.1.0-0) (2025-06-09)
+
+
+### Features
+
+* collect stats by fiscal year ([f2c5a47](https://github.com/agrc/plss-review/commit/f2c5a47048020c3be15a4a7a5ebf73357fa6a3c9)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+
+
+### Bug Fixes
+
+* **migration:** add fiscal year to migration ([71a93ff](https://github.com/agrc/plss-review/commit/71a93ff09f15943d32028a3232c2e22313aa0ac2))
+
+## [1.0.3-5](https://github.com/agrc/plss-review/compare/v1.0.3-4...v1.0.3-5) (2025-06-09)
+
+
+### Features
+
+* show mrrc submission stats ([e171e4b](https://github.com/agrc/plss-review/commit/e171e4babdfe3202a4dfec3b30f57ec494b16e1a)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+
+
+### Dependencies
+
+* update pacakges ([6907648](https://github.com/agrc/plss-review/commit/69076487d6e2e23f8c197f04b7daaa80845f1006))
+
+## [1.0.3-4](https://github.com/agrc/plss-review/compare/v1.0.3-3...v1.0.3-4) (2025-05-30)
+
+
+### Bug Fixes
+
+* Add missing firestore properties ([d8c86f0](https://github.com/agrc/plss-review/commit/d8c86f084ab639fe6ec37d6fa377303bc71218e4))
+
+## [1.0.3-3](https://github.com/agrc/plss-review/compare/v1.0.3-2...v1.0.3-3) (2025-05-30)
+
+
+### Dependencies
+
+* update packages ([401c42a](https://github.com/agrc/plss-review/commit/401c42a4631fbf3d89d901fe6240f9341fe29fcd))
+
+## [1.0.3-2](https://github.com/agrc/plss-review/compare/v1.0.3-1...v1.0.3-2) (2025-05-30)
+
+
+### Bug Fixes
+
+* display county as approver ([048a0e6](https://github.com/agrc/plss-review/commit/048a0e67c86919baa13b609b3980ba3165c86f7e)), closes [#6](https://github.com/agrc/plss-review/issues/6) [#40](https://github.com/agrc/plss-review/issues/40)
+
+## [1.0.3-1](https://github.com/agrc/plss-review/compare/v1.0.3-0...v1.0.3-1) (2025-05-28)
+
+
+### Bug Fixes
+
+* show correct times ([67069b6](https://github.com/agrc/plss-review/commit/67069b65b3b176603e85d37cbb3c73cc6ac8fbb9))
+
+
+### Documentation
+
+* document click-op steps ([512250a](https://github.com/agrc/plss-review/commit/512250aca6146c1f147f3189ad97ed40e0b5947a))
+
+## [1.0.3-0](https://github.com/agrc/plss-review/compare/v1.0.2...v1.0.3-0) (2025-05-27)
+
+
+### Bug Fixes
+
+* show approve and reject when ugrc has not performed a review ([40e0fdb](https://github.com/agrc/plss-review/commit/40e0fdbf0a0e87ac4b90598fdb87357cb4dcf3a7))
+
 ## [1.0.2](https://github.com/agrc/plss-review/compare/v1.0.1...v1.0.2) (2025-05-27)
 
 

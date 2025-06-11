@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { AlertDialog, Banner, Button, Modal, Spinner, useFirebaseAuth, useFirestore } from '@ugrc/utah-design-system';
+import { AlertDialog, Banner, Button, Modal, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
@@ -15,7 +16,7 @@ import { forCountySubmissions } from './queries';
 
 const columnHelper = createColumnHelper<Submission>();
 
-const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, comments }: UpdateDocumentParams) => {
+const updateFirestoreDocument = async ({ id, approved, firestore, comments }: UpdateDocumentParams) => {
   const submissionRef = doc(firestore, 'submissions', id);
   const submissionSnap = await getDoc(submissionRef);
 
@@ -34,8 +35,8 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
   }
 
   const updates = {
-    'status.county.reviewedAt': new Date(),
-    'status.county.reviewedBy': currentUser!.email!,
+    'status.county.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
+    'status.county.reviewedBy': 'County',
     'status.county.approved': approved,
     'status.county.comments': comments,
   } satisfies CountyReview;
@@ -47,7 +48,6 @@ export default function County() {
   const { firestore } = useFirestore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { currentUser } = useFirebaseAuth();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [activeRow, setActiveRow] = useState<string | null>();
   const { control, handleSubmit } = useForm<FormValues>({
@@ -63,16 +63,30 @@ export default function County() {
         id: activeRow || id || '',
         approved,
         firestore,
-        currentUser,
         comments,
       }),
     onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'county' }] });
+      await queryClient.invalidateQueries({
+        queryKey: ['monuments', { type: 'county' }],
+      });
+      await queryClient.prefetchQuery({
+        queryKey: ['monuments', { type: 'county' }],
+      });
 
       if (variables.approved) {
-        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'approved' }] });
+        await queryClient.invalidateQueries({
+          queryKey: ['monuments', { type: 'approved' }],
+        });
+        await queryClient.prefetchQuery({
+          queryKey: ['monuments', { type: 'approved' }],
+        });
       } else {
-        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'rejected' }] });
+        await queryClient.invalidateQueries({
+          queryKey: ['monuments', { type: 'rejected' }],
+        });
+        await queryClient.prefetchQuery({
+          queryKey: ['monuments', { type: 'rejected' }],
+        });
       }
 
       await navigate('/secure/received');

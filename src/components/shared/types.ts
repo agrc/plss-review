@@ -13,6 +13,7 @@ export type Submission = {
 
 export type RejectedSubmission = Omit<Submission, 'mrrc' | 'actions'> & {
   rejectedBy: string;
+  rejectedFrom: 'User' | 'County' | 'UGRC';
   reason: string;
 };
 

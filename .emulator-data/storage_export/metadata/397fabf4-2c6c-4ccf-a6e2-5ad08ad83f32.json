@@ -1,0 +1,19 @@
+{
+  "name": "under-review/UT260030S0060W0_100300/Y0D4o9od4ojHpGaL9gg6uK3dgNuK/tZxbXE1cLKk8rAgvCVcC.pdf",
+  "bucket": "localhost",
+  "metageneration": 1,
+  "generation": 1749501505559,
+  "contentType": "application/pdf",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "f6213511-931c-484d-94d6-0a327860230e"
+  ],
+  "etag": "Pb2Dn2ZVp6X64A9z5EieVojcF0g",
+  "customMetadata": {},
+  "timeCreated": "2025-06-09T20:38:25.560Z",
+  "updated": "2025-06-09T20:38:25.560Z",
+  "size": 4045720,
+  "md5Hash": "P+ZR9itErE7R5v9MUUHgFg==",
+  "crc32c": "819691152"
+}

@@ -17,9 +17,10 @@ import {
   useFirestore,
 } from '@ugrc/utah-design-system';
 import { useMapReady } from '@ugrc/utilities/hooks';
-import { doc, Firestore, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, Firestore, getDoc, runTransaction, Transaction, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
 import ky from 'ky';
+import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
@@ -31,6 +32,7 @@ import { ImageLoader } from '../components/TableLoader';
 import { useMap } from '../components/hooks';
 import type { Corner, FormValues } from '../components/shared/types';
 import type { UgrcReview, UpdateDocumentParams } from '../types';
+import { getFiscalYear } from '../utils';
 
 const getFirestoreDocument = async (id: string | undefined, firestore: Firestore, storage: FirebaseStorage) => {
   if (!id) {
@@ -82,13 +84,28 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
   }
 
   const updates = {
-    'status.ugrc.reviewedAt': new Date(),
+    'status.ugrc.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
     'status.ugrc.reviewedBy': currentUser!.email!,
     'status.ugrc.approved': approved,
     'status.ugrc.comments': comments,
   } satisfies UgrcReview;
 
   await updateDoc(submissionRef, updates);
+
+  if (submissionData.metadata.mrrc) {
+    const fiscalYear = getFiscalYear(new Date());
+    const statsRef = doc(firestore, 'stats', `mrrc-${fiscalYear}`);
+    const county = submissionData.county.toLowerCase().replace(/\s+/g, '-');
+
+    await runTransaction(firestore, async (transaction: Transaction) => {
+      const statsSnap = await transaction.get(statsRef);
+      const statsData: Record<string, number> = statsSnap.exists() ? statsSnap.data() : {};
+
+      statsData[county] = (statsData[county] ?? 0) + 1;
+
+      transaction.set(statsRef, statsData, { merge: true });
+    });
+  }
 };
 
 export default function Review() {
@@ -123,13 +140,31 @@ export default function Review() {
         currentUser,
         comments,
       }),
-    onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'received' }] });
+    onSuccess: async (_: unknown, variables: { approved: boolean; comments?: string }) => {
+      await queryClient.invalidateQueries({
+        queryKey: ['monuments', { type: 'received' }],
+      });
+
+      await queryClient.prefetchQuery({
+        queryKey: ['monuments', { type: 'received' }],
+      });
 
       if (variables.approved) {
-        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'county' }] });
+        await queryClient.invalidateQueries({
+          queryKey: ['monuments', { type: 'county' }],
+        });
+
+        await queryClient.prefetchQuery({
+          queryKey: ['monuments', { type: 'county' }],
+        });
       } else {
-        await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'rejected' }] });
+        await queryClient.invalidateQueries({
+          queryKey: ['monuments', { type: 'rejected' }],
+        });
+
+        await queryClient.prefetchQuery({
+          queryKey: ['monuments', { type: 'rejected' }],
+        });
       }
 
       await navigate('/secure/received');
@@ -312,7 +347,7 @@ export default function Review() {
           )}
         </div>
         <div className="order-first flex flex-col items-center gap-2 md:order-none">
-          {firestoreStatus === 'success' && data?.status.ugrc.reviewedBy !== null && (
+          {firestoreStatus === 'success' && data?.status.ugrc.reviewedBy === null && (
             <>
               <Button
                 variant="primary"
