@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.0.3](https://github.com/agrc/plss-review/compare/v1.0.2...v1.0.3) (2025-06-17)
+
+
+### Features
+
+* collect stats by fiscal year ([c60ac89](https://github.com/agrc/plss-review/commit/c60ac89ad1befe35d7b1b622ec45c09ec6205ace)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+* show mrrc submission stats ([f94c0bf](https://github.com/agrc/plss-review/commit/f94c0bfadf453f86bb56f8f81574d865dd3f187d)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+
+
+### Bug Fixes
+
+* Add missing firestore properties ([e26d27d](https://github.com/agrc/plss-review/commit/e26d27dee2c058c570b7969fc762532f6a768b29))
+* correct email attachments for new and existing notifications ([2ffa2a9](https://github.com/agrc/plss-review/commit/2ffa2a9be8e5257324eeb0f56eedeffc6d05ae2d))
+* correct email spelling ([8fb38ef](https://github.com/agrc/plss-review/commit/8fb38ef4e3346723bd12be3de3710f5ec2f84254)), closes [#12](https://github.com/agrc/plss-review/issues/12)
+* display county as approver ([3892d5a](https://github.com/agrc/plss-review/commit/3892d5a995bce05dd6aab53033d71a420e214cb2)), closes [#6](https://github.com/agrc/plss-review/issues/6) [#40](https://github.com/agrc/plss-review/issues/40)
+* **migration:** add fiscal year to migration ([3f00a0e](https://github.com/agrc/plss-review/commit/3f00a0efab6d1d55dac27fe3b74cf9f14e0a90c8))
+* show approve and reject when ugrc has not performed a review ([42100f3](https://github.com/agrc/plss-review/commit/42100f36f5331ba9bdd7c99bdadff26e87b1d3ec))
+* show correct times ([c006edd](https://github.com/agrc/plss-review/commit/c006edde993535380187d22e7f50497c3e88a7cd))
+
+
+### Dependencies
+
+* bump the safe-dependencies group across 1 directory with 12 updates ([06a6076](https://github.com/agrc/plss-review/commit/06a6076058f5b4b398b6aa6d5f0df2abd03ca323))
+* update pacakges ([2fc8a7c](https://github.com/agrc/plss-review/commit/2fc8a7c1c3641eab2a2e96a0235b3f807d149593))
+* update packages ([e6093bc](https://github.com/agrc/plss-review/commit/e6093bca9d41537e518c8b28dff52deb48f73cbd))
+
+
+### Documentation
+
+* document click-op steps ([b370c4c](https://github.com/agrc/plss-review/commit/b370c4c56f6798d5d67566fa9672ea3843758d4e))
+
 ## [1.1.0-1](https://github.com/agrc/plss-review/compare/v1.1.0-0...v1.1.0-1) (2025-06-09)
 
 
