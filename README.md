@@ -12,6 +12,7 @@ A website to view and approve to monument record sheet submissions
 
 1. Create a site in firebase hosting
 1. Enable multi tenancy in the Google Identity platform
+1. Add credential created in apadmin to the tenant
 1. Update the authentication blocking functions after deployment
 
 ## :robot: Dependabot
