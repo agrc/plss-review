@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-3](https://github.com/agrc/plss-review/compare/v1.1.0-2...v1.1.0-3) (2025-06-18)
+
+
+### Bug Fixes
+
+* update count on manual county approval ([89642af](https://github.com/agrc/plss-review/commit/89642afdf792ee32da149382cc5efe9c441850e0)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+
 ## [1.1.0-2](https://github.com/agrc/plss-review/compare/v1.0.3...v1.1.0-2) (2025-06-18)
 
 
