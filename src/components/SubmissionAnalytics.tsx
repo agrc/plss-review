@@ -14,7 +14,9 @@ const getStatsFrom = async (firestore: Firestore) => {
   } else {
     const statsData = statsSnap.data();
 
-    return Object.entries(statsData)
+    const totalCount = Object.values(statsData).reduce((sum, count) => sum + (count as number), 0);
+
+    const formattedStats = Object.entries(statsData)
       .filter(([, count]) => count !== 0)
       .sort((a, b) => (b[1] as number) - (a[1] as number))
       .map(([county, count]) => {
@@ -24,6 +26,8 @@ const getStatsFrom = async (firestore: Firestore) => {
 
         return `${titleCasedCounty}: ${count}`;
       });
+
+    return [`Total: ${totalCount}`, ...formattedStats];
   }
 };
 
