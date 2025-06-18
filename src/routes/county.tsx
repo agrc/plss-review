@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { AlertDialog, Banner, Button, Modal, Spinner, useFirestore } from '@ugrc/utah-design-system';
-import { doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, runTransaction, Transaction, updateDoc } from 'firebase/firestore';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
@@ -12,6 +12,7 @@ import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { FormValues, Submission } from '../components/shared/types';
 import type { CountyReview, UpdateDocumentParams } from '../types';
+import { getFiscalYear } from '../utils';
 import { forCountySubmissions } from './queries';
 
 const columnHelper = createColumnHelper<Submission>();
@@ -42,6 +43,23 @@ const updateFirestoreDocument = async ({ id, approved, firestore, comments }: Up
   } satisfies CountyReview;
 
   await updateDoc(submissionRef, updates);
+
+  if (approved && submissionData.metadata.mrrc) {
+    if (submissionData.metadata.mrrc) {
+      const fiscalYear = getFiscalYear(new Date());
+      const statsRef = doc(firestore, 'stats', `mrrc-${fiscalYear}`);
+      const county = submissionData.county.toLowerCase().replace(/\s+/g, '-');
+
+      await runTransaction(firestore, async (transaction: Transaction) => {
+        const statsSnap = await transaction.get(statsRef);
+        const statsData: Record<string, number> = statsSnap.exists() ? statsSnap.data() : {};
+
+        statsData[county] = (statsData[county] ?? 0) + 1;
+
+        transaction.set(statsRef, statsData, { merge: true });
+      });
+    }
+  }
 };
 
 export default function County() {
