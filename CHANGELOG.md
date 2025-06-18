@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-2](https://github.com/agrc/plss-review/compare/v1.0.3...v1.1.0-2) (2025-06-18)
+
+
+### Bug Fixes
+
+* show grand total for mrrc submissions ([1ca65b5](https://github.com/agrc/plss-review/commit/1ca65b5d89fff2aab68a83dd65d1db41aa846de6)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+
 ## [1.0.3](https://github.com/agrc/plss-review/compare/v1.0.3...v1.0.3) (2025-06-17)
 
 
