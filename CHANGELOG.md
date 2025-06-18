@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.4](https://github.com/agrc/plss-review/compare/v1.0.3...v1.0.4) (2025-06-18)
+
+
+### Bug Fixes
+
+* show grand total for mrrc submissions ([78202a5](https://github.com/agrc/plss-review/commit/78202a575829c80e65547b5f22bab1c41d688222)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+* update count on manual county approval ([4e7f4cc](https://github.com/agrc/plss-review/commit/4e7f4cca5b598158a7e0c60d56818bc9378a7ffd)), closes [#4](https://github.com/agrc/plss-review/issues/4)
+
 ## [1.1.0-3](https://github.com/agrc/plss-review/compare/v1.1.0-2...v1.1.0-3) (2025-06-18)
 
 
