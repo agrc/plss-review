@@ -17,7 +17,7 @@ import {
   useFirestore,
 } from '@ugrc/utah-design-system';
 import { useMapReady } from '@ugrc/utilities/hooks';
-import { doc, Firestore, getDoc, runTransaction, Transaction, updateDoc } from 'firebase/firestore';
+import { doc, Firestore, getDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, type FirebaseStorage } from 'firebase/storage';
 import ky from 'ky';
 import { DateTime } from 'luxon';
@@ -32,7 +32,6 @@ import { ImageLoader } from '../components/TableLoader';
 import { useMap } from '../components/hooks';
 import type { Corner, FormValues } from '../components/shared/types';
 import type { UgrcReview, UpdateDocumentParams } from '../types';
-import { getFiscalYear } from '../utils';
 
 const getFirestoreDocument = async (id: string | undefined, firestore: Firestore, storage: FirebaseStorage) => {
   if (!id) {
@@ -91,21 +90,6 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
   } satisfies UgrcReview;
 
   await updateDoc(submissionRef, updates);
-
-  if (submissionData.metadata.mrrc) {
-    const fiscalYear = getFiscalYear(new Date());
-    const statsRef = doc(firestore, 'stats', `mrrc-${fiscalYear}`);
-    const county = submissionData.county.toLowerCase().replace(/\s+/g, '-');
-
-    await runTransaction(firestore, async (transaction: Transaction) => {
-      const statsSnap = await transaction.get(statsRef);
-      const statsData: Record<string, number> = statsSnap.exists() ? statsSnap.data() : {};
-
-      statsData[county] = (statsData[county] ?? 0) + 1;
-
-      transaction.set(statsRef, statsData, { merge: true });
-    });
-  }
 };
 
 export default function Review() {
