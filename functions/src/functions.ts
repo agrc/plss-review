@@ -8,7 +8,7 @@ import { DateTime } from 'luxon';
 import { getBase64EncodedAttachment, getContactsToNotify, notify } from './emailHelper.js';
 import { getFunctionUrl, safelyInitializeApp } from './firebase.js';
 import type { CountyReview, EmailEvent, SubmissionInCountyEvent, SubmissionRejectedEvent } from './types.js';
-import { determineStatusChange, getMountainTimeFutureDate } from './utils.js';
+import { determineStatusChange, getFiscalYear, getMountainTimeFutureDate } from './utils.js';
 
 safelyInitializeApp();
 
@@ -358,6 +358,32 @@ export async function approveCounty(event: { data: { documentId: string } }): Pr
   );
 
   await ref.update(updates);
+
+  if (data.metadata.mrrc) {
+    const fiscalYear = getFiscalYear(new Date());
+
+    logger.debug(
+      `[approveCounty] updating mrrc submission counts for FY${fiscalYear}`,
+      { county: data.county, mrrc: data.metadata.mrrc },
+      { structuredData: true },
+    );
+
+    const statsRef = db.collection('stats').doc(`mrrc-${fiscalYear}`);
+    const county = data.county.toLowerCase().replace(/\s+/g, '-');
+
+    await db.runTransaction(async (transaction) => {
+      const statsSnap = await transaction.get(statsRef);
+      let statsData = statsSnap.exists ? statsSnap.data() : {};
+
+      if (!statsData) {
+        statsData = {};
+      }
+
+      statsData[county] = (statsData[county] ?? 0) + 1;
+
+      transaction.set(statsRef, statsData, { merge: true });
+    });
+  }
 }
 
 export async function sendMail(event: { data: EmailEvent }): Promise<void> {
