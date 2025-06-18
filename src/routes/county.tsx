@@ -105,6 +105,9 @@ export default function County() {
         await queryClient.prefetchQuery({
           queryKey: ['monuments', { type: 'rejected' }],
         });
+        await queryClient.invalidateQueries({
+          queryKey: ['firestore', 'submissions'],
+        });
       }
 
       await navigate('/secure/received');
