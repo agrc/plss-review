@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/agrc/plss-review/compare/v1.0.4...v1.0.5) (2025-07-01)
+
+
+### Documentation
+
+* add missing storage rule click ops ([220c176](https://github.com/agrc/plss-review/commit/220c176f5cefb2ce364b446755254624fa04d2e6))
+
 ## [1.0.4](https://github.com/agrc/plss-review/compare/v1.0.3...v1.0.4) (2025-06-18)
 
 
