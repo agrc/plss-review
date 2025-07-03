@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { RejectedSubmission } from '../components/shared/types';
-import { forRejectedSubmissions } from './queries';
+import { forRejectedSubmissions } from '../queries';
 
 const columnHelper = createColumnHelper<RejectedSubmission>();
 

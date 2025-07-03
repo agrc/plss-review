@@ -1,5 +1,5 @@
 import { and, collection, Firestore, limit, or, orderBy, query, where } from 'firebase/firestore';
-import { asApprovalSubmission, asNewSubmission, asRejectedSubmission } from '../converters';
+import { asApprovalSubmission, asNewSubmission, asRejectedSubmission } from './converters';
 
 export const forNewSubmissions = (firestore: Firestore) =>
   query(

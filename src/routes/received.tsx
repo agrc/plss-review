@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
-import { forNewSubmissions } from './queries';
+import { forNewSubmissions } from '../queries';
 
 const columnHelper = createColumnHelper<Submission>();
 const columns = [
