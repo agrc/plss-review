@@ -2,10 +2,13 @@ import { onRequest } from 'firebase-functions/https';
 import { beforeUserSignedIn } from 'firebase-functions/identity';
 import { defineSecret } from 'firebase-functions/params';
 import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { onTaskDispatched } from 'firebase-functions/v2/tasks';
-import { approveCounty, authorizeUser, queueTasks, sendMail } from './functions.js';
+import { approveCounty, authorizeUser, publishSubmissions, queueTasks, sendMail } from './functions.js';
 
 const sendGridApiKey = defineSecret('SENDGRID_API_KEY');
+const agolCredentials = defineSecret('AGOL_CREDENTIALS');
+
 const basicQueueSettings = {
   retryConfig: {
     maxAttempts: 10,
@@ -34,4 +37,14 @@ export const email = onTaskDispatched(
     secrets: [sendGridApiKey],
   },
   sendMail,
+);
+
+export const publish = onSchedule(
+  {
+    schedule: '0 22 * * *',
+    timeZone: 'America/Denver',
+    retryCount: 5,
+    secrets: [agolCredentials],
+  },
+  publishSubmissions,
 );
