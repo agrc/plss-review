@@ -7,12 +7,15 @@
     "local:seed-submissions": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./seed-submissions.ts",
     "local:migrate-status": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./2.0.1__update-status.ts",
     "local:migrate-mrrc": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./2.0.2__mrrc-totals.ts",
+    "local:migrate-published": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./2.0.3__add_published.ts",
     "dev:update-contacts": "ts-node ./seed-contacts.ts",
     "prod:update-contacts": "ts-node ./2.0.0__update-county-contacts.ts --project=ut-dts-agrc-plss-prod",
     "dev:migrate-status": "ts-node ./2.0.1__update-status.ts",
     "prod:migrate-status": "ts-node ./2.0.1__update-status.ts --project=ut-dts-agrc-plss-prod",
     "dev:migrate-mrrc": "ts-node ./2.0.2__mrrc-totals.ts",
-    "prod:migrate-mrrc": "ts-node ./2.0.2__mrrc-totals.ts --project=ut-dts-agrc-plss-prod"
+    "prod:migrate-mrrc": "ts-node ./2.0.2__mrrc-totals.ts --project=ut-dts-agrc-plss-prod",
+    "dev:migrate-published": "ts-node ./2.0.3__add_published.ts",
+    "prod:migrate-published": "ts-node ./2.0.3__add_published.ts --project=ut-dts-agrc-plss-prod"
   },
   "dependencies": {
     "firebase-admin": "^13.4.0"
