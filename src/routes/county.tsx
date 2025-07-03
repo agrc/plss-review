@@ -11,9 +11,9 @@ import { RejectionReasons } from '../components/RejectionReasons';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { FormValues, Submission } from '../components/shared/types';
+import { forCountySubmissions } from '../queries';
 import type { CountyReview, UpdateDocumentParams } from '../types';
 import { getFiscalYear } from '../utils';
-import { forCountySubmissions } from './queries';
 
 const columnHelper = createColumnHelper<Submission>();
 
