@@ -73,6 +73,28 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "submissions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "published",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status.county.reviewedAt",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status.ugrc.approved",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status.county.approved",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []
