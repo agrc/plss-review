@@ -5,9 +5,19 @@ import { HttpsError, type AuthBlockingEvent } from 'firebase-functions/identity'
 import { logger } from 'firebase-functions/v2';
 import { Change, type FirestoreEvent, type QueryDocumentSnapshot } from 'firebase-functions/v2/firestore';
 import { DateTime } from 'luxon';
+import { calculateFeatureUpdates, getAGOLToken, getAttributesFor, updateFeatureService } from './agol.js';
 import { getBase64EncodedAttachment, getContactsToNotify, notify } from './emailHelper.js';
 import { getFunctionUrl, safelyInitializeApp } from './firebase.js';
-import type { CountyReview, EmailEvent, SubmissionInCountyEvent, SubmissionRejectedEvent } from './types.js';
+import { getSubmissionsReadyForPublishing } from './queries.js';
+import { generateSheetName, moveSheetsToFinalLocation } from './storage.js';
+import type {
+  BucketFileMigration,
+  CountyReview,
+  EmailEvent,
+  PublishingMetadata,
+  SubmissionInCountyEvent,
+  SubmissionRejectedEvent,
+} from './types.js';
 import { determineStatusChange, getFiscalYear, getMountainTimeFutureDate } from './utils.js';
 
 safelyInitializeApp();
@@ -514,4 +524,220 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
       throw new Error(`Unknown email event type: ${type}`);
     }
   }
+}
+
+export async function publishSubmissions(): Promise<void> {
+  logger.info('[publishSubmissions] Starting submission publishing process', { structuredData: true });
+  let submissionsSnapshot;
+
+  try {
+    submissionsSnapshot = await getSubmissionsReadyForPublishing(db);
+  } catch (error) {
+    logger.error('[publishSubmissions] Error fetching submissions ready for publishing', error, {
+      structuredData: true,
+    });
+
+    throw error;
+  }
+
+  if (submissionsSnapshot.empty) {
+    logger.info('[publishSubmissions] No submissions ready for publishing', { structuredData: true });
+
+    return;
+  }
+
+  logger.info(`[publishSubmissions] Found ${submissionsSnapshot.size} submissions to publish`, {
+    structuredData: true,
+  });
+
+  const features = [];
+  const updateMap = {} as Record<number, PublishingMetadata>;
+  const storageMigrations: BucketFileMigration[] = [];
+
+  const token = await getAGOLToken();
+
+  if (!token) {
+    logger.error(`[publishSubmissions] AGOL token is not available`, {
+      structuredData: true,
+    });
+
+    return;
+  }
+
+  for (const submissionDoc of submissionsSnapshot.docs) {
+    const submission = submissionDoc.data();
+
+    if (!submission) {
+      logger.warn(`[publishSubmissions] Document is undefined`, {
+        structuredData: true,
+        document: submissionDoc.id,
+      });
+
+      continue;
+    }
+
+    const submissionId = submissionDoc.id;
+
+    logger.debug(
+      `[publishSubmissions] Processing submission ${submissionId} for BLM Point ${submission.blm_point_id}`,
+      {
+        structuredData: true,
+      },
+    );
+
+    try {
+      const attributes = await getAttributesFor(submission.blm_point_id, token);
+
+      if (!attributes) {
+        logger.warn(`[publishSubmissions] No feature service data found`, {
+          blmPointId: submission.blm_point_id,
+          structuredData: true,
+        });
+
+        continue;
+      }
+
+      const modifications = calculateFeatureUpdates(submission.metadata.corner, submission.metadata.mrrc, attributes);
+
+      if (Object.keys(modifications).length === 0) {
+        logger.debug(`[publishSubmissions] No updates needed for submission ${submissionId}`, {
+          structuredData: true,
+        });
+
+        // If no modifications, we still need to move the sheet
+        const metadata = {
+          document: `under-review/${submission.blm_point_id}/${submission.submitted_by.id}/${submissionId}.pdf`,
+          referenceCorner: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner),
+          cornerType: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner)
+            ? submission.metadata.corner
+            : undefined,
+          mrrc: submission.metadata.mrrc,
+          blmPointId: submission.blm_point_id,
+        };
+
+        const destinationPath = generateSheetName({ ...metadata, today: new Date() });
+
+        storageMigrations.push({
+          from: metadata.document,
+          to: destinationPath,
+        });
+
+        continue;
+      }
+
+      logger.debug(`[publishSubmissions] preparing edits`, {
+        modifications,
+        submissionId,
+        blmPointId: submission.blm_point_id,
+        structuredData: true,
+      });
+
+      features.push({
+        attributes: {
+          OBJECTID: attributes.id,
+          ...modifications,
+        },
+      });
+
+      updateMap[attributes.id] = {
+        document: `under-review/${submission.blm_point_id}/${submission.submitted_by.id}/${submissionId}.pdf`,
+        referenceCorner: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner),
+        cornerType: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner)
+          ? submission.metadata.corner
+          : undefined,
+        mrrc: submission.metadata.mrrc,
+        blmPointId: submission.blm_point_id,
+      };
+    } catch (error) {
+      logger.error(`[publishSubmissions] Error preparing agol feature service edits ${submissionId}`, {
+        error,
+        structuredData: true,
+      });
+    }
+  }
+
+  try {
+    const results = await updateFeatureService(features);
+
+    for (const result of results) {
+      if (!result.success) {
+        logger.error(`[publishSubmissions] Failed to update feature service for OBJECTID ${result.objectId}`, {
+          error: result.error,
+          structuredData: true,
+        });
+
+        continue;
+      } else {
+        // remove successful features
+        const index = features.findIndex((f) => f.attributes.OBJECTID === result.objectId);
+
+        if (index !== -1) {
+          features.splice(index, 1);
+        }
+      }
+
+      const metadata = updateMap[result.objectId];
+
+      if (!metadata) {
+        logger.error(`[publishSubmissions] No metadata found for objectId ${result.objectId}`, {
+          structuredData: true,
+        });
+
+        continue;
+      }
+
+      const destinationPath = generateSheetName({ ...metadata, today: new Date() });
+      storageMigrations.push({
+        from: metadata.document,
+        to: destinationPath,
+      });
+    }
+  } catch (error) {
+    logger.error('[publishSubmissions] Error updating feature service', error, { structuredData: true });
+
+    throw error;
+  }
+
+  if (features.length > 0) {
+    logger.warn('[publishSubmissions] Some features were not updated successfully', {
+      featuresCount: features.length,
+      features,
+      structuredData: true,
+    });
+  }
+
+  if (storageMigrations.length === 0) {
+    logger.info('[publishSubmissions] No storage migrations needed', { structuredData: true });
+
+    return;
+  }
+
+  logger.info('[publishSubmissions] Moving sheets to final locations', { storageMigrations, structuredData: true });
+
+  moveSheetsToFinalLocation(bucket, storageMigrations);
+
+  for (const submissionDoc of submissionsSnapshot.docs) {
+    const submissionId = submissionDoc.id;
+    const ref = db.collection('submissions').doc(submissionId);
+
+    // make sure this is only the documents that worked
+
+    try {
+      await ref.update({
+        published: true,
+        'status.publishedAt': DateTime.now().setZone('America/Denver').toJSDate(),
+        'status.publishedBy': 'System',
+      });
+
+      logger.info(`[publishSubmissions] Updated submission ${submissionId} to published`, {
+        structuredData: true,
+      });
+    } catch (error) {
+      logger.error(`[publishSubmissions] Failed to update submission ${submissionId} to published`, error, {
+        structuredData: true,
+      });
+    }
+  }
+
+  logger.info('[publishSubmissions] Completed submission publishing process', { structuredData: true });
 }

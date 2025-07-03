@@ -35,3 +35,16 @@ export type SubmissionRejectedEvent = {
 };
 
 export type EmailEvent = SubmissionInCountyEvent | SubmissionRejectedEvent;
+
+export type PublishingMetadata = {
+  document: string;
+  referenceCorner: boolean;
+  mrrc: boolean;
+  blmPointId: string;
+  cornerType?: string;
+};
+
+export type BucketFileMigration = {
+  from: string;
+  to: string;
+};
