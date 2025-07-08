@@ -1,7 +1,7 @@
 import { type Firestore, Timestamp } from 'firebase-admin/firestore';
 import { DateTime } from 'luxon';
 
-const wait = process.env.GCLOUD_PROJECT?.includes('dev') ? { minutes: 1 } : { days: 10 };
+const wait = process.env.GCLOUD_PROJECT?.includes('dev') ? { minutes: 1 } : { days: 7 };
 
 /**
  * Query for submissions that are ready to be published
