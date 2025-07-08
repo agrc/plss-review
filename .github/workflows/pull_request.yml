@@ -66,6 +66,12 @@ jobs:
       - name: 📥 Download dependencies
         run: pnpm install
 
+      - name: 📦 Cache Firebase emulators
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-emulators
+
       - name: 🧪 Run tests
         run: pnpm test:ci
 
