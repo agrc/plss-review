@@ -12,12 +12,11 @@ import { safelyInitializeApp } from '../src/firebase.js';
 import { publishSubmissions } from '../src/functions.js';
 import * as storageModule from '../src/storage.js';
 
-// SAFETY CHECK: Ensure we're using emulator
 async function ensureEmulatorConnection(): Promise<void> {
   const emulatorHost = process.env.FIRESTORE_EMULATOR_HOST;
   const projectId = process.env.GCLOUD_PROJECT;
 
-  if (!emulatorHost || !emulatorHost.includes('localhost')) {
+  if (!emulatorHost || !emulatorHost.includes('127.0.0.1')) {
     throw new Error(
       'SAFETY CHECK FAILED: FIRESTORE_EMULATOR_HOST must be set to localhost. Current value: ' + emulatorHost,
     );
@@ -29,7 +28,7 @@ async function ensureEmulatorConnection(): Promise<void> {
 
   // Test emulator connectivity
   try {
-    const response = await fetch('http://localhost:8080');
+    const response = await fetch(`http://${process.env.FIRESTORE_EMULATOR_HOST}`);
     if (!response.ok) {
       throw new Error('Emulator not responding properly');
     }
@@ -59,14 +58,15 @@ vi.mock('../src/storage.js', () => ({
   moveSheetsToFinalLocation: vi.fn().mockResolvedValue(undefined),
 }));
 
-// Initialize Firebase for tests
-safelyInitializeApp();
-const db = getFirestore();
+let db: FirebaseFirestore.Firestore;
 
 describe('functions', () => {
   beforeAll(async () => {
     // Run safety check before any tests
     await ensureEmulatorConnection();
+    // Initialize Firebase for tests
+    safelyInitializeApp();
+    db = getFirestore();
   });
 
   beforeEach(async () => {
