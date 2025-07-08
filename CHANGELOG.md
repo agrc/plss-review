@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-5](https://github.com/agrc/plss-review/compare/v1.1.0-4...v1.1.0-5) (2025-07-08)
+
+
+### Bug Fixes
+
+* update ci to point at prod ([aef6cc2](https://github.com/agrc/plss-review/commit/aef6cc2db2e5f41d45213f879bb19fea4265f999))
+
 ## [1.1.0-4](https://github.com/agrc/plss-review/compare/v1.1.0-3...v1.1.0-4) (2025-07-08)
 
 
