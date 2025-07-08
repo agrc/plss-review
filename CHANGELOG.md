@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0-4](https://github.com/agrc/plss-review/compare/v1.1.0-3...v1.1.0-4) (2025-07-08)
+
+
+### Features
+
+* **functions:** publish submissions on a schedule ([1ab8ed4](https://github.com/agrc/plss-review/commit/1ab8ed4517a988049eb907e0716acadeff8299f3))
+* **scripts:** create migration for publishing status ([af73c09](https://github.com/agrc/plss-review/commit/af73c09c5517450e0d11c27d415a059a6a840bf9))
+
+
+### Dependencies
+
+* update package lock ([2abd9a7](https://github.com/agrc/plss-review/commit/2abd9a7e7f4b645bd360afeb71558d6c815fa67a))
+* update packages ([1c51b76](https://github.com/agrc/plss-review/commit/1c51b764f86923ea74fdc2a9a89e154c71576842))
+
 ## [1.1.0-3](https://github.com/agrc/plss-review/compare/v1.1.0-2...v1.1.0-3) (2025-06-18)
 
 
