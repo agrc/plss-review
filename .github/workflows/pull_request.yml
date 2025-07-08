@@ -67,7 +67,7 @@ jobs:
         run: pnpm install
 
       - name: 🧪 Run tests
-        run: pnpm test
+        run: pnpm test:ci
 
   deploy-preview:
     name: Firebase preview
