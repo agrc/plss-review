@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-11](https://github.com/agrc/plss-review/compare/v1.1.0-10...v1.1.0-11) (2025-07-09)
+
+
+### Bug Fixes
+
+* allow fullscreen on iframe for storage documents ([42fa000](https://github.com/agrc/plss-review/commit/42fa00054cb43dd72bdcbf38cb2a2e151c116fa2))
+
 ## [1.1.0-10](https://github.com/agrc/plss-review/compare/v1.1.0-9...v1.1.0-10) (2025-07-09)
 
 
