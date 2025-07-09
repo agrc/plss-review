@@ -66,6 +66,7 @@ export default function County() {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [activeRow, setActiveRow] = useState<string | null>();
+  const [processingRow, setProcessingRow] = useState<string | null>(null);
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       reason: 'missing-photo',
@@ -74,13 +75,16 @@ export default function County() {
   });
 
   const { mutate: updateStatus, status: mutateStatus } = useMutation({
-    mutationFn: ({ id, approved, comments = '' }: { id?: string; approved: boolean; comments?: string }) =>
-      updateFirestoreDocument({
-        id: activeRow || id || '',
+    mutationFn: ({ id, approved, comments = '' }: { id?: string; approved: boolean; comments?: string }) => {
+      const targetId = activeRow || id || '';
+      setProcessingRow(targetId);
+      return updateFirestoreDocument({
+        id: targetId,
         approved,
         firestore,
         comments,
-      }),
+      });
+    },
     onSuccess: async (_, variables) => {
       await queryClient.invalidateQueries({
         queryKey: ['monuments', { type: 'county' }],
@@ -90,6 +94,9 @@ export default function County() {
       });
 
       if (variables.approved) {
+        await queryClient.invalidateQueries({
+          queryKey: ['firestore', 'submissions'],
+        });
         await queryClient.invalidateQueries({
           queryKey: ['monuments', { type: 'approved' }],
         });
@@ -115,6 +122,7 @@ export default function County() {
     },
     onSettled: () => {
       setActiveRow(null);
+      setProcessingRow(null);
     },
   });
 
@@ -177,6 +185,9 @@ export default function County() {
         id: 'actions',
         header: () => '',
         cell: (data) => {
+          const isProcessing = processingRow === data.row.original.id;
+          const isAnyProcessing = processingRow !== null;
+
           return (
             <div className="flex gap-1">
               <Button
@@ -184,8 +195,8 @@ export default function County() {
                 onPress={() => {
                   updateStatus({ id: data.row.original.id, approved: true });
                 }}
-                isDisabled={mutateStatus !== 'idle'}
-                isPending={mutateStatus === 'pending'}
+                isDisabled={isAnyProcessing}
+                isPending={isProcessing && mutateStatus === 'pending'}
                 size="small"
               >
                 Approve
@@ -197,6 +208,7 @@ export default function County() {
                   setDialogOpen(true);
                   setActiveRow(data.row.original.id);
                 }}
+                isDisabled={isAnyProcessing}
               >
                 Reject
               </Button>
@@ -205,7 +217,7 @@ export default function County() {
         },
       }),
     ],
-    [mutateStatus, updateStatus],
+    [mutateStatus, updateStatus, processingRow],
   );
 
   if (status === 'error') {
