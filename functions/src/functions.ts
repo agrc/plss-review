@@ -22,7 +22,12 @@ import { determineStatusChange, getFiscalYear, getMountainTimeFutureDate } from 
 
 safelyInitializeApp();
 
-const wait = process.env.GCLOUD_PROJECT?.includes('dev') ? { hours: 1 } : { days: 10 };
+const wait =
+  process.env.FUNCTIONS_EMULATOR === 'true'
+    ? { minutes: 1 }
+    : process.env.GCLOUD_PROJECT?.includes('dev')
+      ? { hours: 1 }
+      : { days: 10 };
 
 const db = getFirestore();
 const bucket = getStorage().bucket();
