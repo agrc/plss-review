@@ -89,8 +89,9 @@ export async function queueTasks(
   const statusChange = determineStatusChange(before.status, after.status);
 
   if (!statusChange) {
-    logger.debug('[queueTasks] skipping, status change is undefined', before.status, after.status, {
-      structuredData: true,
+    logger.debug('[queueTasks] skipping, status change is undefined', {
+      before: before.status,
+      after: after.status,
     });
 
     return false;
@@ -117,9 +118,7 @@ export async function queueTasks(
     case 'UGRC Review': {
       // ugrc approval, notify county it's their turn to review and set up auto approval
       if (statusChange.approved) {
-        logger.debug('creating ugrc approval queue tasks', statusChange, {
-          structuredData: true,
-        });
+        logger.debug('creating ugrc approval queue tasks', statusChange);
 
         // auto approval task
         try {
@@ -140,26 +139,18 @@ export async function queueTasks(
             'errorInfo' in (error as { errorInfo?: { code?: string } }) &&
             (error as { errorInfo: { code: string } }).errorInfo.code === 'functions/task-already-exists'
           ) {
-            logger.debug(
-              'skipping, task already exists',
-              {
-                task: `submission-auto-approval-${event.params.docId}`,
-                document: event.params.docId,
-                type: 'auto-approve',
-              },
-              { structuredData: true },
-            );
+            logger.debug('skipping, task already exists', {
+              task: `submission-auto-approval-${event.params.docId}`,
+              document: event.params.docId,
+              type: 'auto-approve',
+            });
           } else {
-            logger.error(
-              'failed to enqueue task',
+            logger.error('failed to enqueue task', {
               error,
-              {
-                task: `submission-auto-approval-${event.params.docId}`,
-                document: event.params.docId,
-                type: 'auto-approve',
-              },
-              { structuredData: true },
-            );
+              task: `submission-auto-approval-${event.params.docId}`,
+              document: event.params.docId,
+              type: 'auto-approve',
+            });
           }
         }
 
@@ -189,32 +180,22 @@ export async function queueTasks(
             'errorInfo' in (error as { errorInfo?: { code?: string } }) &&
             (error as { errorInfo: { code: string } }).errorInfo.code === 'functions/task-already-exists'
           ) {
-            logger.debug(
-              'skipping, task already exists',
-              {
-                task: `submission-in-county-${event.params.docId}`,
-                document: event.params.docId,
-                type: 'email',
-              },
-              { structuredData: true },
-            );
+            logger.debug('skipping, task already exists', {
+              task: `submission-in-county-${event.params.docId}`,
+              document: event.params.docId,
+              type: 'email',
+            });
           } else {
-            logger.error(
-              'failed to enqueue task',
+            logger.error('failed to enqueue task', {
               error,
-              {
-                task: `submission-in-county-${event.params.docId}`,
-                type: 'email',
-                document: event.params.docId,
-              },
-              { structuredData: true },
-            );
+              task: `submission-in-county-${event.params.docId}`,
+              type: 'email',
+              document: event.params.docId,
+            });
           }
         }
       } else {
-        logger.debug('creating ugrc rejection queue task', statusChange, {
-          structuredData: true,
-        });
+        logger.debug('creating ugrc rejection queue task', statusChange);
 
         // ugrc rejection send email
         try {
@@ -241,26 +222,18 @@ export async function queueTasks(
             'errorInfo' in (error as { errorInfo?: { code?: string } }) &&
             (error as { errorInfo: { code: string } }).errorInfo.code === 'functions/task-already-exists'
           ) {
-            logger.debug(
-              'skipping, task already exists',
-              {
-                task: `ugrc-rejection`,
-                type: 'email',
-                document: event.params.docId,
-              },
-              { structuredData: true },
-            );
+            logger.debug('skipping, task already exists', {
+              task: `ugrc-rejection`,
+              type: 'email',
+              document: event.params.docId,
+            });
           } else {
-            logger.error(
-              'failed to enqueue task',
+            logger.error('failed to enqueue task', {
               error,
-              {
-                task: `ugrc-rejection`,
-                type: 'email',
-                document: event.params.docId,
-              },
-              { structuredData: true },
-            );
+              task: `ugrc-rejection`,
+              type: 'email',
+              document: event.params.docId,
+            });
           }
         }
       }
@@ -269,9 +242,7 @@ export async function queueTasks(
     }
     case 'County Review': {
       if (!statusChange.approved) {
-        logger.debug('creating county rejection queue task', statusChange, {
-          structuredData: true,
-        });
+        logger.debug('creating county rejection queue task', statusChange);
 
         // county rejection send email
         try {
@@ -298,26 +269,18 @@ export async function queueTasks(
             'errorInfo' in (error as { errorInfo?: { code?: string } }) &&
             (error as { errorInfo: { code: string } }).errorInfo.code === 'functions/task-already-exists'
           ) {
-            logger.debug(
-              'skipping, task already exists',
-              {
-                task: `county-rejection`,
-                type: 'email',
-                document: event.params.docId,
-              },
-              { structuredData: true },
-            );
+            logger.debug('skipping, task already exists', {
+              task: `county-rejection`,
+              type: 'email',
+              document: event.params.docId,
+            });
           } else {
-            logger.error(
-              'failed to enqueue task',
+            logger.error('failed to enqueue task', {
               error,
-              {
-                task: `ugrc-rejection`,
-                type: 'email',
-                document: event.params.docId,
-              },
-              { structuredData: true },
-            );
+              task: `ugrc-rejection`,
+              type: 'email',
+              document: event.params.docId,
+            });
           }
         }
       }
@@ -325,9 +288,7 @@ export async function queueTasks(
       break;
     }
     default: {
-      logger.error('[queueTasks] skipping, unknown status change', statusChange, {
-        structuredData: true,
-      });
+      logger.error('[queueTasks] skipping, unknown status change', statusChange);
 
       return false;
     }
@@ -343,19 +304,19 @@ export async function approveCounty(event: { data: { documentId: string } }): Pr
 
   if (!snap.exists) {
     logger.warn(`[approveCounty] skipping, document does not exist anymore: ${documentId}`);
+
     return;
   }
 
   const data = snap.data();
   if (!data) {
     logger.warn(`[approveCounty] skipping, document data is undefined: ${documentId}`);
+
     return;
   }
 
   if (data.status.county.approved !== null) {
-    logger.debug('[approveCounty] skipping, county review already complete', data.status, {
-      structuredData: true,
-    });
+    logger.debug('[approveCounty] skipping, county review already complete', { status: data.status });
 
     return;
   }
@@ -366,22 +327,17 @@ export async function approveCounty(event: { data: { documentId: string } }): Pr
     'status.county.approved': true,
   } as CountyReview;
 
-  logger.info(
-    '[approveCounty] updating county approval status',
-    { before: data.status.county, after: updates },
-    { structuredData: true },
-  );
+  logger.info('[approveCounty] updating county approval status', { before: data.status.county, after: updates });
 
   await ref.update(updates);
 
   if (data.metadata.mrrc) {
     const fiscalYear = getFiscalYear(new Date());
 
-    logger.debug(
-      `[approveCounty] updating mrrc submission counts for FY${fiscalYear}`,
-      { county: data.county, mrrc: data.metadata.mrrc },
-      { structuredData: true },
-    );
+    logger.debug(`[approveCounty] updating mrrc submission counts for FY${fiscalYear}`, {
+      county: data.county,
+      mrrc: data.metadata.mrrc,
+    });
 
     const statsRef = db.collection('stats').doc(`mrrc-${fiscalYear}`);
     const county = data.county.toLowerCase().replace(/\s+/g, '-');
@@ -403,13 +359,11 @@ export async function approveCounty(event: { data: { documentId: string } }): Pr
 
 export async function sendMail(event: { data: EmailEvent }): Promise<void> {
   const { type, payload } = event.data;
-  logger.info(`[sendMail] processing email event of type: ${type}`, { structuredData: true });
+  logger.info(`[sendMail] processing email event of type: ${type}`);
 
   switch (type) {
     case 'submission-in-county': {
-      logger.info(`[sendMail] Notifying ${payload.county} about submission ${payload.blmPointId}`, {
-        structuredData: true,
-      });
+      logger.info(`[sendMail] Notifying ${payload.county} about submission ${payload.blmPointId}`);
 
       const content = await getBase64EncodedAttachment(bucket.file(payload.monumentBucketPath).createReadStream());
       const contacts = await getContactsToNotify(db, payload.county);
@@ -446,23 +400,17 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
         },
       };
 
-      logger.info('[sendMail] sending notification email to', contacts, templateData, {
-        structuredData: true,
-      });
+      logger.info('[sendMail] sending notification email to', { contacts, templateData });
 
       const result = await notify(process.env.SENDGRID_API_KEY ?? 'empty', template);
 
-      logger.debug('[sendMail] mail sent with status', result[0].statusCode, {
-        structuredData: true,
-      });
+      logger.debug('[sendMail] mail sent with status', { statusCode: result[0].statusCode });
 
       break;
     }
 
     case 'submission-rejected': {
-      logger.info(`[sendMail] Notifying surveyor about rejection of ${payload.blmPointId}`, {
-        structuredData: true,
-      });
+      logger.info(`[sendMail] Notifying surveyor about rejection of ${payload.blmPointId}`);
 
       const templateData = {
         blmPointId: payload.blmPointId,
@@ -488,16 +436,12 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
         },
       };
 
-      logger.info('[sendMail] sending rejection notification email to', payload.surveyor, templateData, {
-        structuredData: true,
-      });
+      logger.info('[sendMail] sending rejection notification email to', { surveyor: payload.surveyor, templateData });
 
       try {
         const result = await notify(process.env.SENDGRID_API_KEY ?? 'empty', template);
 
-        logger.debug('[sendMail] mail sent with status', result[0].statusCode, {
-          structuredData: true,
-        });
+        logger.debug('[sendMail] mail sent with status', { statusCode: result[0].statusCode });
       } catch (error) {
         if (
           typeof error === 'object' &&
@@ -505,15 +449,11 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
           'response' in (error as { response?: { body?: { errors?: unknown[] } } }) &&
           (error as { response: { body: { errors: unknown[] } } }).response.body?.errors
         ) {
-          logger.error(
-            '[sendMail] failed to send rejection email',
-            {
-              errors: (error as { response: { body: { errors: unknown[] } } }).response.body.errors,
-            },
-            { structuredData: true },
-          );
+          logger.error('[sendMail] failed to send rejection email', {
+            errors: (error as { response: { body: { errors: unknown[] } } }).response.body.errors,
+          });
         } else {
-          logger.error('[sendMail] failed to send rejection email', error, { structuredData: true });
+          logger.error('[sendMail] failed to send rejection email', { error });
         }
 
         throw error;
@@ -523,9 +463,8 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
     }
 
     default: {
-      logger.error(`[sendMail] Unknown email event type: ${type}`, {
-        structuredData: true,
-      });
+      logger.error(`[sendMail] Unknown email event type: ${type}`);
+
       throw new Error(`Unknown email event type: ${type}`);
     }
   }
@@ -538,9 +477,7 @@ export async function publishSubmissions(): Promise<void> {
   try {
     submissionsSnapshot = await getSubmissionsReadyForPublishing(db);
   } catch (error) {
-    logger.error('[publishSubmissions] Error fetching submissions ready for publishing', error, {
-      structuredData: true,
-    });
+    logger.error('[publishSubmissions] Error fetching submissions ready for publishing', { error });
 
     throw error;
   }
@@ -569,36 +506,22 @@ export async function publishSubmissions(): Promise<void> {
     const submission = submissionDoc.data();
 
     if (!submission) {
-      logger.warn(
-        `[publishSubmissions] Document is undefined`,
-        { document: submissionDoc.id },
-        {
-          structuredData: true,
-        },
-      );
+      logger.warn(`[publishSubmissions] Document is undefined`, { document: submissionDoc.id });
 
       continue;
     }
 
     const submissionId = submissionDoc.id;
 
-    logger.debug(`[publishSubmissions] Processing ${submissionDoc.ref.path}`, submission, {
-      structuredData: true,
-    });
+    logger.debug(`[publishSubmissions] Processing ${submissionDoc.ref.path}`, submission);
 
     try {
       const attributes = await getAttributesFor(submission.blm_point_id, token);
 
       if (!attributes) {
-        logger.warn(
-          `[publishSubmissions] No feature service data found`,
-          {
-            blmPointId: submission.blm_point_id,
-          },
-          {
-            structuredData: true,
-          },
-        );
+        logger.warn(`[publishSubmissions] No feature service data found`, {
+          blmPointId: submission.blm_point_id,
+        });
 
         continue;
       }
@@ -606,15 +529,9 @@ export async function publishSubmissions(): Promise<void> {
       const modifications = calculateFeatureUpdates(submission.metadata.corner, submission.metadata.mrrc, attributes);
 
       if (Object.keys(modifications).length === 0) {
-        logger.debug(
-          `[publishSubmissions] No updates needed for submission ${submissionDoc.ref.path}`,
-          {
-            submission,
-          },
-          {
-            structuredData: true,
-          },
-        );
+        logger.debug(`[publishSubmissions] No updates needed for submission ${submissionDoc.ref.path}`, {
+          submission,
+        });
 
         // If no modifications, we still need to move the sheet
         const metadata = {
@@ -637,17 +554,11 @@ export async function publishSubmissions(): Promise<void> {
         continue;
       }
 
-      logger.debug(
-        `[publishSubmissions] Staging edit for ${submissionDoc.ref.path}`,
-        {
-          modifications,
-          document: submissionDoc.ref.path,
-          blmPointId: submission.blm_point_id,
-        },
-        {
-          structuredData: true,
-        },
-      );
+      logger.debug(`[publishSubmissions] Staging edit for ${submissionDoc.ref.path}`, {
+        modifications,
+        document: submissionDoc.ref.path,
+        blmPointId: submission.blm_point_id,
+      });
 
       features.push({
         attributes: {
@@ -668,7 +579,6 @@ export async function publishSubmissions(): Promise<void> {
     } catch (error) {
       logger.error(`[publishSubmissions] Error preparing agol feature service edits ${submissionId}`, {
         error,
-        structuredData: true,
       });
     }
   }
@@ -678,13 +588,9 @@ export async function publishSubmissions(): Promise<void> {
 
     for (const result of results) {
       if (!result.success) {
-        logger.error(
-          `[publishSubmissions] Failed to update feature service for OBJECTID ${result.objectId}`,
-          result.error,
-          {
-            structuredData: true,
-          },
-        );
+        logger.error(`[publishSubmissions] Failed to update feature service for OBJECTID ${result.objectId}`, {
+          error: result.error,
+        });
 
         continue;
       } else {
@@ -699,9 +605,7 @@ export async function publishSubmissions(): Promise<void> {
       const metadata = updateMap[result.objectId];
 
       if (!metadata) {
-        logger.error(`[publishSubmissions] No metadata found for objectId ${result.objectId}`, updateMap, {
-          structuredData: true,
-        });
+        logger.error(`[publishSubmissions] No metadata found for objectId ${result.objectId}`, { updateMap });
 
         continue;
       }
@@ -714,22 +618,16 @@ export async function publishSubmissions(): Promise<void> {
       });
     }
   } catch (error) {
-    logger.error('[publishSubmissions] Error updating feature service', error, { structuredData: true });
+    logger.error('[publishSubmissions] Error updating feature service', { error });
 
     throw error;
   }
 
   if (features.length > 0) {
-    logger.warn(
-      '[publishSubmissions] Some features were not updated successfully',
-      {
-        featuresCount: features.length,
-        features,
-      },
-      {
-        structuredData: true,
-      },
-    );
+    logger.warn('[publishSubmissions] Some features were not updated successfully', {
+      featuresCount: features.length,
+      features,
+    });
   }
 
   if (storageMigrations.length === 0) {
@@ -738,7 +636,7 @@ export async function publishSubmissions(): Promise<void> {
     return;
   }
 
-  logger.info('[publishSubmissions] Moving sheets to final locations', storageMigrations, { structuredData: true });
+  logger.info('[publishSubmissions] Moving sheets to final locations', { storageMigrations });
 
   await moveSheetsToFinalLocation(bucket, storageMigrations);
 
@@ -757,9 +655,7 @@ export async function publishSubmissions(): Promise<void> {
 
       logger.info(`[publishSubmissions] Updated submission ${submissionId} to published`);
     } catch (error) {
-      logger.error(`[publishSubmissions] Failed to update submission ${submissionId} to published`, error, {
-        structuredData: true,
-      });
+      logger.error(`[publishSubmissions] Failed to update submission ${submissionId} to published`, { error });
     }
   }
 
