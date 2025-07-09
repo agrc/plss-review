@@ -117,27 +117,29 @@ export const getAttributesFor = async (blmPointId: string, token: string) => {
 
   // Handle AGOL error responses
   if (queryResult.error) {
-    logger.error(`[getAttributesFor] AGOL API error for BLM Point ${blmPointId}`, {
-      error: queryResult.error,
-      structuredData: true,
-    });
+    logger.error(
+      `[getAttributesFor] AGOL API error for BLM Point ${blmPointId}`,
+      {
+        error: queryResult.error,
+      },
+      {
+        structuredData: true,
+      },
+    );
 
     throw new Error(`AGOL API error: ${queryResult.error.message} (code: ${queryResult.error.code})`);
   }
 
   if (!queryResult.features || queryResult.features.length === 0) {
-    logger.warn(`[publishSubmissions] No feature found for BLM Point ${blmPointId}`, {
-      structuredData: true,
-    });
+    logger.warn(`[publishSubmissions] No feature found for BLM Point ${blmPointId}`);
 
     return null;
   }
 
   const feature = queryResult.features[0];
   if (!feature) {
-    logger.warn(`[publishSubmissions] Feature data is missing for BLM Point ${blmPointId}`, {
-      structuredData: true,
-    });
+    logger.warn(`[publishSubmissions] Feature data is missing for BLM Point ${blmPointId}`);
+
     return null;
   }
 
@@ -155,14 +157,12 @@ export const updateFeatureService = async (
   features: { attributes: { OBJECTID: number; [key: string]: string | number } }[],
 ) => {
   if (features.length === 0) {
-    logger.info(`[updateFeatureService] No features to update`, {
-      structuredData: true,
-    });
+    logger.info(`[updateFeatureService] No features to update`);
+
     return [];
   }
 
   const token = await getAGOLToken();
-  // Prepare the update request
   const updateUrl = `${serviceUrl}/updateFeatures`;
   const body = new URLSearchParams({
     token,
@@ -179,8 +179,7 @@ export const updateFeatureService = async (
   });
 
   // For now, just log what would be updated
-  logger.info(`[updateFeatureService] Would update ${features.length} features with:`, {
-    featuresCount: features.length,
+  logger.info(`[updateFeatureService] Preparing to update ${features.length} features`, features, {
     structuredData: true,
   });
 
@@ -197,18 +196,30 @@ export const updateFeatureService = async (
 
   // Handle AGOL error responses
   if (updateResult.error) {
-    logger.error(`[updateFeatureService] AGOL API error`, {
-      error: updateResult.error,
-      structuredData: true,
-    });
+    logger.error(
+      `[updateFeatureService] AGOL API error`,
+      {
+        error: updateResult.error,
+      },
+      {
+        structuredData: true,
+      },
+    );
+
     throw new Error(`AGOL API error: ${updateResult.error.message} (code: ${updateResult.error.code})`);
   }
 
   if (!updateResult.updateResults) {
-    logger.error(`[updateFeatureService] Failed to update features - no updateResults in response`, {
-      error: updateResult,
-      structuredData: true,
-    });
+    logger.error(
+      `[updateFeatureService] Failed to update features - no updateResults in response`,
+      {
+        error: updateResult,
+      },
+      {
+        structuredData: true,
+      },
+    );
+
     throw new Error('Failed to update features - no updateResults in response');
   }
 
@@ -218,22 +229,22 @@ export const updateFeatureService = async (
     const feature = features[i];
 
     if (!feature) {
-      logger.error(`[updateFeatureService] Feature at index ${i} is undefined`, {
+      logger.error(`[updateFeatureService] Feature at index ${i} is undefined`, updateResult, {
         structuredData: true,
       });
+
       continue;
     }
 
     if (result?.success === true) {
-      logger.info(`[updateFeatureService] Successfully updated feature ${feature.attributes.OBJECTID}`, {
-        structuredData: true,
-      });
+      logger.info(`[updateFeatureService] Successfully updated feature ${feature.attributes.OBJECTID}`);
+
       results.push({ success: true, objectId: feature.attributes.OBJECTID });
     } else {
-      logger.error(`[updateFeatureService] Failed to update feature ${feature.attributes.OBJECTID}`, {
-        error: result,
+      logger.error(`[updateFeatureService] Failed to update feature ${feature.attributes.OBJECTID}`, result, {
         structuredData: true,
       });
+
       results.push({ success: false, objectId: feature.attributes.OBJECTID, error: result });
     }
   }
