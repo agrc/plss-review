@@ -70,7 +70,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/.cache/firebase/emulators
-          key: ${{ runner.os }}-firebase-emulators
+          key: ${{ runner.os }}-firebase-emulators-v1
+          restore-keys: |
+            ${{ runner.os }}-firebase-emulators-v1
+            ${{ runner.os }}-firebase-emulators-
+            ${{ runner.os }}-
 
       - name: 🧪 Run tests
         run: pnpm test:ci
