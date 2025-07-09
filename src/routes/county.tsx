@@ -45,20 +45,18 @@ const updateFirestoreDocument = async ({ id, approved, firestore, comments }: Up
   await updateDoc(submissionRef, updates);
 
   if (approved && submissionData.metadata.mrrc) {
-    if (submissionData.metadata.mrrc) {
-      const fiscalYear = getFiscalYear(new Date());
-      const statsRef = doc(firestore, 'stats', `mrrc-${fiscalYear}`);
-      const county = submissionData.county.toLowerCase().replace(/\s+/g, '-');
+    const fiscalYear = getFiscalYear(new Date());
+    const statsRef = doc(firestore, 'stats', `mrrc-${fiscalYear}`);
+    const county = submissionData.county.toLowerCase().replace(/\s+/g, '-');
 
-      await runTransaction(firestore, async (transaction: Transaction) => {
-        const statsSnap = await transaction.get(statsRef);
-        const statsData: Record<string, number> = statsSnap.exists() ? statsSnap.data() : {};
+    await runTransaction(firestore, async (transaction: Transaction) => {
+      const statsSnap = await transaction.get(statsRef);
+      const statsData: Record<string, number> = statsSnap.exists() ? statsSnap.data() : {};
 
-        statsData[county] = (statsData[county] ?? 0) + 1;
+      statsData[county] = (statsData[county] ?? 0) + 1;
 
-        transaction.set(statsRef, statsData, { merge: true });
-      });
-    }
+      transaction.set(statsRef, statsData, { merge: true });
+    });
   }
 };
 
