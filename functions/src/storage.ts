@@ -58,7 +58,7 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
     let attempts = 0;
 
     while (exists && attempts < MAX_ATTEMPTS) {
-      logger.debug(`[publishSubmissions] Destination file ${migration.to} already exists. Renaming.`, mirgration, {
+      logger.debug(`[publishSubmissions] Destination file ${migration.to} already exists. Renaming.`, migration, {
         structuredData: true,
       });
 
