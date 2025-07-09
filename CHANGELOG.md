@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0-10](https://github.com/agrc/plss-review/compare/v1.1.0-9...v1.1.0-10) (2025-07-09)
+
+
+### Bug Fixes
+
+* allow fiscal year records to be created ([be80c6e](https://github.com/agrc/plss-review/commit/be80c6e522ec5a404155131a00c2d3a47282271c))
+* update county activity indicator to only display on button clicked ([7758b94](https://github.com/agrc/plss-review/commit/7758b9420e9ffc47503ca18d643d6007f67b5a52))
+
 ## [1.1.0-9](https://github.com/agrc/plss-review/compare/v1.0.4...v1.1.0-9) (2025-07-09)
 
 
