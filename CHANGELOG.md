@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-6](https://github.com/agrc/plss-review/compare/v1.1.0-5...v1.1.0-6) (2025-07-09)
+
+
+### Bug Fixes
+
+* **functions:** add missing dependency ([b34f6d2](https://github.com/agrc/plss-review/commit/b34f6d2dc7839ad0ca8d2f87728fbd6f5113475d))
+
 ## [1.1.0-5](https://github.com/agrc/plss-review/compare/v1.1.0-4...v1.1.0-5) (2025-07-08)
 
 
