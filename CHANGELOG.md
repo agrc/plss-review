@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.1.0-9](https://github.com/agrc/plss-review/compare/v1.0.4...v1.1.0-9) (2025-07-09)
+
+
+### Features
+
+* **functions:** publish submissions on a schedule ([5858850](https://github.com/agrc/plss-review/commit/5858850fa5bf07d126b1eb4b0d6d25e3580d8185))
+* **scripts:** create migration for publishing status ([b8074fb](https://github.com/agrc/plss-review/commit/b8074fbef890fbe4ee1a8126c7a9989e91f203e9))
+
+
+### Bug Fixes
+
+* correct misspelling ([f2ec4cc](https://github.com/agrc/plss-review/commit/f2ec4ccb28508cbdb554972eb0d9959bc4203916))
+* **functions:** add missing dependency ([49c12b7](https://github.com/agrc/plss-review/commit/49c12b7c415892de4c04bba668d5e2fcc84c6278))
+* **functions:** await async function ([5a5b071](https://github.com/agrc/plss-review/commit/5a5b071ed310f7c57a8088ff820d02089d2d85ff))
+* improve logging ([802cdb2](https://github.com/agrc/plss-review/commit/802cdb2d9fc9a7d17b65e732a7839c530bd412d0))
+* update ci to point at prod ([0ce3d1e](https://github.com/agrc/plss-review/commit/0ce3d1e41d4df5fa9ded6f801657cf2fcf9831a1))
+
+
+### Dependencies
+
+* update package lock ([682b5b7](https://github.com/agrc/plss-review/commit/682b5b70680afe02b94d98c056147185796eb3de))
+* update packages ([af9260d](https://github.com/agrc/plss-review/commit/af9260d387c3673140bb5bdf2ed71f0b62a40647))
+
+
+### Documentation
+
+* add missing storage rule click ops ([220c176](https://github.com/agrc/plss-review/commit/220c176f5cefb2ce364b446755254624fa04d2e6))
+
 ## [1.1.0-8](https://github.com/agrc/plss-review/compare/v1.1.0-7...v1.1.0-8) (2025-07-09)
 
 
