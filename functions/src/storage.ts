@@ -47,7 +47,7 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
     try {
       exists = (await destination.exists())[0];
     } catch (error) {
-      logger.error(`Error checking file existence: ${error}`);
+      logger.error(`Error checking file existence`, { error });
 
       throw error;
     }
@@ -58,9 +58,7 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
     let attempts = 0;
 
     while (exists && attempts < MAX_ATTEMPTS) {
-      logger.debug(`[publishSubmissions] Destination file ${migration.to} already exists. Renaming.`, migration, {
-        structuredData: true,
-      });
+      logger.debug(`[publishSubmissions] Destination file ${migration.to} already exists. Renaming.`, { migration });
 
       migration.to = incrementName(migration.to);
       destination = bucket.file(migration.to);
@@ -68,9 +66,7 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
       try {
         exists = (await destination.exists())[0];
       } catch (error) {
-        logger.error(`Error checking file existence`, error, {
-          structuredData: true,
-        });
+        logger.error(`Error checking file existence`, { error });
       }
 
       attempts++;
@@ -82,11 +78,9 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
 
     try {
       await file.move(destination);
-      logger.info(`[publishSubmissions] Moved ${migration.from} to ${migration.to}`);
+      logger.info(`[publishSubmissions] Moved pdf to production path`, { migration });
     } catch (error) {
-      logger.error(`[publishSubmissions] Failed to move file from ${migration.from} to ${migration.to}`, error, {
-        structuredData: true,
-      });
+      logger.error(`[publishSubmissions] Failed to move file`, { migration, error });
     }
   }
 };

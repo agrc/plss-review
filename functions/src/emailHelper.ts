@@ -11,13 +11,7 @@ export type Contact = {
 
 export const notify = (key: string, template: ClientRequest) => {
   if (process.env.NODE_ENV !== 'production') {
-    logger.warn(
-      'Skipping mail send and returning a fake promise',
-      { nodeEnv: process.env.NODE_ENV },
-      {
-        structuredData: true,
-      },
-    );
+    logger.warn('Skipping mail send and returning a fake promise', { nodeEnv: process.env.NODE_ENV });
 
     return Promise.resolve([
       {
@@ -32,9 +26,7 @@ export const notify = (key: string, template: ClientRequest) => {
 
   const keySnippet = key.slice(0, 4);
 
-  logger.debug('sendgrid key', keySnippet, {
-    structuredData: true,
-  });
+  logger.debug('sendgrid key', { keySnippet });
 
   client.setApiKey(key);
 
@@ -46,9 +38,7 @@ export const getContactsToNotify = async (db: Firestore, county: string) => {
   const documentSnapshot = await documentReference.get();
 
   if (!documentSnapshot.exists) {
-    logger.error('contacts document does not exist', {
-      structuredData: true,
-    });
+    logger.error('contacts document does not exist');
 
     return [];
   }
@@ -62,9 +52,7 @@ export const getContactsToNotify = async (db: Firestore, county: string) => {
 
   county = county.toLowerCase();
   if (!(county in data)) {
-    logger.error('county not found in contacts document', county, {
-      structuredData: true,
-    });
+    logger.error('county not found in contacts document', { county });
 
     return [];
   }
@@ -78,10 +66,10 @@ export const getBase64EncodedAttachment = (stream: NodeJS.ReadableStream) => {
   const chunks = new Base64Encode();
 
   return new Promise((resolve, reject) => {
-    stream.on('error', (err) => {
-      logger.error('encode pdf error', err, { structuredData: true });
+    stream.on('error', (error) => {
+      logger.error('encode pdf error', { error });
 
-      return reject(err);
+      return reject(error);
     });
     stream.on('data', (chunk) => chunks.write(chunk));
     stream.on('end', () => {

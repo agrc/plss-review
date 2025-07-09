@@ -71,7 +71,6 @@ export const getAGOLToken = async () => {
   if (tokenData.error) {
     logger.error(`[getAGOLToken] AGOL authentication error`, {
       error: tokenData.error,
-      structuredData: true,
     });
 
     throw new Error(`AGOL authentication error: ${tokenData.error.message} (code: ${tokenData.error.code})`);
@@ -117,15 +116,9 @@ export const getAttributesFor = async (blmPointId: string, token: string) => {
 
   // Handle AGOL error responses
   if (queryResult.error) {
-    logger.error(
-      `[getAttributesFor] AGOL API error for BLM Point ${blmPointId}`,
-      {
-        error: queryResult.error,
-      },
-      {
-        structuredData: true,
-      },
-    );
+    logger.error(`[getAttributesFor] AGOL API error for BLM Point ${blmPointId}`, {
+      error: queryResult.error,
+    });
 
     throw new Error(`AGOL API error: ${queryResult.error.message} (code: ${queryResult.error.code})`);
   }
@@ -179,9 +172,7 @@ export const updateFeatureService = async (
   });
 
   // For now, just log what would be updated
-  logger.info(`[updateFeatureService] Preparing to update ${features.length} features`, features, {
-    structuredData: true,
-  });
+  logger.info(`[updateFeatureService] Preparing to update ${features.length} features`, features);
 
   // TODO: Uncomment when ready to actually update features
   const updateResult = (await updateResponse.json()) as {
@@ -196,29 +187,17 @@ export const updateFeatureService = async (
 
   // Handle AGOL error responses
   if (updateResult.error) {
-    logger.error(
-      `[updateFeatureService] AGOL API error`,
-      {
-        error: updateResult.error,
-      },
-      {
-        structuredData: true,
-      },
-    );
+    logger.error(`[updateFeatureService] AGOL API error`, {
+      error: updateResult.error,
+    });
 
     throw new Error(`AGOL API error: ${updateResult.error.message} (code: ${updateResult.error.code})`);
   }
 
   if (!updateResult.updateResults) {
-    logger.error(
-      `[updateFeatureService] Failed to update features - no updateResults in response`,
-      {
-        error: updateResult,
-      },
-      {
-        structuredData: true,
-      },
-    );
+    logger.error(`[updateFeatureService] Failed to update features - no updateResults in response`, {
+      error: updateResult,
+    });
 
     throw new Error('Failed to update features - no updateResults in response');
   }
@@ -229,9 +208,7 @@ export const updateFeatureService = async (
     const feature = features[i];
 
     if (!feature) {
-      logger.error(`[updateFeatureService] Feature at index ${i} is undefined`, updateResult, {
-        structuredData: true,
-      });
+      logger.error(`[updateFeatureService] Feature at index ${i} is undefined`, updateResult);
 
       continue;
     }
@@ -241,9 +218,7 @@ export const updateFeatureService = async (
 
       results.push({ success: true, objectId: feature.attributes.OBJECTID });
     } else {
-      logger.error(`[updateFeatureService] Failed to update feature ${feature.attributes.OBJECTID}`, result, {
-        structuredData: true,
-      });
+      logger.error(`[updateFeatureService] Failed to update feature ${feature.attributes.OBJECTID}`, results);
 
       results.push({ success: false, objectId: feature.attributes.OBJECTID, error: result });
     }
