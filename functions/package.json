@@ -25,6 +25,7 @@
     "firebase": "^11.10.0",
     "firebase-admin": "^13.4.0",
     "firebase-functions": "^6.3.2",
+    "ky": "^1.8.1",
     "luxon": "^3.6.1"
   },
   "devDependencies": {
