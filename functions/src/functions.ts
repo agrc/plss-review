@@ -735,7 +735,7 @@ export async function publishSubmissions(): Promise<void> {
 
   logger.info('[publishSubmissions] Moving sheets to final locations', { storageMigrations, structuredData: true });
 
-  moveSheetsToFinalLocation(bucket, storageMigrations);
+  await moveSheetsToFinalLocation(bucket, storageMigrations);
 
   for (const submissionDoc of submissionsSnapshot.docs) {
     const submissionId = submissionDoc.id;
