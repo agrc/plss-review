@@ -20,7 +20,6 @@ export const generateSheetName = (metadata: {
     if (metadata.cornerType && validCornerTypes.includes(metadata.cornerType)) {
       name = `${metadata.cornerType}_${name}`;
     }
-    // For null, undefined, empty string, or invalid corner types, don't add prefix
   }
 
   // Add MRRC prefix if mrrc is true
@@ -28,8 +27,11 @@ export const generateSheetName = (metadata: {
     name = `MRRC_${name}`;
   }
 
-  const formattedDate = metadata.today
-    .toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  const formattedDate = metadata.today.toLocaleDateString('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
 
   name = `${name}_${formattedDate}`;
 
@@ -56,7 +58,9 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
     let attempts = 0;
 
     while (exists && attempts < MAX_ATTEMPTS) {
-      logger.debug(`[publishSubmissions] Destination file ${migration.to} already exists. Renaming.`);
+      logger.debug(`[publishSubmissions] Destination file ${migration.to} already exists. Renaming.`, mirgration, {
+        structuredData: true,
+      });
 
       migration.to = incrementName(migration.to);
       destination = bucket.file(migration.to);
@@ -64,7 +68,9 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
       try {
         exists = (await destination.exists())[0];
       } catch (error) {
-        logger.error(`Error checking file existence: ${error}`);
+        logger.error(`Error checking file existence`, error, {
+          structuredData: true,
+        });
       }
 
       attempts++;
@@ -76,7 +82,7 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
 
     try {
       await file.move(destination);
-      logger.info(`[publishSubmissions] Moved ${migration.from} to ${migration.to}`, { structuredData: true });
+      logger.info(`[publishSubmissions] Moved ${migration.from} to ${migration.to}`);
     } catch (error) {
       logger.error(`[publishSubmissions] Failed to move file from ${migration.from} to ${migration.to}`, error, {
         structuredData: true,
