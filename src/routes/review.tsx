@@ -3,9 +3,9 @@ import Viewpoint from '@arcgis/core/Viewpoint';
 import Point from '@arcgis/core/geometry/Point';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import * as geodeticLengthOperator from '@arcgis/core/geometry/operators/geodeticLengthOperator';
-import { TextSymbol } from '@arcgis/core/symbols';
 import SimpleLineSymbol from '@arcgis/core/symbols/SimpleLineSymbol';
 import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import TextSymbol from '@arcgis/core/symbols/TextSymbol';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertDialog,
