@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-12](https://github.com/agrc/plss-review/compare/v1.1.0-11...v1.1.0-12) (2025-07-09)
+
+
+### Bug Fixes
+
+* correct logging for real this time ([ef2999f](https://github.com/agrc/plss-review/commit/ef2999f62644d0ef85087e166d2be260589a8c4c))
+
 ## [1.1.0-11](https://github.com/agrc/plss-review/compare/v1.1.0-10...v1.1.0-11) (2025-07-09)
 
 
