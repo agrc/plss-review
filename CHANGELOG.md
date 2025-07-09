@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-8](https://github.com/agrc/plss-review/compare/v1.1.0-7...v1.1.0-8) (2025-07-09)
+
+
+### Bug Fixes
+
+* correct misspelling ([83f6707](https://github.com/agrc/plss-review/commit/83f67070891e0783e145edd8baf7bbe703dcde47))
+
 ## [1.1.0-7](https://github.com/agrc/plss-review/compare/v1.1.0-6...v1.1.0-7) (2025-07-09)
 
 
