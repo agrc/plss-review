@@ -733,7 +733,7 @@ export async function publishSubmissions(): Promise<void> {
     return;
   }
 
-  logger.info('[publishSubmissions] Moving sheets to final locations', { storageMigrations, structuredData: true });
+  logger.info('[publishSubmissions] Moving sheets to final locations', storageMigrations, { structuredData: true });
 
   await moveSheetsToFinalLocation(bucket, storageMigrations);
 
