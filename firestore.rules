@@ -15,7 +15,7 @@ service cloud.firestore {
     }
 
     match /stats/{document=**} {
-      allow read, update: if isAuthenticated() && isAuthorized();
+      allow read, update, create: if isAuthenticated() && isAuthorized();
     }
   }
 }
