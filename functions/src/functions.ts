@@ -527,7 +527,7 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
 }
 
 export async function publishSubmissions(): Promise<void> {
-  logger.info('[publishSubmissions] Starting submission publishing process', { structuredData: true });
+  logger.info('[publishSubmissions] Starting submission publishing process');
   let submissionsSnapshot;
 
   try {
@@ -541,14 +541,12 @@ export async function publishSubmissions(): Promise<void> {
   }
 
   if (submissionsSnapshot.empty) {
-    logger.info('[publishSubmissions] No submissions ready for publishing', { structuredData: true });
+    logger.info('[publishSubmissions] No submissions ready for publishing');
 
     return;
   }
 
-  logger.info(`[publishSubmissions] Found ${submissionsSnapshot.size} submissions to publish`, {
-    structuredData: true,
-  });
+  logger.info(`[publishSubmissions] Found ${submissionsSnapshot.size} submissions ready to be published`);
 
   const features = [];
   const updateMap = {} as Record<number, PublishingMetadata>;
@@ -557,9 +555,7 @@ export async function publishSubmissions(): Promise<void> {
   const token = await getAGOLToken();
 
   if (!token) {
-    logger.error(`[publishSubmissions] AGOL token is not available`, {
-      structuredData: true,
-    });
+    logger.error(`[publishSubmissions] AGOL token is not available`);
 
     return;
   }
@@ -568,31 +564,36 @@ export async function publishSubmissions(): Promise<void> {
     const submission = submissionDoc.data();
 
     if (!submission) {
-      logger.warn(`[publishSubmissions] Document is undefined`, {
-        structuredData: true,
-        document: submissionDoc.id,
-      });
+      logger.warn(
+        `[publishSubmissions] Document is undefined`,
+        { document: submissionDoc.id },
+        {
+          structuredData: true,
+        },
+      );
 
       continue;
     }
 
     const submissionId = submissionDoc.id;
 
-    logger.debug(
-      `[publishSubmissions] Processing submission ${submissionId} for BLM Point ${submission.blm_point_id}`,
-      {
-        structuredData: true,
-      },
-    );
+    logger.debug(`[publishSubmissions] Processing ${submissionDoc.ref.path}`, submission, {
+      structuredData: true,
+    });
 
     try {
       const attributes = await getAttributesFor(submission.blm_point_id, token);
 
       if (!attributes) {
-        logger.warn(`[publishSubmissions] No feature service data found`, {
-          blmPointId: submission.blm_point_id,
-          structuredData: true,
-        });
+        logger.warn(
+          `[publishSubmissions] No feature service data found`,
+          {
+            blmPointId: submission.blm_point_id,
+          },
+          {
+            structuredData: true,
+          },
+        );
 
         continue;
       }
@@ -600,9 +601,15 @@ export async function publishSubmissions(): Promise<void> {
       const modifications = calculateFeatureUpdates(submission.metadata.corner, submission.metadata.mrrc, attributes);
 
       if (Object.keys(modifications).length === 0) {
-        logger.debug(`[publishSubmissions] No updates needed for submission ${submissionId}`, {
-          structuredData: true,
-        });
+        logger.debug(
+          `[publishSubmissions] No updates needed for submission ${submissionDoc.ref.path}`,
+          {
+            submission,
+          },
+          {
+            structuredData: true,
+          },
+        );
 
         // If no modifications, we still need to move the sheet
         const metadata = {
@@ -625,12 +632,17 @@ export async function publishSubmissions(): Promise<void> {
         continue;
       }
 
-      logger.debug(`[publishSubmissions] preparing edits`, {
-        modifications,
-        submissionId,
-        blmPointId: submission.blm_point_id,
-        structuredData: true,
-      });
+      logger.debug(
+        `[publishSubmissions] Staging edit for ${submissionDoc.ref.path}`,
+        {
+          modifications,
+          document: submissionDoc.ref.path,
+          blmPointId: submission.blm_point_id,
+        },
+        {
+          structuredData: true,
+        },
+      );
 
       features.push({
         attributes: {
@@ -661,10 +673,13 @@ export async function publishSubmissions(): Promise<void> {
 
     for (const result of results) {
       if (!result.success) {
-        logger.error(`[publishSubmissions] Failed to update feature service for OBJECTID ${result.objectId}`, {
-          error: result.error,
-          structuredData: true,
-        });
+        logger.error(
+          `[publishSubmissions] Failed to update feature service for OBJECTID ${result.objectId}`,
+          result.error,
+          {
+            structuredData: true,
+          },
+        );
 
         continue;
       } else {
@@ -679,7 +694,7 @@ export async function publishSubmissions(): Promise<void> {
       const metadata = updateMap[result.objectId];
 
       if (!metadata) {
-        logger.error(`[publishSubmissions] No metadata found for objectId ${result.objectId}`, {
+        logger.error(`[publishSubmissions] No metadata found for objectId ${result.objectId}`, updateMap, {
           structuredData: true,
         });
 
@@ -687,6 +702,7 @@ export async function publishSubmissions(): Promise<void> {
       }
 
       const destinationPath = generateSheetName({ ...metadata, today: new Date() });
+
       storageMigrations.push({
         from: metadata.document,
         to: destinationPath,
@@ -699,15 +715,20 @@ export async function publishSubmissions(): Promise<void> {
   }
 
   if (features.length > 0) {
-    logger.warn('[publishSubmissions] Some features were not updated successfully', {
-      featuresCount: features.length,
-      features,
-      structuredData: true,
-    });
+    logger.warn(
+      '[publishSubmissions] Some features were not updated successfully',
+      {
+        featuresCount: features.length,
+        features,
+      },
+      {
+        structuredData: true,
+      },
+    );
   }
 
   if (storageMigrations.length === 0) {
-    logger.info('[publishSubmissions] No storage migrations needed', { structuredData: true });
+    logger.info('[publishSubmissions] No storage migrations needed');
 
     return;
   }
@@ -729,9 +750,7 @@ export async function publishSubmissions(): Promise<void> {
         'status.publishedBy': 'System',
       });
 
-      logger.info(`[publishSubmissions] Updated submission ${submissionId} to published`, {
-        structuredData: true,
-      });
+      logger.info(`[publishSubmissions] Updated submission ${submissionId} to published`);
     } catch (error) {
       logger.error(`[publishSubmissions] Failed to update submission ${submissionId} to published`, error, {
         structuredData: true,
@@ -739,5 +758,5 @@ export async function publishSubmissions(): Promise<void> {
     }
   }
 
-  logger.info('[publishSubmissions] Completed submission publishing process', { structuredData: true });
+  logger.info('[publishSubmissions] Completed submission publishing process');
 }
