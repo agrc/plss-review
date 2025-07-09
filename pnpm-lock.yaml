@@ -183,6 +183,9 @@ importers:
       firebase-functions:
         specifier: ^6.3.2
         version: 6.3.2(firebase-admin@13.4.0(encoding@0.1.13))
+      ky:
+        specifier: ^1.8.1
+        version: 1.8.1
       luxon:
         specifier: ^3.6.1
         version: 3.6.1
