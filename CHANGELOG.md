@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-13](https://github.com/agrc/plss-review/compare/v1.1.0-12...v1.1.0-13) (2025-07-14)
+
+
+### Bug Fixes
+
+* title case point category values ([5da2c3b](https://github.com/agrc/plss-review/commit/5da2c3b8299e835180b2af4ed440e9f940a960bd))
+
 ## [1.1.0-12](https://github.com/agrc/plss-review/compare/v1.1.0-11...v1.1.0-12) (2025-07-09)
 
 
