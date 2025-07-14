@@ -15,7 +15,7 @@ afterAll(() => {
 describe('calculateFeatureUpdates', () => {
   it('should not update when values are maxed out', () => {
     const attributes = {
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       mrrc: 1,
       monument: 1,
     };
@@ -27,7 +27,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should update monument flag when not set and category is not a reference corner', () => {
     const attributes = {
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       mrrc: 1,
       monument: 0,
     };
@@ -39,7 +39,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should update mrrc when submission has mrrc true', () => {
     const attributes = {
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       mrrc: 0,
       monument: 1,
     };
@@ -51,7 +51,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should keep mrrc as 1 when submission has mrrc false', () => {
     const attributes = {
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       mrrc: 1,
       monument: 1,
     };
@@ -63,43 +63,43 @@ describe('calculateFeatureUpdates', () => {
 
   it('should update point_category for WC corner', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: 0,
       monument: 1,
     };
 
     const result = calculateFeatureUpdates('WC', false, attributes);
 
-    expect(result).toEqual({ point_category: 'reference corner' });
+    expect(result).toEqual({ point_category: 'Reference Corner' });
   });
 
   it('should update point_category for MC corner', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: 0,
       monument: 1,
     };
 
     const result = calculateFeatureUpdates('MC', false, attributes);
 
-    expect(result).toEqual({ point_category: 'reference corner' });
+    expect(result).toEqual({ point_category: 'Reference Corner' });
   });
 
   it('should update point_category for RC corner', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: 0,
       monument: 1,
     };
 
     const result = calculateFeatureUpdates('RC', false, attributes);
 
-    expect(result).toEqual({ point_category: 'reference corner' });
+    expect(result).toEqual({ point_category: 'Reference Corner' });
   });
 
   it('should handle undefined corner and mrrc', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: 0,
       monument: 0,
     };
@@ -111,7 +111,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should handle multiple updates needed', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: 0,
       monument: 0,
     };
@@ -119,14 +119,14 @@ describe('calculateFeatureUpdates', () => {
     const result = calculateFeatureUpdates('WC', true, attributes);
 
     expect(result).toEqual({
-      point_category: 'reference corner',
+      point_category: 'Reference Corner',
       mrrc: 1,
     });
   });
 
   it('should calculate null values correctly', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: null,
       monument: null,
     };
@@ -134,7 +134,7 @@ describe('calculateFeatureUpdates', () => {
     const result = calculateFeatureUpdates('WC', true, attributes);
 
     expect(result).toEqual({
-      point_category: 'reference corner',
+      point_category: 'Reference Corner',
       mrrc: 1,
       monument: 0,
     });
@@ -142,7 +142,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should update point_category to monument record for non-reference corner', () => {
     const attributes = {
-      point_category: 'calculated', // Not 'monument record'
+      point_category: 'Calculated', // Not 'Monument Record'
       mrrc: 1,
       monument: 1,
     };
@@ -151,13 +151,13 @@ describe('calculateFeatureUpdates', () => {
     const result = calculateFeatureUpdates('some-corner', false, attributes);
 
     expect(result).toEqual({
-      point_category: 'monument record',
+      point_category: 'Monument Record',
     });
   });
 
   it('should update monument to 0 for reference corner when monument is not 0', () => {
     const attributes = {
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       mrrc: 1,
       monument: 2, // Use a value that's neither 0 nor 1 to trigger the condition
     };
@@ -171,7 +171,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should update null mrrc when submission has mrrc true', () => {
     const attributes = {
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       mrrc: null,
       monument: 1,
     };
@@ -183,7 +183,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should update null monument to 1 for non-reference corner', () => {
     const attributes = {
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       mrrc: 1,
       monument: null,
     };
@@ -195,7 +195,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should update null monument to 0 for reference corner', () => {
     const attributes = {
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       mrrc: 1,
       monument: null,
     };
@@ -207,7 +207,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should handle null values on non-reference corner with mrrc false', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: null,
       monument: null,
     };
@@ -215,14 +215,14 @@ describe('calculateFeatureUpdates', () => {
     const result = calculateFeatureUpdates('corner', false, attributes);
 
     expect(result).toEqual({
-      point_category: 'monument record',
+      point_category: 'Monument Record',
       monument: 1,
     });
   });
 
   it('should handle null values with undefined corner should not update monument', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: null,
       monument: null,
     };
@@ -236,7 +236,7 @@ describe('calculateFeatureUpdates', () => {
 
   it('should handle null values with undefined corner and mrrc false should not update anything', () => {
     const attributes = {
-      point_category: 'calculated',
+      point_category: 'Calculated',
       mrrc: null,
       monument: null,
     };

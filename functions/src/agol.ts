@@ -14,10 +14,10 @@ export const calculateFeatureUpdates = (
   const referenceCorners = ['WC', 'MC', 'RC', 'Other'];
   const isReferenceCorner = corner ? referenceCorners.includes(corner) : false;
 
-  if (attributes.point_category === 'calculated' && isReferenceCorner) {
-    updates.point_category = 'reference corner';
-  } else if (attributes.point_category !== 'monument record' && !isReferenceCorner && corner !== undefined) {
-    updates.point_category = 'monument record';
+  if (attributes.point_category === 'Calculated' && isReferenceCorner) {
+    updates.point_category = 'Reference Corner';
+  } else if (attributes.point_category !== 'Monument Record' && !isReferenceCorner && corner !== undefined) {
+    updates.point_category = 'Monument Record';
   }
 
   if (attributes.mrrc !== 1 && mrrc === true) {
@@ -172,7 +172,7 @@ export const updateFeatureService = async (
   });
 
   // For now, just log what would be updated
-  logger.info(`[updateFeatureService] Preparing to update ${features.length} features`, features);
+  logger.info(`[updateFeatureService] Preparing to update ${features.length} features`, { features });
 
   // TODO: Uncomment when ready to actually update features
   const updateResult = (await updateResponse.json()) as {
