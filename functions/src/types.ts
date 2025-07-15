@@ -48,3 +48,5 @@ export type BucketFileMigration = {
   from: string;
   to: string;
 };
+
+export type AGOLAttributes = { attributes: { OBJECTID: number; [key: string]: string | number } };

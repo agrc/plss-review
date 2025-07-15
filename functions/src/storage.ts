@@ -51,7 +51,6 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
 
       throw error;
     }
-    
 
     // Add safety measures
     const MAX_ATTEMPTS = 100; // Prevent infinite loops
