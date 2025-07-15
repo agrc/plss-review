@@ -171,10 +171,7 @@ export const updateFeatureService = async (
     body,
   });
 
-  // For now, just log what would be updated
   logger.info(`[updateFeatureService] Preparing to update ${features.length} features`, { features });
-
-  // TODO: Uncomment when ready to actually update features
   const updateResult = (await updateResponse.json()) as {
     updateResults?: { success: boolean; objectId?: number; error?: unknown }[];
     error?: {
