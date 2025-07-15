@@ -102,8 +102,7 @@ describe('generateSheetName', () => {
     if (dateMatch) {
       const datePart = dateMatch[1];
       // Validate it's today's date in YYYY-MM-DD format
-      const expectedDate = today
-        .toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      const expectedDate = today.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
       expect(datePart).toBe(expectedDate);
     }
   });
@@ -181,7 +180,6 @@ describe('generateSheetName', () => {
       expect(result).toBe('tiesheets/UT123456/UT123456_2025-01-15.pdf');
     });
 
-
     /**
      * Test complex combination scenarios
      */
@@ -201,17 +199,41 @@ describe('generateSheetName', () => {
 describe('incrementName', () => {
   // Basic functionality tests
   test.each([
-    ['should add _1 to name without number suffix', 'MRRC_WC_UT260400N0470E0_SN_01.pdf', 'MRRC_WC_UT260400N0470E0_SN_01_1.pdf'],
-    ['should increment existing number suffix', 'MRRC_WC_UT260400N0470E0_SN_01_1.pdf', 'MRRC_WC_UT260400N0470E0_SN_01_2.pdf'],
-    ['should increment higher number suffix', 'MRRC_WC_UT260400N0470E0_SN_01_15.pdf', 'MRRC_WC_UT260400N0470E0_SN_01_16.pdf'],
-    ['should increment with date', 'MRRC_WC_UT260400N0470E0_SN_2025-01-23.pdf', 'MRRC_WC_UT260400N0470E0_SN_2025-01-23_1.pdf'],
-    ['should increment with date and counter', 'MRRC_WC_UT260400N0470E0_SN_2025-01-23_15.pdf', 'MRRC_WC_UT260400N0470E0_SN_2025-01-23_16.pdf'],
+    [
+      'should add _1 to name without number suffix',
+      'MRRC_WC_UT260400N0470E0_SN_01.pdf',
+      'MRRC_WC_UT260400N0470E0_SN_01_1.pdf',
+    ],
+    [
+      'should increment existing number suffix',
+      'MRRC_WC_UT260400N0470E0_SN_01_1.pdf',
+      'MRRC_WC_UT260400N0470E0_SN_01_2.pdf',
+    ],
+    [
+      'should increment higher number suffix',
+      'MRRC_WC_UT260400N0470E0_SN_01_15.pdf',
+      'MRRC_WC_UT260400N0470E0_SN_01_16.pdf',
+    ],
+    [
+      'should increment with date',
+      'MRRC_WC_UT260400N0470E0_SN_2025-01-23.pdf',
+      'MRRC_WC_UT260400N0470E0_SN_2025-01-23_1.pdf',
+    ],
+    [
+      'should increment with date and counter',
+      'MRRC_WC_UT260400N0470E0_SN_2025-01-23_15.pdf',
+      'MRRC_WC_UT260400N0470E0_SN_2025-01-23_16.pdf',
+    ],
     ['should handle multi-digit numbers', 'test_999.pdf', 'test_1000.pdf'],
     ['should add _1 to simple filename', 'document.pdf', 'document_1.pdf'],
     ['should handle filename with underscores but no number suffix', 'my_file_name.pdf', 'my_file_name_1.pdf'],
     ['should handle zero as suffix', 'test_0.pdf', 'test_1.pdf'],
     ['should handle number in middle of filename (not suffix)', 'test_123_file.pdf', 'test_123_file_1.pdf'],
-    ['should handle complex BLM point ID with number', 'tiesheets/UT260400N0470E0_SN_01/MRRC_WC_UT260400N0470E0_SN_01_3.pdf', 'tiesheets/UT260400N0470E0_SN_01/MRRC_WC_UT260400N0470E0_SN_01_4.pdf'],
+    [
+      'should handle complex BLM point ID with number',
+      'tiesheets/UT260400N0470E0_SN_01/MRRC_WC_UT260400N0470E0_SN_01_3.pdf',
+      'tiesheets/UT260400N0470E0_SN_01/MRRC_WC_UT260400N0470E0_SN_01_4.pdf',
+    ],
   ] as const)('%s', (_, input, expected) => {
     const result = incrementName(input);
     expect(result).toBe(expected);
