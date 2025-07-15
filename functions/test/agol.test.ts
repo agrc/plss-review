@@ -1,5 +1,6 @@
 import { afterAll, describe, expect, it } from 'vitest';
-import { calculateFeatureUpdates, getAGOLToken } from '../src/agol.js';
+import { calculateFeatureUpdates, getAGOLToken, mergeUpdates } from '../src/agol.js';
+import { AGOLAttributes } from '../src/types.js';
 
 // Store original process.env
 const originalEnv = process.env.AGOL_CREDENTIALS;
@@ -244,6 +245,125 @@ describe('calculateFeatureUpdates', () => {
     const result = calculateFeatureUpdates(undefined, false, attributes);
 
     expect(result).toEqual({});
+  });
+});
+
+describe('mergeUpdates', () => {
+  it.each<{
+    name: string;
+    existing: AGOLAttributes | null;
+    updates: Record<string, string | number>;
+    expected: Record<string, string | number>;
+  }>([
+    {
+      name: 'should return updates when existing is null',
+      existing: null,
+      updates: { point_category: 'Monument Record', mrrc: 1 },
+      expected: { point_category: 'Monument Record', mrrc: 1 },
+    },
+    {
+      name: 'should not make any changes to existing',
+      existing: {
+        attributes: {
+          OBJECTID: 123,
+          point_category: 'Monument Record',
+          mrrc: 1,
+          monument: 1,
+        },
+      },
+      updates: { point_category: 'Reference Corner', mrrc: 0, monument: 0 },
+      expected: {
+        point_category: 'Monument Record', // Monument record is higher weight than Reference corner and Calculated
+        mrrc: 1,
+        monument: 1,
+        OBJECTID: 123,
+      },
+    },
+    {
+      name: 'should take the highest mrrc value',
+      existing: {
+        attributes: {
+          OBJECTID: 123,
+          point_category: 'Monument Record',
+          mrrc: 0,
+          monument: 1,
+        },
+      },
+      updates: { mrrc: 1 },
+      expected: {
+        point_category: 'Monument Record',
+        mrrc: 1,
+        monument: 1,
+        OBJECTID: 123,
+      },
+    },
+    {
+      name: 'should take the highest monument value',
+      existing: {
+        attributes: {
+          OBJECTID: 123,
+          point_category: 'Monument Record',
+          mrrc: 0,
+          monument: 0,
+        },
+      },
+      updates: { monument: 1 },
+      expected: {
+        point_category: 'Monument Record',
+        mrrc: 0,
+        monument: 1,
+        OBJECTID: 123,
+      },
+    },
+    {
+      name: 'should update undefined values',
+      existing: {
+        attributes: {
+          OBJECTID: 123,
+          point_category: 'Monument Record',
+        },
+      },
+      updates: { mrrc: 0, monument: 1 },
+      expected: {
+        point_category: 'Monument Record',
+        mrrc: 0,
+        monument: 1,
+        OBJECTID: 123,
+      },
+    },
+    {
+      name: 'should update undefined values',
+      existing: {
+        attributes: {
+          OBJECTID: 123,
+          point_category: 'Monument Record',
+        },
+      },
+      updates: { mrrc: 0, monument: 1 },
+      expected: {
+        point_category: 'Monument Record',
+        mrrc: 0,
+        monument: 1,
+        OBJECTID: 123,
+      },
+    },
+    {
+      name: 'should update point_category to Reference Corner when existing is Calculated',
+      existing: {
+        attributes: {
+          OBJECTID: 123,
+          point_category: 'Calculated',
+        },
+      },
+      updates: { point_category: 'Reference Corner' },
+      expected: {
+        point_category: 'Reference Corner',
+        OBJECTID: 123,
+      },
+    },
+  ])('$name', ({ existing, updates, expected }) => {
+    const result = mergeUpdates(existing, updates);
+    expect(result).toEqual(expected);
   });
 });
 

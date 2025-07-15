@@ -1,5 +1,6 @@
 import { logger } from 'firebase-functions/v2';
 import ky from 'ky';
+import type { AGOLAttributes } from './types.js';
 
 const serviceUrl = process.env.GCLOUD_PROJECT?.includes('prod')
   ? 'https://services1.arcgis.com/99lidPhWCzftIe9K/ArcGIS/rest/services/PLSS_Monuments/FeatureServer/0'
@@ -33,6 +34,67 @@ export const calculateFeatureUpdates = (
   }
 
   return updates;
+};
+
+export const mergeUpdates = (
+  existing: AGOLAttributes | null,
+  updates: Record<string, string | number>,
+): AGOLAttributes['attributes'] => {
+  const result: Record<string, string | number> = existing ? { ...existing.attributes } : {};
+
+  // Define priority order for point_category (higher index = higher priority)
+  const pointCategoryPriority = ['Calculated', 'Reference Corner', 'Monument Record'];
+
+  // Helper function to handle point_category priority logic
+  const mergePointCategory = (
+    existingValue: string | number | undefined,
+    updateValue: string | number,
+  ): string | number => {
+    if (typeof existingValue !== 'string' || typeof updateValue !== 'string') {
+      return updateValue; // Default to update if types don't match or existing is undefined
+    }
+
+    const existingPriority = pointCategoryPriority.indexOf(existingValue);
+    const updatePriority = pointCategoryPriority.indexOf(updateValue);
+
+    // Use update value if existing has no priority (-1) or update has higher priority
+    return existingPriority === -1 || updatePriority > existingPriority ? updateValue : existingValue;
+  };
+
+  // Helper function to handle numeric fields (mrrc, monument) - take the maximum
+  const mergeNumericValue = (
+    existingValue: string | number | undefined,
+    updateValue: string | number,
+  ): string | number | null => {
+    // Handle null/undefined values - treat them as -1 for comparison
+    const existingNum = typeof existingValue === 'number' ? existingValue : -1;
+    const updateNum = typeof updateValue === 'number' ? updateValue : -1;
+
+    const max = Math.max(existingNum, updateNum);
+
+    return max === -1 ? null : max; // Return 0 if both are -1 (indicating null/undefined)
+  };
+
+  // Apply updates with appropriate merge strategy per field
+  for (const [key, updateValue] of Object.entries(updates)) {
+    const existingValue = existing?.attributes[key];
+
+    if (key === 'point_category') {
+      result[key] = mergePointCategory(existingValue, updateValue);
+    } else if (key === 'mrrc' || key === 'monument') {
+      const max = mergeNumericValue(existingValue, updateValue);
+      if (max === null) {
+        continue;
+      }
+
+      result[key] = max;
+    } else {
+      // For all other keys, simply apply the update
+      result[key] = updateValue;
+    }
+  }
+
+  return result as AGOLAttributes['attributes'];
 };
 
 export const getAGOLToken = async () => {
@@ -146,9 +208,7 @@ export const getAttributesFor = async (blmPointId: string, token: string) => {
   };
 };
 
-export const updateFeatureService = async (
-  features: { attributes: { OBJECTID: number; [key: string]: string | number } }[],
-) => {
+export const updateFeatureService = async (features: AGOLAttributes[]) => {
   if (features.length === 0) {
     logger.info(`[updateFeatureService] No features to update`);
 

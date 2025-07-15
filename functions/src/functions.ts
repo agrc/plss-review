@@ -5,12 +5,13 @@ import { HttpsError, type AuthBlockingEvent } from 'firebase-functions/identity'
 import { logger } from 'firebase-functions/v2';
 import { Change, type FirestoreEvent, type QueryDocumentSnapshot } from 'firebase-functions/v2/firestore';
 import { DateTime } from 'luxon';
-import { calculateFeatureUpdates, getAGOLToken, getAttributesFor, updateFeatureService } from './agol.js';
+import { calculateFeatureUpdates, getAGOLToken, getAttributesFor, mergeUpdates, updateFeatureService } from './agol.js';
 import { getBase64EncodedAttachment, getContactsToNotify, notify } from './emailHelper.js';
 import { getFunctionUrl, safelyInitializeApp } from './firebase.js';
 import { getSubmissionsReadyForPublishing } from './queries.js';
 import { generateSheetName, moveSheetsToFinalLocation } from './storage.js';
 import type {
+  AGOLAttributes,
   BucketFileMigration,
   CountyReview,
   EmailEvent,
@@ -490,9 +491,10 @@ export async function publishSubmissions(): Promise<void> {
 
   logger.info(`[publishSubmissions] Found ${submissionsSnapshot.size} submissions ready to be published`);
 
-  const features = [];
-  const updateMap = {} as Record<number, PublishingMetadata>;
+  const features: AGOLAttributes[] = [];
+  const updateMap: (PublishingMetadata & { id: number; submissionId: string })[] = [];
   const storageMigrations: BucketFileMigration[] = [];
+  const successfulSubmissions = new Set<string>();
 
   const token = await getAGOLToken();
 
@@ -551,6 +553,9 @@ export async function publishSubmissions(): Promise<void> {
           to: destinationPath,
         });
 
+        // Track this submission as successful since it doesn't need AGOL updates
+        successfulSubmissions.add(submissionId);
+
         continue;
       }
 
@@ -560,14 +565,30 @@ export async function publishSubmissions(): Promise<void> {
         blmPointId: submission.blm_point_id,
       });
 
-      features.push({
-        attributes: {
-          OBJECTID: attributes.id,
-          ...modifications,
-        },
-      });
+      // check if the objectid exists in the features array
+      const existingFeature = features.find((f) => f.attributes.OBJECTID === attributes.id);
 
-      updateMap[attributes.id] = {
+      if (existingFeature) {
+        logger.info(`[publishSubmissions] Duplicate OBJECTID found for ${attributes.id}`, {
+          attributes: {
+            OBJECTID: attributes.id,
+            ...modifications,
+          },
+        });
+
+        existingFeature.attributes = mergeUpdates(existingFeature, modifications);
+      } else {
+        features.push({
+          attributes: {
+            OBJECTID: attributes.id,
+            ...modifications,
+          },
+        });
+      }
+
+      updateMap.push({
+        id: attributes.id,
+        submissionId,
         document: `under-review/${submission.blm_point_id}/${submission.submitted_by.id}/${submissionId}.pdf`,
         referenceCorner: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner),
         cornerType: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner)
@@ -575,7 +596,7 @@ export async function publishSubmissions(): Promise<void> {
           : undefined,
         mrrc: submission.metadata.mrrc,
         blmPointId: submission.blm_point_id,
-      };
+      });
     } catch (error) {
       logger.error(`[publishSubmissions] Error preparing agol feature service edits ${submissionId}`, {
         error,
@@ -602,20 +623,25 @@ export async function publishSubmissions(): Promise<void> {
         }
       }
 
-      const metadata = updateMap[result.objectId];
+      const metadataEntries = updateMap.filter((entry) => entry.id === result.objectId);
 
-      if (!metadata) {
+      if (metadataEntries.length === 0) {
         logger.error(`[publishSubmissions] No metadata found for objectId ${result.objectId}`, { updateMap });
 
         continue;
       }
 
-      const destinationPath = generateSheetName({ ...metadata, today: new Date() });
+      for (const metadata of metadataEntries) {
+        const destinationPath = generateSheetName({ ...metadata, today: new Date() });
 
-      storageMigrations.push({
-        from: metadata.document,
-        to: destinationPath,
-      });
+        storageMigrations.push({
+          from: metadata.document,
+          to: destinationPath,
+        });
+
+        // Track this submission as successful
+        successfulSubmissions.add(metadata.submissionId);
+      }
     }
   } catch (error) {
     logger.error('[publishSubmissions] Error updating feature service', { error });
@@ -636,15 +662,23 @@ export async function publishSubmissions(): Promise<void> {
     return;
   }
 
-  logger.info('[publishSubmissions] Moving sheets to final locations', { storageMigrations });
+  logger.info('[publishSubmissions] Moving sheets to public bucket', { storageMigrations });
 
   await moveSheetsToFinalLocation(bucket, storageMigrations);
 
+  logger.info(
+    `[publishSubmissions] Processing ${successfulSubmissions.size} successful submissions out of ${submissionsSnapshot.size} total`,
+  );
+
   for (const submissionDoc of submissionsSnapshot.docs) {
     const submissionId = submissionDoc.id;
-    const ref = db.collection('submissions').doc(submissionId);
 
-    // make sure this is only the documents that worked
+    if (!successfulSubmissions.has(submissionId)) {
+      logger.warn(`[publishSubmissions] Skipping update for ${submissionId} - processing was not successful`);
+      continue;
+    }
+
+    const ref = db.collection('submissions').doc(submissionId);
 
     try {
       await ref.update({

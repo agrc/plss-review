@@ -5,7 +5,7 @@
  * - Firebase emulator must be running: `firebase emulators:start --only firestore`
  * - Environment variables are configured in vitest.config.ts
  */
-import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { GeoPoint, getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as agolModule from '../src/agol.js';
 import { safelyInitializeApp } from '../src/firebase.js';
@@ -43,20 +43,50 @@ async function ensureEmulatorConnection(): Promise<void> {
 }
 
 // Mock the external dependencies that publishSubmissions calls
-vi.mock('../src/agol.js', () => ({
-  getAGOLToken: vi.fn().mockResolvedValue('mock-token'),
-  getAttributesFor: vi.fn().mockResolvedValue({
-    OBJECTID: 123,
-    BLM_POINT_ID: 'UT123456',
-  }),
-  calculateFeatureUpdates: vi.fn().mockReturnValue({}), // No updates needed
-  updateFeatureService: vi.fn().mockResolvedValue([]), // No features to update by default
-}));
+vi.mock('../src/agol.js', async () => {
+  const actual = (await vi.importActual('../src/agol.js')) as typeof agolModule;
 
-vi.mock('../src/storage.js', () => ({
-  generateSheetName: vi.fn().mockReturnValue('test-sheet.pdf'),
-  moveSheetsToFinalLocation: vi.fn().mockResolvedValue(undefined),
-}));
+  return {
+    ...actual,
+    getAGOLToken: vi.fn().mockResolvedValue('mock-token'),
+    getAttributesFor: vi.fn().mockImplementation((blmPointId) => {
+      if (blmPointId === 'UT260070N0020W0_200240') {
+        return Promise.resolve({
+          id: 930949,
+          monument: null,
+          mrrc: null,
+          point_category: 'Calculated',
+        });
+      }
+      // Default mock for other blm_point_ids (like UT123456 used in tests)
+      return Promise.resolve({
+        id: 123,
+        point_category: 'calculated',
+        mrrc: 0,
+        monument: 0,
+      });
+    }),
+    calculateFeatureUpdates: actual.calculateFeatureUpdates, // Call through to original
+    updateFeatureService: vi.fn().mockImplementation((features) => {
+      // Return success results based on the objectIds in the features
+      return Promise.resolve(
+        features.map((feature) => ({
+          success: true,
+          objectId: feature.attributes.OBJECTID,
+        })),
+      );
+    }),
+  };
+});
+
+vi.mock('../src/storage.js', async () => {
+  const actual = await vi.importActual('../src/storage.js');
+  return {
+    ...actual,
+    generateSheetName: vi.fn().mockReturnValue('test-sheet.pdf'), // Mock to return consistent test value
+    moveSheetsToFinalLocation: vi.fn().mockResolvedValue(undefined),
+  };
+});
 
 let db: FirebaseFirestore.Firestore;
 
@@ -83,6 +113,22 @@ describe('functions', () => {
 
     // Clear mock calls
     vi.clearAllMocks();
+
+    // Restore original mock implementations for each test
+    vi.mocked(agolModule.updateFeatureService).mockImplementation((features) => {
+      // Return success results based on the objectIds in the features
+      return Promise.resolve(
+        features.map((feature) => ({
+          success: true,
+          objectId: feature.attributes.OBJECTID,
+        })),
+      ) as Promise<never[]>;
+    });
+
+    // Set up spies to track calls to the real functions
+    vi.spyOn(agolModule, 'getAttributesFor');
+    vi.spyOn(agolModule, 'calculateFeatureUpdates');
+    vi.spyOn(storageModule, 'generateSheetName');
   });
 
   describe('publishSubmissions', () => {
@@ -150,7 +196,7 @@ describe('functions', () => {
       expect(vi.mocked(agolModule.calculateFeatureUpdates)).toHaveBeenCalledWith(
         testSubmission.metadata.corner,
         testSubmission.metadata.mrrc,
-        { OBJECTID: 123, BLM_POINT_ID: 'UT123456' },
+        { id: 123, point_category: 'calculated', mrrc: 0, monument: 0 },
       );
 
       // updateFeatureService should be called even with empty features array
@@ -350,6 +396,181 @@ describe('functions', () => {
       expect(vi.mocked(agolModule.updateFeatureService)).not.toHaveBeenCalled();
       expect(vi.mocked(storageModule.generateSheetName)).not.toHaveBeenCalled();
       expect(vi.mocked(storageModule.moveSheetsToFinalLocation)).not.toHaveBeenCalled();
+    });
+
+    it('handles two different submissions for the same point', async () => {
+      // Create test data that matches the query criteria
+      const eightDaysAgo = new Date();
+      eightDaysAgo.setDate(eightDaysAgo.getDate() - 8);
+
+      const testSubmission = {
+        published: false,
+        pdf: 'submitters/dbmtJakbFWM06YFtIvQCg6BrsCz1/existing/UT260070N0020W0_200240/existing-sheet.pdf',
+        datum: 'geographic-nad83',
+        metadata: {
+          mrrc: true,
+        },
+        grid: {
+          unit: 'm',
+          northing: 1109109.544,
+          verticalDatum: 'NAVD88',
+          easting: 449547.304,
+          elevation: 3000,
+          zone: 'north',
+        },
+        type: 'existing',
+        submitted_by: {
+          name: 'Chris Wnek',
+          id: 'dbmtJakbFWM06YFtIvQCg6BrsCz1',
+        },
+        geographic: {
+          northing: {
+            minutes: 18,
+            seconds: 51.42,
+            degrees: 41,
+          },
+          unit: 'm',
+          elevation: 3000,
+          easting: {
+            seconds: 9.23,
+            minutes: 6,
+            degrees: 112,
+          },
+        },
+        location: new GeoPoint(41.31428333333333, -112.10256388888888),
+        blm_point_id: 'UT260070N0020W0_200240',
+        status: {
+          user: {
+            cancelled: null,
+          },
+          county: {
+            reviewedAt: Timestamp.fromDate(eightDaysAgo),
+            comments: '',
+            approved: true,
+            reviewedBy: 'County',
+          },
+          ugrc: {
+            approved: true,
+            reviewedAt: Timestamp.fromDate(eightDaysAgo),
+            reviewedBy: 'chrisw@utah.gov',
+            comments: '',
+          },
+          sgid: {
+            approved: null,
+          },
+        },
+        created_at: Timestamp.fromDate(eightDaysAgo),
+        county: 'Weber',
+      };
+
+      const testSubmission2 = {
+        created_at: Timestamp.fromDate(eightDaysAgo),
+        datum: 'geographic-nad83',
+        metadata: {
+          notes:
+            'UT260070N0020W0_200240 (Submission 2)\nWeber\nMRRC = Yes\nWitness (WC)\n\n41.314281953242634 -112.10256351014154\n',
+          description:
+            'UT260070N0020W0_200240 (Submission 2)\nWeber\nMRRC = Yes\nWitness (WC)\n\n41.314281953242634 -112.10256351014154\n',
+          section: 29,
+          collected: '2025-07-14',
+          corner: 'WC',
+          mrrc: true,
+          accuracy: 'rec',
+          status: 'existing',
+        },
+        location: new GeoPoint(41.31428333333333, -112.10256388888888),
+        status: {
+          county: {
+            comments: '',
+            approved: true,
+            reviewedAt: Timestamp.fromDate(eightDaysAgo),
+            reviewedBy: 'County',
+          },
+          ugrc: {
+            reviewedBy: 'chrisw@utah.gov',
+            approved: true,
+            comments: '',
+            reviewedAt: Timestamp.fromDate(eightDaysAgo),
+          },
+          user: {
+            cancelled: null,
+          },
+          sgid: {
+            approved: null,
+          },
+        },
+        monument: 'under-review/UT260070N0020W0_200240/dbmtJakbFWM06YFtIvQCg6BrsCz1/uHl5XTr3O6Ef2MvVt6jb.pdf',
+        images: {
+          extra9: '',
+          extra3: '',
+          extra4: '',
+          extra8: '',
+          extra2: '',
+          extra1: '',
+          extra5: '',
+          extra10: '',
+          closeUp: '',
+          monument: '',
+          extra7: '',
+          map: 'submitters/dbmtJakbFWM06YFtIvQCg6BrsCz1/new/UT260070N0020W0_200240/map.png',
+          extra6: '',
+        },
+        published: false,
+        geographic: {
+          easting: {
+            seconds: 9.23,
+            degrees: 112,
+            minutes: 6,
+          },
+          elevation: 3000,
+          northing: {
+            seconds: 51.42,
+            minutes: 18,
+            degrees: 41,
+          },
+          unit: 'm',
+        },
+        submitted_by: {
+          id: 'dbmtJakbFWM06YFtIvQCg6BrsCz1',
+          name: 'Chris Wnek',
+        },
+        blm_point_id: 'UT260070N0020W0_200240',
+        county: 'Weber',
+        grid: {
+          verticalDatum: 'NAVD88',
+          northing: 1109109.544,
+          unit: 'm',
+          zone: 'north',
+          elevation: 3000,
+          easting: 449547.304,
+        },
+        type: 'new',
+      };
+
+      // Add test submission to emulator
+      const submissionRef = await db.collection('submissions').add(testSubmission);
+      const submissionRef2 = await db.collection('submissions').add(testSubmission2);
+
+      // Run the function
+      await publishSubmissions();
+
+      // Verify the first submission was marked as published
+      // Check that moveSheetsToFinalLocation was called with a bucket and the correct migration data
+      expect(vi.mocked(storageModule.moveSheetsToFinalLocation)).toHaveBeenCalledTimes(1);
+
+      const moveSheetsCalls = vi.mocked(storageModule.moveSheetsToFinalLocation).mock.calls;
+      expect(moveSheetsCalls[0][1]).toEqual(expect.arrayContaining([
+        {
+          from: 'under-review/UT260070N0020W0_200240/dbmtJakbFWM06YFtIvQCg6BrsCz1/' + submissionRef.id + '.pdf',
+          to: 'test-sheet.pdf',
+        },
+        {
+          from: 'under-review/UT260070N0020W0_200240/dbmtJakbFWM06YFtIvQCg6BrsCz1/' + submissionRef2.id + '.pdf',
+          to: 'test-sheet.pdf',
+        },
+      ]));
+      // Also verify the array has the correct length
+      expect(moveSheetsCalls[0][1]).toHaveLength(2);
     });
   });
 });
