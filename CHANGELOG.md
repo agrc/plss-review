@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-15](https://github.com/agrc/plss-review/compare/v1.1.0-14...v1.1.0-15) (2025-07-15)
+
+
+### Bug Fixes
+
+* **functions:** allow multiple submissions to be published for the same blm point id ([7d5c918](https://github.com/agrc/plss-review/commit/7d5c918cbca5b5cc440a3508a7dfa8a4e880760c))
+
 ## [1.1.0-14](https://github.com/agrc/plss-review/compare/v1.1.0-13...v1.1.0-14) (2025-07-15)
 
 
