@@ -51,7 +51,7 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
 
       throw error;
     }
-    //http://localhost:4000/storage/localhost/under-review/UT260030S0060W0_160340/Y0D4o9od4ojHpGaL9gg6uK3dgNuK
+    
 
     // Add safety measures
     const MAX_ATTEMPTS = 100; // Prevent infinite loops
