@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-14](https://github.com/agrc/plss-review/compare/v1.1.0-13...v1.1.0-14) (2025-07-15)
+
+
+### Dependencies
+
+* update packages ([4917554](https://github.com/agrc/plss-review/commit/4917554cf6227c2a0ce0b9ca39b0ceb8318d678b))
+
 ## [1.1.0-13](https://github.com/agrc/plss-review/compare/v1.1.0-12...v1.1.0-13) (2025-07-14)
 
 
