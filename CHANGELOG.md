@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.0.5](https://github.com/agrc/plss-review/compare/v1.0.4...v1.0.5) (2025-07-16)
+
+
+### Features
+
+* **functions:** publish submissions on a schedule ([809ba42](https://github.com/agrc/plss-review/commit/809ba424b289d17a478ab1089fea84121da6d43b))
+* **scripts:** create migration for publishing status ([9610ec1](https://github.com/agrc/plss-review/commit/9610ec1d28c9ba7903c531fdcc866e2b3027e0dd))
+
+
+### Bug Fixes
+
+* allow fiscal year records to be created ([bf6b369](https://github.com/agrc/plss-review/commit/bf6b36989f28def434b7d98b12674c46f27d8e92))
+* allow fullscreen on iframe for storage documents ([168dc97](https://github.com/agrc/plss-review/commit/168dc9731a7af90cde880684d74b0ba96c674d9a))
+* correct logging for real this time ([588c1c3](https://github.com/agrc/plss-review/commit/588c1c3a8cfef4e9252758cbeada4f836824f338))
+* correct misspelling ([ba8ef7e](https://github.com/agrc/plss-review/commit/ba8ef7e3e09cd0a8b60deefb95e4d5f507753166))
+* **functions:** add missing dependency ([07cd016](https://github.com/agrc/plss-review/commit/07cd016929a66de59ee6e5f0844ea5814709805f))
+* **functions:** allow multiple submissions to be published for the same blm point id ([9a81acd](https://github.com/agrc/plss-review/commit/9a81acdf27f59df779d0a44c62d01ceb60e28bec))
+* **functions:** await async function ([547325e](https://github.com/agrc/plss-review/commit/547325e91ffe1aecf5d2f85add30bcef7b727eb9))
+* improve logging ([8e0922b](https://github.com/agrc/plss-review/commit/8e0922b503323ecb69ad8b61c967068bc5570d89))
+* title case point category values ([c791fb6](https://github.com/agrc/plss-review/commit/c791fb633e7779d2679f937252bca8db6636eceb))
+* update ci to point at prod ([f74fe15](https://github.com/agrc/plss-review/commit/f74fe158c1e17a58d3300676fa0e3260f3a3b1e5))
+* update county activity indicator to only display on button clicked ([647a20a](https://github.com/agrc/plss-review/commit/647a20acb52bba38bf8d3f96a5c065fd76de1eda))
+
+
+### Dependencies
+
+* bump the safe-dependencies group across 1 directory with 2 updates ([826d12a](https://github.com/agrc/plss-review/commit/826d12a0359091d748c2223d0711f00e5643bd15))
+* update package lock ([13e2eb5](https://github.com/agrc/plss-review/commit/13e2eb5d64ac8bda5923fad3c6ba708799cb24f9))
+* update packages ([ed7a337](https://github.com/agrc/plss-review/commit/ed7a3377bb5d3431e67e9cddc148f3eb7edbdefc))
+* update packages ([1902c05](https://github.com/agrc/plss-review/commit/1902c05bdc9ead5bfbdb6aa43f38faa24ab617a5))
+
+
+### Documentation
+
+* add missing storage rule click ops ([220c176](https://github.com/agrc/plss-review/commit/220c176f5cefb2ce364b446755254624fa04d2e6))
+
 ## [1.1.0-15](https://github.com/agrc/plss-review/compare/v1.1.0-14...v1.1.0-15) (2025-07-15)
 
 
