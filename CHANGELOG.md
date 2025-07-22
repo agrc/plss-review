@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.6](https://github.com/agrc/plss-review/compare/v1.0.5...v1.0.6) (2025-07-22)
+
+
+### Bug Fixes
+
+* sync firebase indexes ([75868f8](https://github.com/agrc/plss-review/commit/75868f883dbf6649bf5abb747d78028ec6456ff4))
+
 ## [1.0.5](https://github.com/agrc/plss-review/compare/v1.0.4...v1.0.5) (2025-07-16)
 
 
