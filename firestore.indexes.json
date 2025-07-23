@@ -115,6 +115,28 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "submissions",
+      "fields": [
+        {
+          "fieldPath": "published",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status.county.approved",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status.ugrc.approved",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status.county.reviewedAt",
+          "order": "ASCENDING"
+        }
+      ],
+      "queryScope": "COLLECTION"
     }
   ],
   "fieldOverrides": []
