@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.7](https://github.com/agrc/plss-review/compare/v1.0.6...v1.0.7) (2025-07-30)
+
+
+### Dependencies
+
+* audit fix ([7b45032](https://github.com/agrc/plss-review/commit/7b45032ddc72e1bf448f75d7166237debf4f6325))
+* bump @ugrc/utah-design-system in the safe-dependencies group ([0f6016d](https://github.com/agrc/plss-review/commit/0f6016d2dd848cf72a81a75fd0a907963471841a))
+* bump the safe-dependencies group with 4 updates ([7dc084e](https://github.com/agrc/plss-review/commit/7dc084e9684a787473fdcc4e3f94272666ef27b5))
+
 ## [1.0.6](https://github.com/agrc/plss-review/compare/v1.0.5...v1.0.6) (2025-07-22)
 
 
