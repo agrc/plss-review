@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.8](https://github.com/agrc/plss-review/compare/v1.0.7...v1.0.8) (2025-08-04)
+
+
+### Bug Fixes
+
+* remove system generated index name ([a3b4bec](https://github.com/agrc/plss-review/commit/a3b4becb15d27f3cd44015b9a25fa7046c2b4ae1))
+
+
+### Dependencies
+
+* bump the safe-dependencies group with 5 updates ([#107](https://github.com/agrc/plss-review/issues/107)) ([30d0990](https://github.com/agrc/plss-review/commit/30d0990f8151194b7ce0b401ee90885a4523391a))
+
 ## [1.0.7](https://github.com/agrc/plss-review/compare/v1.0.6...v1.0.7) (2025-07-30)
 
 
