@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.9](https://github.com/agrc/plss-review/compare/v1.0.8...v1.0.9) (2025-08-12)
+
+
+### Bug Fixes
+
+* correct login issues ([78232b3](https://github.com/agrc/plss-review/commit/78232b3e80988f790cd3a076fc63138cda793bb1))
+
 ## [1.0.8](https://github.com/agrc/plss-review/compare/v1.0.7...v1.0.8) (2025-08-04)
 
 
