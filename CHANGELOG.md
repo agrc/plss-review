@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.10](https://github.com/agrc/plss-review/compare/v1.0.9...v1.0.10) (2025-09-29)
+
+
+### Bug Fixes
+
+* correct log statement to fix runtime error ([166cbcd](https://github.com/agrc/plss-review/commit/166cbcd80a6b815211e8acd70c1adb08c4524d82))
+
 ## [1.0.9](https://github.com/agrc/plss-review/compare/v1.0.8...v1.0.9) (2025-08-12)
 
 
