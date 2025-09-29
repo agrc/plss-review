@@ -328,16 +328,20 @@ export async function approveCounty(event: { data: { documentId: string } }): Pr
     'status.county.approved': true,
   } as CountyReview;
 
-  logger.info('[approveCounty] updating county approval status', { before: data.status.county, after: updates });
+  logger.info('[approveCounty] updating county approval status', {
+    before: data.status.county,
+    after: updates,
+    document: documentId,
+  });
 
   await ref.update(updates);
 
-  if (data.metadata.mrrc) {
+  if (data.metadata?.mrrc) {
     const fiscalYear = getFiscalYear(new Date());
 
     logger.debug(`[approveCounty] updating mrrc submission counts for FY${fiscalYear}`, {
       county: data.county,
-      mrrc: data.metadata.mrrc,
+      mrrc: data.metadata?.mrrc,
     });
 
     const statsRef = db.collection('stats').doc(`mrrc-${fiscalYear}`);
