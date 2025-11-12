@@ -1,5 +1,7 @@
 # PLSS Monument Review
 
+[![Release Events](https://github.com/agrc/plss-review/actions/workflows/release.yml/badge.svg?event=release)](https://github.com/agrc/plss-review/actions/workflows/release.yml)
+
 A website to view and approve to monument record sheet submissions
 
 ## Development
