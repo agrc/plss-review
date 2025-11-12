@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.11](https://github.com/agrc/plss-review/compare/v1.0.10...v1.0.11) (2025-11-12)
+
+
+### Dependencies
+
+* bump the safe-dependencies group across 1 directory with 32 updates ([a401970](https://github.com/agrc/plss-review/commit/a401970343a639a89131f23892aa0495032f64c3))
+* **dev:** bump vite from 7.1.10 to 7.1.11 ([eb8e674](https://github.com/agrc/plss-review/commit/eb8e674642a4c75a086f60bdca40aaad0afeafc8))
+
 ## [1.0.10](https://github.com/agrc/plss-review/compare/v1.0.9...v1.0.10) (2025-09-29)
 
 
