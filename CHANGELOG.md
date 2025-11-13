@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.12](https://github.com/agrc/plss-review/compare/v1.0.11...v1.0.12) (2025-11-13)
+
+
+### Dependencies
+
+* bump the major-dependencies group with 5 updates ([3c005fb](https://github.com/agrc/plss-review/commit/3c005fb7c79b5ce8ed3f3940d9c55e81f1ec4037))
+* bump the safe-dependencies group across 1 directory with 12 updates ([3a30e06](https://github.com/agrc/plss-review/commit/3a30e06582b6f44688684c31468559a6d3d7ce23))
+
 ## [1.0.11](https://github.com/agrc/plss-review/compare/v1.0.10...v1.0.11) (2025-11-12)
 
 
