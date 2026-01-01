@@ -22,10 +22,10 @@
   "dependencies": {
     "@sendgrid/client": "^8.1.6",
     "base64-stream": "^1.0.0",
-    "firebase": "^12.4.0",
-    "firebase-admin": "^13.5.0",
+    "firebase": "^12.7.0",
+    "firebase-admin": "^13.6.0",
     "firebase-functions": "^6.6.0",
-    "ky": "^1.13.0",
+    "ky": "^1.14.1",
     "luxon": "^3.7.2"
   },
   "devDependencies": {
@@ -34,10 +34,10 @@
     "@types/luxon": "^3.7.1",
     "@vitest/coverage-v8": "3.2.4",
     "concurrently": "^9.2.1",
-    "eslint": "^9.38.0",
+    "eslint": "^9.39.2",
     "firebase-functions-test": "^3.4.1",
-    "nodemon": "^3.1.10",
-    "rimraf": "^6.0.1",
+    "nodemon": "^3.1.11",
+    "rimraf": "^6.1.2",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
