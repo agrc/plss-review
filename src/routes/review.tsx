@@ -225,6 +225,38 @@ export default function Review() {
         }),
       });
 
+      if (!data?.location?.latitude || !data?.location?.longitude) {
+        console.warn('Submission is missing location data');
+        const textSymbol = new TextSymbol({
+          text: `no location data with submission`,
+          color: 'black',
+          haloColor: 'white',
+          haloSize: 2,
+          font: {
+            size: 20,
+            family: 'sans-serif',
+            weight: 'bold',
+          },
+          yoffset: 40,
+        });
+
+        const labelGraphic = new Graphic({
+          geometry: blmPointIdGraphic.geometry,
+          symbol: textSymbol,
+        });
+
+        placeGraphic([labelGraphic, blmPointIdGraphic]);
+
+        zoom(
+          new Viewpoint({
+            targetGeometry: blmPointIdGraphic.geometry,
+            scale: 1000,
+          }),
+        );
+
+        return;
+      }
+
       const submissionGraphic = new Graphic({
         geometry: new Point({
           latitude: data.location.latitude,
