@@ -76,6 +76,12 @@ jobs:
             ${{ runner.os }}-firebase-emulators-
             ${{ runner.os }}-
 
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - name: 🧪 Run tests
         run: pnpm test:ci
 
