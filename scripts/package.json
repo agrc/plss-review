@@ -18,7 +18,7 @@
     "prod:update-contacts": "ts-node ./2.0.0__update-county-contacts.ts --project=ut-dts-agrc-plss-prod"
   },
   "dependencies": {
-    "firebase-admin": "^13.5.0"
+    "firebase-admin": "^13.6.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.2"
