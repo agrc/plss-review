@@ -13,6 +13,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
+    exclude: ['**/node_modules/**', '**/dist/**', '**/scripts/**'],
     env: {
       FIRESTORE_EMULATOR_HOST: '127.0.0.1:8080',
       FIREBASE_AUTH_EMULATOR_HOST: '127.0.0.1:9099',
