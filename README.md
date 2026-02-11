@@ -29,3 +29,7 @@ The following dependencies need to stay at the tailwind v3 versions
 | tailwind-merge                    | v2         | v3         |
 | tailwindcss                       | v3         | v4         |
 | tailwindcss-react-aria-components | v1         | v2         |
+
+## Attribution
+
+This project was developed with the assistance of [GitHub Copilot](https://github.com/features/copilot).
