@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.13](https://github.com/agrc/plss-review/compare/v1.0.12...v1.0.13) (2026-02-11)
+
+
+### Bug Fixes
+
+* handle missing location property ([c647715](https://github.com/agrc/plss-review/commit/c647715e13470f51eb6d37f429909b84921c1201)), closes [#128](https://github.com/agrc/plss-review/issues/128) [#68](https://github.com/agrc/plss-review/issues/68)
+
+
+### Dependencies
+
+* bump the safe-dependencies group ([b5137dc](https://github.com/agrc/plss-review/commit/b5137dcf3c27711aca638f5cbd142c9de1d49fd3))
+* bump the safe-dependencies group across 1 directory with 9 updates ([52e9aa0](https://github.com/agrc/plss-review/commit/52e9aa00ba4426caaa20dd77ce86799338f13325))
+* **dev:** bump the major-dependencies group with 4 updates ([4d64885](https://github.com/agrc/plss-review/commit/4d64885fc1f9464c203628f47c93eaf25f55203d))
+* fix dependency relationships ([14cb424](https://github.com/agrc/plss-review/commit/14cb424caecbee0479691026e4e06536166cc210))
+
+
+### Documentation
+
+* add ai attribution ([61a6836](https://github.com/agrc/plss-review/commit/61a6836a3747334113bf8411bd2f191aad88f6fa))
+
 ## [1.0.12](https://github.com/agrc/plss-review/compare/v1.0.11...v1.0.12) (2025-11-13)
 
 
