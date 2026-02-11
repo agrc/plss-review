@@ -1,3 +1,8 @@
 import { browser } from '@ugrc/eslint-config';
 
-export default browser;
+export default [
+  {
+    ignores: ['**/lib/**'],
+  },
+  ...browser,
+];
