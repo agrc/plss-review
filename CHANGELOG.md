@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.14](https://github.com/agrc/plss-review/compare/v1.0.13...v1.0.14) (2026-04-23)
+
+
+### Features
+
+* bootstrap project ([31c3bff](https://github.com/agrc/plss-review/commit/31c3bff690ccb3ef8984991995eb41f231eee780))
+
+
+### Bug Fixes
+
+* **functions:** better error message ([4f4a960](https://github.com/agrc/plss-review/commit/4f4a960efc3a992125d83efaee3b110a215b45ba))
+
 ## [1.0.13](https://github.com/agrc/plss-review/compare/v1.0.12...v1.0.13) (2026-02-11)
 
 
