@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.15](https://github.com/agrc/plss-review/compare/v1.0.14...v1.0.15) (2026-04-23)
+
+
+### Bug Fixes
+
+* **functions:** add missing pnpm lock file in gcp builds ([7173810](https://github.com/agrc/plss-review/commit/71738101af7d70d466bb0f6318a281c5c5179720))
+
 ## [1.0.14](https://github.com/agrc/plss-review/compare/v1.0.13...v1.0.14) (2026-04-23)
 
 
