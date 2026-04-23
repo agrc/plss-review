@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/agrc/plss-review/compare/v1.0.13...v1.1.0) (2026-04-23)
+
+
+### Features
+
+* bootstrap project ([31c3bff](https://github.com/agrc/plss-review/commit/31c3bff690ccb3ef8984991995eb41f231eee780))
+
 ## [1.0.13](https://github.com/agrc/plss-review/compare/v1.0.12...v1.0.13) (2026-02-11)
 
 
