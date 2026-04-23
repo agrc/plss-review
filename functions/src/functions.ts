@@ -602,8 +602,10 @@ export async function publishSubmissions(): Promise<void> {
         blmPointId: submission.blm_point_id,
       });
     } catch (error) {
-      logger.error(`[publishSubmissions] Error preparing agol feature service edits ${submissionId}`, {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error(`[publishSubmissions] Error preparing agol feature service edits ${submissionId}: ${errorMessage}`, {
         error,
+        stack: error instanceof Error ? error.stack : undefined,
       });
     }
   }
