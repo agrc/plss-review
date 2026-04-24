@@ -6,3 +6,4 @@ onlyBuiltDependencies:
 packages:
   - scripts
   - functions
+injectWorkspacePackages: true

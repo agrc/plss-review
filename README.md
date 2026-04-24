@@ -7,8 +7,8 @@ A website to view and approve to monument record sheet submissions
 ## Development
 
 1. Install dependencies
-   - `pnpm install` (root)
-   - `pnpm install --dir functions` (Cloud Functions are a standalone package with their own lockfile and are not part of the pnpm workspace)
+   - `pnpm install`
+   - The root workspace install includes the frontend and `functions/` package dependencies.
 1. Start the website
    - `pnpm start`
 1. Browse to the [development server](http://localhost:5173/) and login as `Staff Reviewer`
@@ -20,6 +20,10 @@ A website to view and approve to monument record sheet submissions
 1. Add credential created in apadmin to the tenant
 1. Update the authentication blocking functions after deployment
 1. Allow the storage rules to query the database in the firebase console
+
+GitHub Actions prepares Cloud Functions for deployment with `pnpm run deploy:functions:ci`. That command creates a `deploy-functions/` bundle from the workspace lockfile and rewrites `firebase.json` during CI so Firebase deploys the isolated bundle instead of the local `functions/` source.
+
+Local development still uses `firebase.json` with `functions` as the source so emulator and watch-mode workflows continue to rebuild from `functions/lib` without generating the CI deploy bundle.
 
 ## :robot: Dependabot
 

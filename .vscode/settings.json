@@ -24,6 +24,7 @@
     "noreferrer",
     "packagejson",
     "PLSS",
+    "prebuild",
     "predeploy",
     "sendgrid",
     "sgid",
