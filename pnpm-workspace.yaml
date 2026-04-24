@@ -5,3 +5,4 @@ onlyBuiltDependencies:
   - protobufjs
 packages:
   - scripts
+  - functions
