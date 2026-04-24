@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-rc.19](https://github.com/agrc/plss-review/compare/v1.1.0-rc.18...v1.1.0-rc.19) (2026-04-24)
+
+
+### Bug Fixes
+
+* **functions:** add required package ([a6ee72d](https://github.com/agrc/plss-review/commit/a6ee72d29ff5d62af832c25b22adb791d0d30336))
+
 ## [1.1.0-rc.18](https://github.com/agrc/plss-review/compare/v1.1.0-rc.17...v1.1.0-rc.18) (2026-04-24)
 
 
