@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.16](https://github.com/agrc/plss-review/compare/v1.1.0-rc.20...v1.0.16) (2026-04-24)
+
+
+### Bug Fixes
+
+* fix functions deploy ([e13823c](https://github.com/agrc/plss-review/commit/e13823ce4caffafe90a09e3870b8e26fbb93f285))
+
 ## [1.1.0-rc.20](https://github.com/agrc/plss-review/compare/v1.0.15...v1.1.0-rc.20) (2026-04-24)
 
 
