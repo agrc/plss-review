@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-rc.16](https://github.com/agrc/plss-review/compare/v1.0.15...v1.1.0-rc.16) (2026-04-24)
+
+
+### Bug Fixes
+
+* **functions:** pull functions out of pnpm monorepo ([dd899e1](https://github.com/agrc/plss-review/commit/dd899e124d32c825319ee96c94a5987d27996266))
+
 ## [1.0.15](https://github.com/agrc/plss-review/compare/v1.0.14...v1.0.15) (2026-04-23)
 
 
