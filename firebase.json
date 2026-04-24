@@ -5,11 +5,7 @@
       "source": "functions",
       "codebase": "review",
       "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local", ".secret"],
-      "predeploy": [
-        "pnpm --prefix \"$RESOURCE_DIR\" run lint",
-        "pnpm --prefix \"$RESOURCE_DIR\" run build",
-        "cp pnpm-lock.yaml \"$RESOURCE_DIR/pnpm-lock.yaml\""
-      ]
+      "predeploy": ["pnpm --prefix \"$RESOURCE_DIR\" run lint", "pnpm --prefix \"$RESOURCE_DIR\" run build"]
     }
   ],
   "firestore": {

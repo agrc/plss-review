@@ -6,6 +6,9 @@ A website to view and approve to monument record sheet submissions
 
 ## Development
 
+1. Install dependencies
+   - `pnpm install` (root)
+   - `pnpm install --dir functions` (Cloud Functions are a standalone package with their own lockfile and are not part of the pnpm workspace)
 1. Start the website
    - `pnpm start`
 1. Browse to the [development server](http://localhost:5173/) and login as `Staff Reviewer`
