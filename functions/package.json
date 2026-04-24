@@ -20,6 +20,7 @@
     "test:ci": "firebase emulators:exec --only firestore 'vitest run --coverage'"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^5.0.2",
     "@sendgrid/client": "^8.1.6",
     "base64-stream": "^1.0.0",
     "firebase-admin": "^13.6.0",
