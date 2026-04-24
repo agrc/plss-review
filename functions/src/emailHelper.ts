@@ -3,6 +3,7 @@ import type { ClientRequest } from '@sendgrid/client/src/request.js';
 import { Base64Encode } from 'base64-stream';
 import type { Firestore } from 'firebase-admin/firestore';
 import { logger } from 'firebase-functions/v2';
+import { getErrorLogDetails } from './utils.js';
 
 export type Contact = {
   name: string;
@@ -67,7 +68,12 @@ export const getBase64EncodedAttachment = (stream: NodeJS.ReadableStream) => {
 
   return new Promise((resolve, reject) => {
     stream.on('error', (error) => {
-      logger.error('encode pdf error', { error });
+      const errorDetails = getErrorLogDetails(error);
+
+      logger.error(`encode pdf error: ${errorDetails.message}`, {
+        error,
+        stack: errorDetails.stack,
+      });
 
       return reject(error);
     });

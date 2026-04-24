@@ -1,6 +1,7 @@
 import { getStorage } from 'firebase-admin/storage';
 import { logger } from 'firebase-functions/v2';
 import type { BucketFileMigration } from './types.js';
+import { getErrorLogDetails } from './utils.js';
 
 type Bucket = ReturnType<ReturnType<typeof getStorage>['bucket']>;
 
@@ -47,7 +48,12 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
     try {
       exists = (await destination.exists())[0];
     } catch (error) {
-      logger.error(`Error checking file existence`, { error });
+      const errorDetails = getErrorLogDetails(error);
+
+      logger.error(`Error checking file existence: ${errorDetails.message}`, {
+        error,
+        stack: errorDetails.stack,
+      });
 
       throw error;
     }
@@ -65,7 +71,12 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
       try {
         exists = (await destination.exists())[0];
       } catch (error) {
-        logger.error(`Error checking file existence`, { error });
+        const errorDetails = getErrorLogDetails(error);
+
+        logger.error(`Error checking file existence: ${errorDetails.message}`, {
+          error,
+          stack: errorDetails.stack,
+        });
       }
 
       attempts++;
@@ -79,7 +90,13 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
       await file.move(destination);
       logger.info(`[publishSubmissions] Moved pdf to production path`, { migration });
     } catch (error) {
-      logger.error(`[publishSubmissions] Failed to move file`, { migration, error });
+      const errorDetails = getErrorLogDetails(error);
+
+      logger.error(`[publishSubmissions] Failed to move file: ${errorDetails.message}`, {
+        migration,
+        error,
+        stack: errorDetails.stack,
+      });
     }
   }
 };

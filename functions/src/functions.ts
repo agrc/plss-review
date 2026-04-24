@@ -19,7 +19,7 @@ import type {
   SubmissionInCountyEvent,
   SubmissionRejectedEvent,
 } from './types.js';
-import { determineStatusChange, getFiscalYear, getMountainTimeFutureDate } from './utils.js';
+import { determineStatusChange, getErrorLogDetails, getFiscalYear, getMountainTimeFutureDate } from './utils.js';
 
 safelyInitializeApp();
 
@@ -146,8 +146,11 @@ export async function queueTasks(
               type: 'auto-approve',
             });
           } else {
-            logger.error('failed to enqueue task', {
+            const errorDetails = getErrorLogDetails(error);
+
+            logger.error(`failed to enqueue task: ${errorDetails.message}`, {
               error,
+              stack: errorDetails.stack,
               task: `submission-auto-approval-${event.params.docId}`,
               document: event.params.docId,
               type: 'auto-approve',
@@ -187,8 +190,11 @@ export async function queueTasks(
               type: 'email',
             });
           } else {
-            logger.error('failed to enqueue task', {
+            const errorDetails = getErrorLogDetails(error);
+
+            logger.error(`failed to enqueue task: ${errorDetails.message}`, {
               error,
+              stack: errorDetails.stack,
               task: `submission-in-county-${event.params.docId}`,
               type: 'email',
               document: event.params.docId,
@@ -229,8 +235,11 @@ export async function queueTasks(
               document: event.params.docId,
             });
           } else {
-            logger.error('failed to enqueue task', {
+            const errorDetails = getErrorLogDetails(error);
+
+            logger.error(`failed to enqueue task: ${errorDetails.message}`, {
               error,
+              stack: errorDetails.stack,
               task: `ugrc-rejection`,
               type: 'email',
               document: event.params.docId,
@@ -276,8 +285,11 @@ export async function queueTasks(
               document: event.params.docId,
             });
           } else {
-            logger.error('failed to enqueue task', {
+            const errorDetails = getErrorLogDetails(error);
+
+            logger.error(`failed to enqueue task: ${errorDetails.message}`, {
               error,
+              stack: errorDetails.stack,
               task: `ugrc-rejection`,
               type: 'email',
               document: event.params.docId,
@@ -458,7 +470,12 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
             errors: (error as { response: { body: { errors: unknown[] } } }).response.body.errors,
           });
         } else {
-          logger.error('[sendMail] failed to send rejection email', { error });
+          const errorDetails = getErrorLogDetails(error);
+
+          logger.error(`[sendMail] failed to send rejection email: ${errorDetails.message}`, {
+            error,
+            stack: errorDetails.stack,
+          });
         }
 
         throw error;
@@ -483,7 +500,12 @@ export async function publishSubmissions(): Promise<void> {
   try {
     submissionsSnapshot = await getSubmissionsReadyForPublishing(db);
   } catch (error) {
-    logger.error('[publishSubmissions] Error fetching submissions ready for publishing', { error });
+    const errorDetails = getErrorLogDetails(error);
+
+    logger.error(`[publishSubmissions] Error fetching submissions ready for publishing: ${errorDetails.message}`, {
+      error,
+      stack: errorDetails.stack,
+    });
 
     throw error;
   }
@@ -604,11 +626,15 @@ export async function publishSubmissions(): Promise<void> {
         blmPointId: submission.blm_point_id,
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error(`[publishSubmissions] Error preparing agol feature service edits ${submissionId}: ${errorMessage}`, {
-        error,
-        stack: error instanceof Error ? error.stack : undefined,
-      });
+      const errorDetails = getErrorLogDetails(error);
+
+      logger.error(
+        `[publishSubmissions] Error preparing agol feature service edits ${submissionId}: ${errorDetails.message}`,
+        {
+          error,
+          stack: errorDetails.stack,
+        },
+      );
     }
   }
 
@@ -652,7 +678,12 @@ export async function publishSubmissions(): Promise<void> {
       }
     }
   } catch (error) {
-    logger.error('[publishSubmissions] Error updating feature service', { error });
+    const errorDetails = getErrorLogDetails(error);
+
+    logger.error(`[publishSubmissions] Error updating feature service: ${errorDetails.message}`, {
+      error,
+      stack: errorDetails.stack,
+    });
 
     throw error;
   }
@@ -697,7 +728,15 @@ export async function publishSubmissions(): Promise<void> {
 
       logger.info(`[publishSubmissions] Updated submission ${submissionId} to published`);
     } catch (error) {
-      logger.error(`[publishSubmissions] Failed to update submission ${submissionId} to published`, { error });
+      const errorDetails = getErrorLogDetails(error);
+
+      logger.error(
+        `[publishSubmissions] Failed to update submission ${submissionId} to published: ${errorDetails.message}`,
+        {
+          error,
+          stack: errorDetails.stack,
+        },
+      );
     }
   }
 

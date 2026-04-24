@@ -5,6 +5,19 @@ export function getMountainTimeFutureDate(daysInFuture: number): string {
   return DateTime.now().setZone('America/Denver').plus({ days: daysInFuture }).toFormat('yyyy-MM-dd');
 }
 
+export function getErrorLogDetails(error: unknown): { message: string; stack?: string } {
+  if (error instanceof Error) {
+    return {
+      message: error.message,
+      stack: error.stack,
+    };
+  }
+
+  return {
+    message: String(error),
+  };
+}
+
 export function determineStatusChange(
   before: { ugrc: Status; county: Status },
   after: { ugrc: Status; county: Status },
