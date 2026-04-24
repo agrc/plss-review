@@ -67,7 +67,7 @@ jobs:
         run: pnpm install
 
       - name: 📥 Download functions dependencies
-        run: pnpm install --dir functions
+        run: cd functions && pnpm install
 
       - name: 📦 Cache Firebase emulators
         uses: actions/cache@v5
