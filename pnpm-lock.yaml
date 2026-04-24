@@ -195,9 +195,6 @@ importers:
       base64-stream:
         specifier: ^1.0.0
         version: 1.0.0
-      firebase:
-        specifier: ^12.8.0
-        version: 12.8.0
       firebase-admin:
         specifier: ^13.6.0
         version: 13.6.0(encoding@0.1.13)
@@ -10014,7 +10011,7 @@ snapshots:
       chalk: 4.1.2
       collect-v8-coverage: 1.0.3
       exit-x: 0.2.2
-      glob: 13.0.2
+      glob: 13.0.6
       graceful-fs: 4.2.11
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-instrument: 6.0.3
@@ -15932,7 +15929,7 @@ snapshots:
       chalk: 4.1.2
       ci-info: 4.4.0
       deepmerge: 4.3.1
-      glob: 13.0.2
+      glob: 13.0.6
       graceful-fs: 4.2.11
       jest-circus: 30.0.4(babel-plugin-macros@3.1.0)
       jest-docblock: 30.0.1
@@ -15966,7 +15963,7 @@ snapshots:
       chalk: 4.1.2
       ci-info: 4.4.0
       deepmerge: 4.3.1
-      glob: 13.0.2
+      glob: 13.0.6
       graceful-fs: 4.2.11
       jest-circus: 30.0.4(babel-plugin-macros@3.1.0)
       jest-docblock: 30.0.1
@@ -16127,7 +16124,7 @@ snapshots:
       chalk: 4.1.2
       cjs-module-lexer: 2.2.0
       collect-v8-coverage: 1.0.3
-      glob: 13.0.2
+      glob: 13.0.6
       graceful-fs: 4.2.11
       jest-haste-map: 30.0.2
       jest-message-util: 30.0.2
