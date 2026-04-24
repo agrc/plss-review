@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0-rc.17](https://github.com/agrc/plss-review/compare/v1.1.0-rc.16...v1.1.0-rc.17) (2026-04-24)
+
+
+### Bug Fixes
+
+* remove firebase web SDK from functions dependencies to prevent Cloud Build npm crash ([501d535](https://github.com/agrc/plss-review/commit/501d5359daa89844f2f1576224bd0f812d6bcd77))
+* use pnpm deploy to make sure that the lock file is preserved during cloud build ([38bec90](https://github.com/agrc/plss-review/commit/38bec90fd4d973bc3a4c773e4684cc9cb1804043))
+
 ## [1.1.0-rc.16](https://github.com/agrc/plss-review/compare/v1.0.15...v1.1.0-rc.16) (2026-04-24)
 
 
