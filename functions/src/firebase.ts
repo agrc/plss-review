@@ -1,8 +1,7 @@
-import { initializeApp } from 'firebase-admin/app';
-import { type FirebaseOptions } from 'firebase/app';
+import { initializeApp, type AppOptions } from 'firebase-admin/app';
 
 export const safelyInitializeApp = () => {
-  let app = {} as FirebaseOptions;
+  let app = {} as AppOptions;
   try {
     app = JSON.parse(process.env.FIREBASE_CONFIG ?? '{}');
   } catch (error) {

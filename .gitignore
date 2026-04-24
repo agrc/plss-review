@@ -145,3 +145,4 @@ public/assets/components/*
 # Firebase
 .firebase/
 firebase-export-*
+deploy-functions/

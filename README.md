@@ -6,6 +6,9 @@ A website to view and approve to monument record sheet submissions
 
 ## Development
 
+1. Install dependencies
+   - `pnpm install` (root)
+   - `pnpm install --dir functions`
 1. Start the website
    - `pnpm start`
 1. Browse to the [development server](http://localhost:5173/) and login as `Staff Reviewer`
@@ -17,6 +20,8 @@ A website to view and approve to monument record sheet submissions
 1. Add credential created in apadmin to the tenant
 1. Update the authentication blocking functions after deployment
 1. Allow the storage rules to query the database in the firebase console
+
+GitHub Actions installs dependencies for the standalone `functions/` package before Firebase deploys, and `firebase.json` continues to use `functions` as the deploy source for both local development and CI.
 
 ## :robot: Dependabot
 

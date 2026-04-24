@@ -34,7 +34,7 @@ jobs:
           cache: pnpm
 
       - name: 📥 Download dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: 🧶 Lint
         run: pnpm run lint
@@ -64,7 +64,8 @@ jobs:
           cache: pnpm
 
       - name: 📥 Download dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile && cd functions && pnpm install
+          --frozen-lockfile
 
       - name: 📦 Cache Firebase emulators
         uses: actions/cache@v5
@@ -79,8 +80,8 @@ jobs:
       - name: ☕ Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: "temurin"
+          java-version: "21"
 
       - name: 🧪 Run tests
         run: pnpm test:ci
@@ -88,7 +89,7 @@ jobs:
   deploy-preview:
     name: Firebase preview
     runs-on: ubuntu-latest
-    needs: [test-unit, test-check]
+    needs: [ test-unit, test-check ]
     if: ${{ github.event.sender.type == 'User' && github.head_ref != 'dev' }}
     environment:
       name: preview
@@ -100,6 +101,7 @@ jobs:
           identity-provider: ${{ secrets.IDENTITY_PROVIDER }}
           service-account-email: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
           project-id: ${{ secrets.PROJECT_ID }}
+          prebuild-command: cd functions && pnpm install --frozen-lockfile
           preview: yes
           build-command: pnpm run build --mode dev
           repo-token: ${{ secrets.GITHUB_TOKEN }}
