@@ -34,7 +34,7 @@ jobs:
           cache: pnpm
 
       - name: 📥 Download dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: 🧶 Lint
         run: pnpm run lint
@@ -64,7 +64,8 @@ jobs:
           cache: pnpm
 
       - name: 📥 Download dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile && cd functions && pnpm install
+          --frozen-lockfile
 
       - name: 📦 Cache Firebase emulators
         uses: actions/cache@v5
