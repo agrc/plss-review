@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-rc.20](https://github.com/agrc/plss-review/compare/v1.0.15...v1.1.0-rc.20) (2026-04-24)
+
+
+### Bug Fixes
+
+* **functions:** switch to separate project for functions to make cloud build work ([ee07028](https://github.com/agrc/plss-review/commit/ee0702859a801490d3e2536c79f1ec7c44e9f745))
+
 ## [1.1.0-rc.19](https://github.com/agrc/plss-review/compare/v1.1.0-rc.18...v1.1.0-rc.19) (2026-04-24)
 
 
