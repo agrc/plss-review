@@ -5,5 +5,3 @@ onlyBuiltDependencies:
   - protobufjs
 packages:
   - scripts
-  - functions
-injectWorkspacePackages: true
