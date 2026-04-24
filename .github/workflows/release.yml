@@ -2,11 +2,11 @@ name: Release Events
 
 on:
   release:
-    types: [published]
+    types: [ published ]
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to run tests against'
+        description: "Environment to run tests against"
         type: environment
         required: true
 
@@ -33,7 +33,7 @@ jobs:
           build-command: pnpm run build --mode dev
         env:
           VITE_DISCOVER: ${{ secrets.VITE_DISCOVER_KEY }}
-          VITE_WEB_API: ${{ secrets.VITE_WEB_API }}
+          VITE_WEB_API: ${{ secrets.VITE_UGRC_API_KEY }}
           VITE_FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
           VITE_FIREBASE_TENANT: ${{ secrets.FIREBASE_TENANT }}
 
@@ -61,7 +61,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           VITE_DISCOVER: ${{ secrets.VITE_DISCOVER_KEY }}
-          VITE_WEB_API: ${{ secrets.VITE_WEB_API }}
+          VITE_WEB_API: ${{ secrets.VITE_UGRC_API_KEY }}
           VITE_FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
           VITE_FIREBASE_TENANT: ${{ secrets.FIREBASE_TENANT }}
 
