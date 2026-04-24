@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-rc.18](https://github.com/agrc/plss-review/compare/v1.1.0-rc.17...v1.1.0-rc.18) (2026-04-24)
+
+
+### Bug Fixes
+
+* switch back to stand-alone function project ([31f2d50](https://github.com/agrc/plss-review/commit/31f2d50faf6407c46cbaa8487dcba670db2e5515))
+
 ## [1.1.0-rc.17](https://github.com/agrc/plss-review/compare/v1.1.0-rc.16...v1.1.0-rc.17) (2026-04-24)
 
 
