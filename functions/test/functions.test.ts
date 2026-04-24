@@ -194,7 +194,7 @@ describe('functions', () => {
 
       expect(vi.mocked(agolModule.calculateFeatureUpdates)).toHaveBeenCalledTimes(1);
       expect(vi.mocked(agolModule.calculateFeatureUpdates)).toHaveBeenCalledWith(
-        testSubmission.metadata.corner,
+        undefined,
         testSubmission.metadata.mrrc,
         { id: 123, point_category: 'calculated', mrrc: 0, monument: 0 },
       );
@@ -210,6 +210,68 @@ describe('functions', () => {
       // Check that moveSheetsToFinalLocation was called with a bucket and the correct migration data
       const moveSheetsCall = vi.mocked(storageModule.moveSheetsToFinalLocation).mock.calls[0];
       expect(moveSheetsCall[0]).toBeDefined(); // Bucket parameter
+      expect(moveSheetsCall[1]).toEqual([
+        {
+          from: 'under-review/UT123456/test-user-id/' + submissionRef.id + '.pdf',
+          to: 'test-sheet.pdf',
+        },
+      ]);
+    });
+
+    it('processes existing submissions without corner metadata', async () => {
+      const eightDaysAgo = new Date();
+      eightDaysAgo.setDate(eightDaysAgo.getDate() - 8);
+
+      const testSubmission = {
+        type: 'existing',
+        blm_point_id: 'UT123456',
+        county: 'Salt Lake',
+        published: false,
+        status: {
+          ugrc: {
+            approved: true,
+            reviewedAt: Timestamp.fromDate(new Date()),
+            reviewedBy: 'test-ugrc-user',
+          },
+          county: {
+            approved: true,
+            reviewedAt: Timestamp.fromDate(eightDaysAgo),
+            reviewedBy: 'test-county-user',
+          },
+        },
+        submitted_by: {
+          id: 'test-user-id',
+        },
+        metadata: {
+          mrrc: false,
+        },
+      };
+
+      const submissionRef = await db.collection('submissions').add(testSubmission);
+
+      await expect(publishSubmissions()).resolves.toBeUndefined();
+
+      const updatedSubmission = await submissionRef.get();
+      const updatedData = updatedSubmission.data();
+
+      expect(updatedData).toBeDefined();
+      expect(updatedData?.published).toBe(true);
+      expect(updatedData?.status.publishedAt).toBeDefined();
+      expect(updatedData?.status.publishedBy).toBe('System');
+
+      expect(vi.mocked(agolModule.calculateFeatureUpdates)).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(agolModule.calculateFeatureUpdates)).toHaveBeenCalledWith(undefined, false, {
+        id: 123,
+        point_category: 'calculated',
+        mrrc: 0,
+        monument: 0,
+      });
+
+      expect(vi.mocked(agolModule.updateFeatureService)).toHaveBeenCalledWith([]);
+      expect(vi.mocked(storageModule.generateSheetName)).toHaveBeenCalledTimes(1);
+
+      const moveSheetsCall = vi.mocked(storageModule.moveSheetsToFinalLocation).mock.calls[0];
+      expect(moveSheetsCall[0]).toBeDefined();
       expect(moveSheetsCall[1]).toEqual([
         {
           from: 'under-review/UT123456/test-user-id/' + submissionRef.id + '.pdf',
@@ -559,16 +621,18 @@ describe('functions', () => {
       expect(vi.mocked(storageModule.moveSheetsToFinalLocation)).toHaveBeenCalledTimes(1);
 
       const moveSheetsCalls = vi.mocked(storageModule.moveSheetsToFinalLocation).mock.calls;
-      expect(moveSheetsCalls[0][1]).toEqual(expect.arrayContaining([
-        {
-          from: 'under-review/UT260070N0020W0_200240/dbmtJakbFWM06YFtIvQCg6BrsCz1/' + submissionRef.id + '.pdf',
-          to: 'test-sheet.pdf',
-        },
-        {
-          from: 'under-review/UT260070N0020W0_200240/dbmtJakbFWM06YFtIvQCg6BrsCz1/' + submissionRef2.id + '.pdf',
-          to: 'test-sheet.pdf',
-        },
-      ]));
+      expect(moveSheetsCalls[0][1]).toEqual(
+        expect.arrayContaining([
+          {
+            from: 'under-review/UT260070N0020W0_200240/dbmtJakbFWM06YFtIvQCg6BrsCz1/' + submissionRef.id + '.pdf',
+            to: 'test-sheet.pdf',
+          },
+          {
+            from: 'under-review/UT260070N0020W0_200240/dbmtJakbFWM06YFtIvQCg6BrsCz1/' + submissionRef2.id + '.pdf',
+            to: 'test-sheet.pdf',
+          },
+        ]),
+      );
       // Also verify the array has the correct length
       expect(moveSheetsCalls[0][1]).toHaveLength(2);
     });

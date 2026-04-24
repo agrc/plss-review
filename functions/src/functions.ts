@@ -478,6 +478,7 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
 export async function publishSubmissions(): Promise<void> {
   logger.info('[publishSubmissions] Starting submission publishing process');
   let submissionsSnapshot;
+  const referenceCorners = ['WC', 'MC', 'RC', 'Other'];
 
   try {
     submissionsSnapshot = await getSubmissionsReadyForPublishing(db);
@@ -523,6 +524,11 @@ export async function publishSubmissions(): Promise<void> {
 
     try {
       const attributes = await getAttributesFor(submission.blm_point_id, token);
+      const submissionMetadata =
+        submission.metadata && typeof submission.metadata === 'object' ? submission.metadata : undefined;
+      const corner = typeof submissionMetadata?.corner === 'string' ? submissionMetadata.corner : undefined;
+      const isReferenceCorner = corner ? referenceCorners.includes(corner) : false;
+      const mrrc = typeof submissionMetadata?.mrrc === 'boolean' ? submissionMetadata.mrrc : false;
 
       if (!attributes) {
         logger.warn(`[publishSubmissions] No feature service data found`, {
@@ -532,7 +538,7 @@ export async function publishSubmissions(): Promise<void> {
         continue;
       }
 
-      const modifications = calculateFeatureUpdates(submission.metadata.corner, submission.metadata.mrrc, attributes);
+      const modifications = calculateFeatureUpdates(corner, mrrc, attributes);
 
       if (Object.keys(modifications).length === 0) {
         logger.debug(`[publishSubmissions] No updates needed for submission ${submissionDoc.ref.path}`, {
@@ -542,11 +548,9 @@ export async function publishSubmissions(): Promise<void> {
         // If no modifications, we still need to move the sheet
         const metadata = {
           document: `under-review/${submission.blm_point_id}/${submission.submitted_by.id}/${submissionId}.pdf`,
-          referenceCorner: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner),
-          cornerType: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner)
-            ? submission.metadata.corner
-            : undefined,
-          mrrc: submission.metadata.mrrc,
+          referenceCorner: isReferenceCorner,
+          cornerType: isReferenceCorner ? corner : undefined,
+          mrrc,
           blmPointId: submission.blm_point_id,
         };
 
@@ -594,11 +598,9 @@ export async function publishSubmissions(): Promise<void> {
         id: attributes.id,
         submissionId,
         document: `under-review/${submission.blm_point_id}/${submission.submitted_by.id}/${submissionId}.pdf`,
-        referenceCorner: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner),
-        cornerType: ['WC', 'MC', 'RC', 'Other'].includes(submission.metadata.corner)
-          ? submission.metadata.corner
-          : undefined,
-        mrrc: submission.metadata.mrrc,
+        referenceCorner: isReferenceCorner,
+        cornerType: isReferenceCorner ? corner : undefined,
+        mrrc,
         blmPointId: submission.blm_point_id,
       });
     } catch (error) {
