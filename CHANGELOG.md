@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.17](https://github.com/agrc/plss-review/compare/v1.0.16...v1.0.17) (2026-04-27)
+
+
+### Bug Fixes
+
+* **functions:** handle publishing submissions without corner metadata ([3ad3fac](https://github.com/agrc/plss-review/commit/3ad3facbb11be3add9e19283ae17e46954198ff1)), closes [#141](https://github.com/agrc/plss-review/issues/141)
+* **functions:** more helpful error logs ([08e3c19](https://github.com/agrc/plss-review/commit/08e3c19685ab4c902f04aa7270e23b6e43873208))
+
 ## [1.0.16](https://github.com/agrc/plss-review/compare/v1.1.0-rc.20...v1.0.16) (2026-04-24)
 
 
