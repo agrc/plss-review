@@ -42,11 +42,11 @@ export const generateSheetName = (metadata: {
 export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFileMigration[]) => {
   for (const migration of data) {
     const file = bucket.file(migration.from);
-    let destination = bucket.file(migration.to);
-    let exists = false;
+    let destinationPath = migration.to;
+    let exists: boolean;
 
     try {
-      exists = (await destination.exists())[0];
+      exists = (await bucket.file(destinationPath).exists())[0];
     } catch (error) {
       const errorDetails = getErrorLogDetails(error);
 
@@ -65,11 +65,11 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
     while (exists && attempts < MAX_ATTEMPTS) {
       logger.debug(`[publishSubmissions] Destination file ${migration.to} already exists. Renaming.`, { migration });
 
-      migration.to = incrementName(migration.to);
-      destination = bucket.file(migration.to);
+      destinationPath = incrementName(destinationPath);
+      migration.to = destinationPath;
 
       try {
-        exists = (await destination.exists())[0];
+        exists = (await bucket.file(destinationPath).exists())[0];
       } catch (error) {
         const errorDetails = getErrorLogDetails(error);
 
@@ -87,7 +87,7 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
     }
 
     try {
-      await file.move(destination);
+      await file.move(bucket.file(destinationPath));
       logger.info(`[publishSubmissions] Moved pdf to production path`, { migration });
     } catch (error) {
       const errorDetails = getErrorLogDetails(error);

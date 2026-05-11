@@ -36,6 +36,7 @@ async function ensureEmulatorConnection(): Promise<void> {
     throw new Error(
       'SAFETY CHECK FAILED: Cannot connect to Firestore emulator at localhost:8080. Make sure it is running. Error: ' +
         String(error),
+      { cause: error },
     );
   }
 
