@@ -59,6 +59,7 @@
     "@firebase/rules-unit-testing": "^5.0.0",
     "@tanstack/eslint-plugin-query": "^5.91.4",
     "@types/luxon": "^3.7.1",
+    "@types/node": "^25.6.2",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "@ugrc/tailwind-preset": "^1.2.0",
