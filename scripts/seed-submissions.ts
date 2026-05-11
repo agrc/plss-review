@@ -11,158 +11,235 @@ if (!db) {
 const eightDaysAgo = new Date();
 eightDaysAgo.setDate(eightDaysAgo.getDate() - 8);
 
-db.collection('submissions').add({
-  blm_point_id: 'UT260030S0060W0_100300',
-  created_at: new Date(),
-  county: 'Beaver',
-  type: 'existing',
-  metadata: {
-    pdf: 'submitters/uid/existing/point_id/existing-sheet.pdf',
-    mrrc: true,
-  },
-  location: new GeoPoint(40.53367418800078, -112.57784149142446),
-  pdf: 'under-review/UT260030S0060W0_100300/Y0D4o9od4ojHpGaL9gg6uK3dgNuK/tZxbXE1cLKk8rAgvCVcC.pdf',
-  datum: 'geographic-nad83',
-  submitted_by: {
-    id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
-    name: 'Raccoon Peach',
-    ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
-  },
-  geographic: {
-    northing: { seconds: 10, minutes: 14, degrees: 41 },
-    easting: { seconds: 29, minutes: 14, degrees: 111 },
-    unit: 'm',
-    elevation: 3200,
-  },
-  grid: {
-    zone: 'north',
-    unit: 'm',
-    easting: 521679.496,
-    northing: 1100285.503,
-    verticalDatum: '',
-    elevation: null,
-  },
-  status: {
-    ugrc: {
-      approved: null,
-      comments: null,
-      reviewedAt: null,
-      reviewedBy: null,
-    },
-    county: {
-      approved: null,
-      comments: null,
-      reviewedAt: null,
-      reviewedBy: null,
-    },
-    sgid: {
-      approved: null,
-    },
-    user: {
-      cancelled: null,
-    },
-  },
-});
-db.collection('submissions').add({
-  blm_point_id: 'UT260030S0060W0_160340',
-  created_at: new Date(),
-  county: 'Davis',
-  type: 'existing',
-  metadata: {
-    pdf: 'submitters/uid/existing/point_id/existing-sheet.pdf',
-    mrrc: true,
-  },
-  location: new GeoPoint(40.533658034174834, -112.57336934258373),
-  pdf: 'under-review/UT260030S0060W0_160340/Y0D4o9od4ojHpGaL9gg6uK3dgNuK/VWywBvCxs1IBMcXFyeVe.pdf',
-  datum: 'geographic-nad83',
-  submitted_by: {
-    id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
-    name: 'Raccoon Peach',
-    ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
-  },
-  geographic: {
-    northing: { seconds: 10, minutes: 14, degrees: 41 },
-    easting: { seconds: 29, minutes: 14, degrees: 111 },
-    unit: 'm',
-    elevation: 3200,
-  },
-  grid: {
-    zone: 'north',
-    unit: 'm',
-    easting: 521679.496,
-    northing: 1100285.503,
-    verticalDatum: '',
-    elevation: null,
-  },
-  status: {
-    ugrc: {
-      approved: null,
-      comments: null,
-      reviewedAt: null,
-      reviewedBy: null,
-    },
-    county: {
-      approved: null,
-      comments: null,
-      reviewedAt: null,
-      reviewedBy: null,
-    },
-    sgid: {
-      approved: null,
-    },
-    user: {
-      cancelled: null,
-    },
-  },
-});
-db.collection('submissions').add({
-  blm_point_id: 'UT260030S0060W0_160340',
-  created_at: new Date(),
-  county: 'Davis',
-  type: 'existing',
-  metadata: {
-    pdf: 'submitters/uid/existing/point_id/existing-sheet.pdf',
-    mrrc: true,
-  },
-  location: new GeoPoint(40.533658034174834, -112.57336934258373),
-  pdf: 'under-review/UT260030S0060W0_160340/Y0D4o9od4ojHpGaL9gg6uK3dgNuK/VWywBvCxs1IBMcXFyeVe.pdf',
-  datum: 'geographic-nad83',
-  submitted_by: {
-    id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
-    name: 'Raccoon Peach',
-    ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
-  },
-  geographic: {
-    northing: { seconds: 10, minutes: 14, degrees: 41 },
-    easting: { seconds: 29, minutes: 14, degrees: 111 },
-    unit: 'm',
-    elevation: 3200,
-  },
-  grid: {
-    zone: 'north',
-    unit: 'm',
-    easting: 521679.496,
-    northing: 1100285.503,
-    verticalDatum: '',
-    elevation: null,
-  },
-  published: false,
-  status: {
-    ugrc: {
-      approved: true,
-      reviewedAt: Timestamp.fromDate(new Date()),
-      reviewedBy: 'test-ugrc-user',
-    },
-    county: {
-      approved: true,
-      reviewedAt: Timestamp.fromDate(eightDaysAgo), // 8 days ago (meets 7+ day criteria)
-      reviewedBy: 'test-county-user',
-    },
-    sgid: {
-      approved: null,
-    },
-    user: {
-      cancelled: null,
-    },
-  },
+const threeDaysAgo = new Date();
+threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+async function main() {
+  await db
+    .collection('submissions')
+    .doc('seed-under-review-beaver')
+    .set({
+      blm_point_id: 'UT260030S0060W0_100300',
+      created_at: new Date(),
+      county: 'Beaver',
+      type: 'existing',
+      metadata: {
+        pdf: 'submitters/uid/existing/point_id/existing-sheet.pdf',
+        mrrc: true,
+      },
+      location: new GeoPoint(40.53367418800078, -112.57784149142446),
+      pdf: 'under-review/UT260030S0060W0_100300/Y0D4o9od4ojHpGaL9gg6uK3dgNuK/tZxbXE1cLKk8rAgvCVcC.pdf',
+      datum: 'geographic-nad83',
+      submitted_by: {
+        id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+        name: 'Raccoon Peach',
+        ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+      },
+      geographic: {
+        northing: { seconds: 10, minutes: 14, degrees: 41 },
+        easting: { seconds: 29, minutes: 14, degrees: 111 },
+        unit: 'm',
+        elevation: 3200,
+      },
+      grid: {
+        zone: 'north',
+        unit: 'm',
+        easting: 521679.496,
+        northing: 1100285.503,
+        verticalDatum: '',
+        elevation: null,
+      },
+      status: {
+        ugrc: {
+          approved: null,
+          comments: null,
+          reviewedAt: null,
+          reviewedBy: null,
+        },
+        county: {
+          approved: null,
+          comments: null,
+          reviewedAt: null,
+          reviewedBy: null,
+        },
+        sgid: {
+          approved: null,
+        },
+        user: {
+          cancelled: null,
+        },
+      },
+    });
+
+  await db
+    .collection('submissions')
+    .doc('seed-under-review-davis')
+    .set({
+      blm_point_id: 'UT260030S0060W0_160340',
+      created_at: new Date(),
+      county: 'Davis',
+      type: 'existing',
+      metadata: {
+        pdf: 'submitters/uid/existing/point_id/existing-sheet.pdf',
+        mrrc: true,
+      },
+      location: new GeoPoint(40.533658034174834, -112.57336934258373),
+      pdf: 'under-review/UT260030S0060W0_160340/Y0D4o9od4ojHpGaL9gg6uK3dgNuK/VWywBvCxs1IBMcXFyeVe.pdf',
+      datum: 'geographic-nad83',
+      submitted_by: {
+        id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+        name: 'Raccoon Peach',
+        ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+      },
+      geographic: {
+        northing: { seconds: 10, minutes: 14, degrees: 41 },
+        easting: { seconds: 29, minutes: 14, degrees: 111 },
+        unit: 'm',
+        elevation: 3200,
+      },
+      grid: {
+        zone: 'north',
+        unit: 'm',
+        easting: 521679.496,
+        northing: 1100285.503,
+        verticalDatum: '',
+        elevation: null,
+      },
+      status: {
+        ugrc: {
+          approved: null,
+          comments: null,
+          reviewedAt: null,
+          reviewedBy: null,
+        },
+        county: {
+          approved: null,
+          comments: null,
+          reviewedAt: null,
+          reviewedBy: null,
+        },
+        sgid: {
+          approved: null,
+        },
+        user: {
+          cancelled: null,
+        },
+      },
+    });
+
+  await db
+    .collection('submissions')
+    .doc('seed-under-county-review-davis')
+    .set({
+      blm_point_id: 'UT260030S0060W0_160341',
+      created_at: Timestamp.fromDate(threeDaysAgo),
+      county: 'Davis',
+      type: 'existing',
+      metadata: {
+        pdf: 'submitters/uid/existing/point_id/existing-sheet.pdf',
+        mrrc: true,
+      },
+      location: new GeoPoint(40.533658034174834, -112.57336934258373),
+      pdf: 'under-review/UT260030S0060W0_160341/Y0D4o9od4ojHpGaL9gg6uK3dgNuK/CountyReviewSeed.pdf',
+      datum: 'geographic-nad83',
+      submitted_by: {
+        id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+        name: 'Raccoon Peach',
+        ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+      },
+      geographic: {
+        northing: { seconds: 10, minutes: 14, degrees: 41 },
+        easting: { seconds: 29, minutes: 14, degrees: 111 },
+        unit: 'm',
+        elevation: 3200,
+      },
+      grid: {
+        zone: 'north',
+        unit: 'm',
+        easting: 521679.496,
+        northing: 1100285.503,
+        verticalDatum: '',
+        elevation: null,
+      },
+      status: {
+        ugrc: {
+          approved: true,
+          comments: 'Seeded for county review testing',
+          reviewedAt: Timestamp.fromDate(threeDaysAgo),
+          reviewedBy: 'test-ugrc-user',
+        },
+        county: {
+          approved: null,
+          comments: null,
+          reviewedAt: null,
+          reviewedBy: null,
+        },
+        sgid: {
+          approved: null,
+        },
+        user: {
+          cancelled: null,
+        },
+      },
+    });
+
+  await db
+    .collection('submissions')
+    .doc('seed-approved-davis')
+    .set({
+      blm_point_id: 'UT260030S0060W0_160340',
+      created_at: new Date(),
+      county: 'Davis',
+      type: 'existing',
+      metadata: {
+        pdf: 'submitters/uid/existing/point_id/existing-sheet.pdf',
+        mrrc: true,
+      },
+      location: new GeoPoint(40.533658034174834, -112.57336934258373),
+      pdf: 'under-review/UT260030S0060W0_160340/Y0D4o9od4ojHpGaL9gg6uK3dgNuK/VWywBvCxs1IBMcXFyeVe.pdf',
+      datum: 'geographic-nad83',
+      submitted_by: {
+        id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+        name: 'Raccoon Peach',
+        ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+      },
+      geographic: {
+        northing: { seconds: 10, minutes: 14, degrees: 41 },
+        easting: { seconds: 29, minutes: 14, degrees: 111 },
+        unit: 'm',
+        elevation: 3200,
+      },
+      grid: {
+        zone: 'north',
+        unit: 'm',
+        easting: 521679.496,
+        northing: 1100285.503,
+        verticalDatum: '',
+        elevation: null,
+      },
+      published: false,
+      status: {
+        ugrc: {
+          approved: true,
+          reviewedAt: Timestamp.fromDate(new Date()),
+          reviewedBy: 'test-ugrc-user',
+        },
+        county: {
+          approved: true,
+          reviewedAt: Timestamp.fromDate(eightDaysAgo), // 8 days ago (meets 7+ day criteria)
+          reviewedBy: 'test-county-user',
+        },
+        sgid: {
+          approved: null,
+        },
+        user: {
+          cancelled: null,
+        },
+      },
+    });
+}
+
+main().catch((error) => {
+  console.error('Error seeding submissions:', error);
+  process.exit(1);
 });
