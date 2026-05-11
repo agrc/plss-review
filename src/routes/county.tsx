@@ -10,12 +10,12 @@ import { useNavigate } from 'react-router';
 import { RejectionReasons } from '../components/RejectionReasons';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
-import type { FormValues, Submission } from '../components/shared/types';
+import type { CountySubmission, FormValues } from '../components/shared/types';
 import { forCountySubmissions } from '../queries';
 import type { CountyReview, UpdateDocumentParams } from '../types';
 import { getFiscalYear } from '../utils';
 
-const columnHelper = createColumnHelper<Submission>();
+const columnHelper = createColumnHelper<CountySubmission>();
 
 const updateFirestoreDocument = async ({ id, approved, firestore, comments }: UpdateDocumentParams) => {
   const submissionRef = doc(firestore, 'submissions', id);
@@ -166,6 +166,11 @@ export default function County() {
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Submission Date',
+        enableSorting: false,
+      }),
+      columnHelper.accessor('ugrcApprovedDate', {
+        id: 'ugrcApprovedDate',
+        header: () => 'UGRC Approved Date',
         enableSorting: false,
       }),
       columnHelper.accessor('mrrc', {

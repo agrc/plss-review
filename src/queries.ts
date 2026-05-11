@@ -1,5 +1,5 @@
 import { and, collection, Firestore, limit, or, orderBy, query, where } from 'firebase/firestore';
-import { asApprovalSubmission, asNewSubmission, asRejectedSubmission } from './converters';
+import { asApprovalSubmission, asCountySubmission, asNewSubmission, asRejectedSubmission } from './converters';
 
 export const forNewSubmissions = (firestore: Firestore) =>
   query(
@@ -11,7 +11,7 @@ export const forNewSubmissions = (firestore: Firestore) =>
 
 export const forCountySubmissions = (firestore: Firestore) =>
   query(
-    collection(firestore, 'submissions').withConverter(asNewSubmission),
+    collection(firestore, 'submissions').withConverter(asCountySubmission),
     and(
       where('status.ugrc.approved', '==', true),
       where('status.county.approved', '==', null),

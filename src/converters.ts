@@ -1,5 +1,5 @@
-import type { QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore';
-import type { Corner, RejectedSubmission, Submission } from './components/shared/types';
+import type { QueryDocumentSnapshot, SnapshotOptions, Timestamp } from 'firebase/firestore';
+import type { Corner, CountySubmission, RejectedSubmission, Submission } from './components/shared/types';
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -8,6 +8,14 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   hour: 'numeric',
   minute: 'numeric',
 });
+
+const formatTimestamp = (timestamp: Timestamp | null | undefined, fallback = 'Unknown') => {
+  if (!timestamp) {
+    return fallback;
+  }
+
+  return dateFormatter.format(Date.parse(timestamp.toDate().toISOString()));
+};
 
 export const asNewSubmission = {
   toFirestore(): Corner {
@@ -20,7 +28,26 @@ export const asNewSubmission = {
       id: snapshot.id,
       blmPointId: data.blm_point_id,
       county: data.county,
-      date: dateFormatter.format(Date.parse(data.created_at.toDate().toISOString())),
+      date: formatTimestamp(data.created_at, 'Unknown'),
+      mrrc: data.metadata?.mrrc ?? undefined,
+      submitter: data.submitted_by.name,
+    };
+  },
+};
+
+export const asCountySubmission = {
+  toFirestore(): Corner {
+    throw new Error('toFirestore is not implemented');
+  },
+  fromFirestore(snapshot: QueryDocumentSnapshot<Corner>, options: SnapshotOptions): CountySubmission {
+    const data = snapshot.data(options);
+
+    return {
+      id: snapshot.id,
+      blmPointId: data.blm_point_id,
+      county: data.county,
+      date: formatTimestamp(data.created_at, 'Unknown'),
+      ugrcApprovedDate: formatTimestamp(data.status.ugrc.reviewedAt),
       mrrc: data.metadata?.mrrc ?? undefined,
       submitter: data.submitted_by.name,
     };
@@ -33,17 +60,12 @@ export const asApprovalSubmission = {
   },
   fromFirestore(snapshot: QueryDocumentSnapshot<Corner>, options: SnapshotOptions): Submission {
     const data = snapshot.data(options);
-    let date = null;
-
-    if (data.status.county.reviewedAt) {
-      date = dateFormatter.format(Date.parse(data.status.county.reviewedAt.toDate().toISOString()));
-    }
 
     return {
       id: snapshot.id,
       blmPointId: data.blm_point_id,
       county: data.county,
-      date: date ?? 'Unknown',
+      date: formatTimestamp(data.status.county.reviewedAt),
       mrrc: data.metadata?.mrrc ?? undefined,
       submitter: data.submitted_by.name,
     };
@@ -69,14 +91,14 @@ export const asRejectedSubmission = {
       reason = data.status.ugrc.comments ?? 'No reason provided';
       rejectedFrom = 'UGRC';
       if (data.status.ugrc.reviewedAt) {
-        reviewedAt = dateFormatter.format(Date.parse(data.status.ugrc.reviewedAt.toDate().toISOString()));
+        reviewedAt = formatTimestamp(data.status.ugrc.reviewedAt);
       }
     } else if (data.status.county.approved === false) {
       rejectedBy = data.status.county.reviewedBy ||= 'County';
       reason = data.status.county.comments ?? 'No reason provided';
       rejectedFrom = 'County';
       if (data.status.county.reviewedAt) {
-        reviewedAt = dateFormatter.format(Date.parse(data.status.county.reviewedAt.toDate().toISOString()));
+        reviewedAt = formatTimestamp(data.status.county.reviewedAt);
       }
     }
 

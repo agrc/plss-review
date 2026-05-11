@@ -11,6 +11,10 @@ export type Submission = {
   actions?: string;
 };
 
+export type CountySubmission = Submission & {
+  ugrcApprovedDate: string;
+};
+
 export type RejectedSubmission = Omit<Submission, 'mrrc' | 'actions'> & {
   rejectedBy: string;
   rejectedFrom: 'User' | 'County' | 'UGRC';
