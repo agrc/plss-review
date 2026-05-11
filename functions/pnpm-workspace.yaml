@@ -1,3 +1,4 @@
-onlyBuiltDependencies:
-  - protobufjs
-  - unrs-resolver
+allowBuilds:
+  '@firebase/util': true
+  protobufjs: true
+  unrs-resolver: true

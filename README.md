@@ -9,6 +9,8 @@ A website to view and approve to monument record sheet submissions
 1. Install dependencies
    - `pnpm install`
 1. Duplicate `.env` as `.env.local` with local secrets.
+1. Install functions dependencies
+   - `pnpm install --filter functions`
 1. Duplicate `functions/.secrets` as `.secrets.local` with local secrets.
 1. Start the website
    - `pnpm start`
