@@ -14,7 +14,7 @@ const formatTimestamp = (timestamp: Timestamp | null | undefined, fallback = 'Un
     return fallback;
   }
 
-  return dateFormatter.format(Date.parse(timestamp.toDate().toISOString()));
+  return dateFormatter.format(timestamp.toDate());
 };
 
 export const asNewSubmission = {
