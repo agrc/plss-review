@@ -105,6 +105,9 @@ importers:
       '@types/luxon':
         specifier: ^3.7.1
         version: 3.7.1
+      '@types/node':
+        specifier: ^25.6.2
+        version: 25.6.2
       '@types/react':
         specifier: ^19.2.10
         version: 19.2.14
