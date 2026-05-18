@@ -1,13 +1,16 @@
 import { and, collection, Firestore, limit, or, orderBy, query, where } from 'firebase/firestore';
 import { asApprovalSubmission, asCountySubmission, asNewSubmission, asRejectedSubmission } from './converters';
 
+const newSubmissionConstraints = [
+  and(where('status.ugrc.approved', '==', null), where('status.user.cancelled', '==', null)),
+  orderBy('blm_point_id'),
+] as const;
+
 export const forNewSubmissions = (firestore: Firestore) =>
-  query(
-    collection(firestore, 'submissions').withConverter(asNewSubmission),
-    and(where('status.ugrc.approved', '==', null), where('status.user.cancelled', '==', null)),
-    orderBy('blm_point_id'),
-    limit(25),
-  );
+  query(collection(firestore, 'submissions').withConverter(asNewSubmission), ...newSubmissionConstraints, limit(25));
+
+export const forNewSubmissionsCount = (firestore: Firestore) =>
+  query(collection(firestore, 'submissions').withConverter(asNewSubmission), ...newSubmissionConstraints);
 
 export const forCountySubmissions = (firestore: Firestore) =>
   query(
