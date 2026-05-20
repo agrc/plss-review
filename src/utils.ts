@@ -15,3 +15,6 @@ export const getFiscalYear = (now: DateLike): string => {
 
   return fiscalYear.toString().slice(-2);
 };
+
+export const decrementCount = (count?: number): number | undefined =>
+  count === undefined ? count : Math.max(count - 1, 0);

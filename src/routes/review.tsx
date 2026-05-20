@@ -32,6 +32,7 @@ import { ImageLoader } from '../components/TableLoader';
 import { useMap } from '../components/hooks';
 import type { Corner, FormValues } from '../components/shared/types';
 import type { UgrcReview, UpdateDocumentParams } from '../types';
+import { decrementCount } from '../utils';
 
 const getFirestoreDocument = async (id: string | undefined, firestore: Firestore, storage: FirebaseStorage) => {
   if (!id) {
@@ -125,6 +126,9 @@ export default function Review() {
         comments,
       }),
     onSuccess: async (_: unknown, variables: { approved: boolean; comments?: string }) => {
+      queryClient.setQueryData<number | undefined>(['monuments', { type: 'received-count' }], (count) =>
+        decrementCount(count),
+      );
       await queryClient.invalidateQueries({
         queryKey: ['monuments', { type: 'received' }],
       });
