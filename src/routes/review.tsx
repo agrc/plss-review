@@ -128,6 +128,9 @@ export default function Review() {
       await queryClient.invalidateQueries({
         queryKey: ['monuments', { type: 'received' }],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['monuments', { type: 'received-count' }],
+      });
 
       await queryClient.prefetchQuery({
         queryKey: ['monuments', { type: 'received' }],

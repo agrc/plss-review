@@ -89,6 +89,9 @@ export default function County() {
       await queryClient.invalidateQueries({
         queryKey: ['monuments', { type: 'county' }],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['monuments', { type: 'received-count' }],
+      });
       await queryClient.prefetchQuery({
         queryKey: ['monuments', { type: 'county' }],
       });
