@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { getDocs } from 'firebase/firestore';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { RejectedSubmission } from '../components/shared/types';
@@ -12,6 +12,12 @@ const columnHelper = createColumnHelper<RejectedSubmission>();
 
 export default function Rejected() {
   const { firestore } = useFirestore();
+  const rejectedQueryFn = useCallback(async () => {
+    const snapshot = await Spinner.minDelay(getDocs(forRejectedSubmissions(firestore)));
+    const items = snapshot.docs.map((doc) => doc.data());
+
+    return items;
+  }, [firestore]);
 
   const columns = useMemo(
     () => [
@@ -57,13 +63,8 @@ export default function Rejected() {
   );
 
   const { status, data, error } = useQuery({
-    queryKey: ['monuments', { type: 'rejected' }, firestore],
-    queryFn: async () => {
-      const snapshot = await Spinner.minDelay(getDocs(forRejectedSubmissions(firestore)));
-      const items = snapshot.docs.map((doc) => doc.data());
-
-      return items;
-    },
+    queryKey: ['monuments', { type: 'rejected' }],
+    queryFn: rejectedQueryFn,
     retry: 0,
     enabled: true,
     staleTime: Infinity,

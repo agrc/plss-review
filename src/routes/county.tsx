@@ -3,7 +3,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { AlertDialog, Banner, Button, Modal, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { doc, getDoc, getDocs, runTransaction, Transaction, updateDoc } from 'firebase/firestore';
 import { DateTime } from 'luxon';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { DialogTrigger } from 'react-aria-components';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
@@ -67,6 +67,12 @@ export default function County() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [activeRow, setActiveRow] = useState<string | null>();
   const [processingRow, setProcessingRow] = useState<string | null>(null);
+  const countyQueryFn = useCallback(async () => {
+    const snapshot = await Spinner.minDelay(getDocs(forCountySubmissions(firestore)));
+    const items = snapshot.docs.map((doc) => doc.data());
+
+    return items;
+  }, [firestore]);
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       reason: 'missing-photo',
@@ -130,13 +136,8 @@ export default function County() {
   });
 
   const { status, data, error } = useQuery({
-    queryKey: ['monuments', { type: 'county' }, firestore],
-    queryFn: async () => {
-      const snapshot = await Spinner.minDelay(getDocs(forCountySubmissions(firestore)));
-      const items = snapshot.docs.map((doc) => doc.data());
-
-      return items;
-    },
+    queryKey: ['monuments', { type: 'county' }],
+    queryFn: countyQueryFn,
     retry: 0,
     enabled: true,
     staleTime: Infinity,

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { getDocs } from 'firebase/firestore';
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
@@ -54,15 +55,16 @@ const columns = [
 export default function Received() {
   const { firestore } = useFirestore();
   const navigate = useNavigate();
+  const receivedQueryFn = useCallback(async () => {
+    const snapshot = await Spinner.minDelay(getDocs(forNewSubmissions(firestore)));
+    const items = snapshot.docs.map((doc) => doc.data());
+
+    return items;
+  }, [firestore]);
 
   const { status, data, error } = useQuery({
-    queryKey: ['monuments', { type: 'received' }, firestore],
-    queryFn: async () => {
-      const snapshot = await Spinner.minDelay(getDocs(forNewSubmissions(firestore)));
-      const items = snapshot.docs.map((doc) => doc.data());
-
-      return items;
-    },
+    queryKey: ['monuments', { type: 'received' }],
+    queryFn: receivedQueryFn,
     retry: 0,
     enabled: true,
     staleTime: Infinity,

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Tab, TabList, Tabs, useFirebaseAuth, useFirestore } from '@ugrc/utah-design-system';
 import { getCountFromServer } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import type { Key } from 'react-stately';
 import SubmissionAnalytics from '../components/SubmissionAnalytics';
@@ -15,13 +15,14 @@ export default function ProtectedLayout() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { data: receivedCount } = useQuery({
-    queryKey: ['monuments', { type: 'received-count' }, firestore],
-    queryFn: async () => {
-      const snapshot = await getCountFromServer(forNewSubmissionsCount(firestore));
+  const receivedCountQueryFn = useCallback(async () => {
+    const snapshot = await getCountFromServer(forNewSubmissionsCount(firestore));
 
-      return snapshot.data().count;
-    },
+    return snapshot.data().count;
+  }, [firestore]);
+  const { data: receivedCount } = useQuery({
+    queryKey: ['monuments', { type: 'received-count' }],
+    queryFn: receivedCountQueryFn,
     retry: 0,
     enabled: true,
     staleTime: Infinity,

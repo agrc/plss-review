@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { getDocs } from 'firebase/firestore';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { Submission } from '../components/shared/types';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
@@ -12,6 +12,12 @@ const columnHelper = createColumnHelper<Submission>();
 
 export default function Approved() {
   const { firestore } = useFirestore();
+  const approvedQueryFn = useCallback(async () => {
+    const snapshot = await Spinner.minDelay(getDocs(forApprovedSubmissions(firestore)));
+    const items = snapshot.docs.map((doc) => doc.data());
+
+    return items;
+  }, [firestore]);
 
   const columns = useMemo(
     () => [
@@ -59,13 +65,8 @@ export default function Approved() {
   );
 
   const { status, data, error } = useQuery({
-    queryKey: ['monuments', { type: 'approved' }, firestore],
-    queryFn: async () => {
-      const snapshot = await Spinner.minDelay(getDocs(forApprovedSubmissions(firestore)));
-      const items = snapshot.docs.map((doc) => doc.data());
-
-      return items;
-    },
+    queryKey: ['monuments', { type: 'approved' }],
+    queryFn: approvedQueryFn,
     retry: 0,
     enabled: true,
     staleTime: Infinity,
