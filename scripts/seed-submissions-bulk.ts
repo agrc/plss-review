@@ -90,13 +90,91 @@ const BULK_PDF_BYTES = Buffer.from(
   'base64',
 );
 
-async function main() {
-  const { count, mode } = resolveCount();
+interface StatusConfig {
+  ugrcApproved: boolean | null;
+  countyApproved: boolean | null;
+  countyReviewedBy?: string;
+}
 
+function getStatusConfig(statusType: 'received' | 'county-review' | 'county-approved' | 'rejected'): StatusConfig {
+  switch (statusType) {
+    case 'received':
+      return { ugrcApproved: null, countyApproved: null };
+    case 'county-review':
+      return { ugrcApproved: true, countyApproved: null, countyReviewedBy: 'seed' };
+    case 'county-approved':
+      return { ugrcApproved: true, countyApproved: true, countyReviewedBy: 'seed' };
+    case 'rejected':
+      return { ugrcApproved: null, countyApproved: false, countyReviewedBy: 'seed' };
+    default:
+      throw new Error(`Unknown status type: ${statusType}`);
+  }
+}
+
+function createSubmissionDoc(i: number, docId: string, county: string, statusConfig: StatusConfig) {
+  return {
+    blm_point_id: DAVIS_BLM_POINT_ID,
+    created_at: new Date(),
+    county,
+    type: 'existing',
+    metadata: {
+      pdf: `submitters/uid/existing/point_id/existing-sheet.pdf`,
+      mrrc: i % 3 === 0,
+    },
+    location: new GeoPoint(40.5 + i * 0.01, -112.5 - i * 0.01),
+    pdf: DAVIS_PDF_PATH,
+    datum: 'geographic-nad83',
+    submitted_by: {
+      id: DAVIS_USER_ID,
+      name: 'Bulk Seed User',
+      ref: `submitters/${DAVIS_USER_ID}`,
+    },
+    geographic: {
+      northing: { seconds: 10, minutes: 14, degrees: 41 },
+      easting: { seconds: 29, minutes: 14, degrees: 111 },
+      unit: 'm',
+      elevation: 3200,
+    },
+    grid: {
+      zone: 'north',
+      unit: 'm',
+      easting: 521679.496,
+      northing: 1100285.503,
+      verticalDatum: '',
+      elevation: null,
+    },
+    status: {
+      ugrc: {
+        approved: statusConfig.ugrcApproved,
+        comments: statusConfig.ugrcApproved === false ? 'Rejected during UGRC review' : null,
+        reviewedAt: statusConfig.ugrcApproved !== null ? new Date() : null,
+        reviewedBy: statusConfig.ugrcApproved !== null ? 'seed' : null,
+      },
+      county: {
+        approved: statusConfig.countyApproved,
+        comments: statusConfig.countyApproved === false ? 'Rejected during county review' : null,
+        reviewedAt: statusConfig.countyReviewedBy ? new Date() : null,
+        reviewedBy: statusConfig.countyReviewedBy ?? null,
+      },
+      sgid: {
+        approved: null,
+      },
+      user: {
+        cancelled: null,
+      },
+    },
+  };
+}
+
+async function seedSubmissionsForStatus(
+  statusType: 'received' | 'county-review' | 'county-approved' | 'rejected',
+  count: number,
+  bucket: ReturnType<ReturnType<typeof getStorage>['bucket']>,
+  shouldUploadPdfs: boolean,
+) {
   let batch = db.batch();
   let writesInBatch = 0;
   let committedBatchCount = 0;
-  const bucket = getStorage().bucket('localhost');
   let uploadTasks: Promise<unknown>[] = [];
 
   const commitBatch = async () => {
@@ -119,6 +197,50 @@ async function main() {
     uploadTasks = [];
   };
 
+  const statusConfig = getStatusConfig(statusType);
+  const docIdPrefix = `seed-bulk-${statusType.replace('county-', 'cnty-')}`;
+
+  for (let i = 0; i < count; i++) {
+    const padded = String(i + 1).padStart(3, '0');
+    const county = COUNTIES[i % COUNTIES.length];
+    const docId = `${docIdPrefix}-${padded}`;
+
+    const ref = db.collection('submissions').doc(docId);
+    batch.set(ref, createSubmissionDoc(i, docId, county, statusConfig));
+    writesInBatch += 1;
+    if (writesInBatch === MAX_BATCH_WRITES) {
+      await commitBatch();
+    }
+
+    // Only upload PDFs for 'received' status
+    if (shouldUploadPdfs) {
+      const targetPdfPath = `under-review/${DAVIS_BLM_POINT_ID}/${DAVIS_USER_ID}/${docId}.pdf`;
+      uploadTasks.push(
+        bucket.file(targetPdfPath).save(BULK_PDF_BYTES, {
+          metadata: {
+            contentType: 'application/pdf',
+            contentDisposition: `inline; filename="${docId}.pdf"`,
+          },
+          resumable: false,
+        }),
+      );
+
+      if (uploadTasks.length === MAX_CONCURRENT_UPLOADS) {
+        await flushUploads();
+      }
+    }
+  }
+
+  await commitBatch();
+  await flushUploads();
+  console.log(`Seeded ${count} bulk "${statusType}" submissions (Firestore batches: ${committedBatchCount}).`);
+}
+
+async function main() {
+  const { count, mode } = resolveCount();
+  const bucket = getStorage().bucket('localhost');
+  const uploadTasks: Promise<unknown>[] = [];
+
   // Ensure the known Davis path exists for baseline/manual testing.
   uploadTasks.push(
     bucket.file(DAVIS_PDF_PATH).save(BULK_PDF_BYTES, {
@@ -130,90 +252,16 @@ async function main() {
     }),
   );
 
-  for (let i = 0; i < count; i++) {
-    const padded = String(i + 1).padStart(3, '0');
-    const county = COUNTIES[i % COUNTIES.length];
-    const docId = `seed-bulk-received-${padded}`;
+  await Promise.all(uploadTasks);
 
-    const ref = db.collection('submissions').doc(docId);
-    batch.set(ref, {
-      blm_point_id: DAVIS_BLM_POINT_ID,
-      created_at: new Date(),
-      county,
-      type: 'existing',
-      metadata: {
-        pdf: `submitters/uid/existing/point_id/existing-sheet.pdf`,
-        mrrc: i % 3 === 0,
-      },
-      location: new GeoPoint(40.5 + i * 0.01, -112.5 - i * 0.01),
-      pdf: DAVIS_PDF_PATH,
-      datum: 'geographic-nad83',
-      submitted_by: {
-        id: DAVIS_USER_ID,
-        name: 'Bulk Seed User',
-        ref: `submitters/${DAVIS_USER_ID}`,
-      },
-      geographic: {
-        northing: { seconds: 10, minutes: 14, degrees: 41 },
-        easting: { seconds: 29, minutes: 14, degrees: 111 },
-        unit: 'm',
-        elevation: 3200,
-      },
-      grid: {
-        zone: 'north',
-        unit: 'm',
-        easting: 521679.496,
-        northing: 1100285.503,
-        verticalDatum: '',
-        elevation: null,
-      },
-      status: {
-        ugrc: {
-          approved: null,
-          comments: null,
-          reviewedAt: null,
-          reviewedBy: null,
-        },
-        county: {
-          approved: null,
-          comments: null,
-          reviewedAt: null,
-          reviewedBy: null,
-        },
-        sgid: {
-          approved: null,
-        },
-        user: {
-          cancelled: null,
-        },
-      },
-    });
-    writesInBatch += 1;
-    if (writesInBatch === MAX_BATCH_WRITES) {
-      await commitBatch();
-    }
-
-    // review.tsx resolves PDFs by {blm_point_id}/{submitted_by.id}/{docId}.pdf
-    const targetPdfPath = `under-review/${DAVIS_BLM_POINT_ID}/${DAVIS_USER_ID}/${docId}.pdf`;
-    uploadTasks.push(
-      bucket.file(targetPdfPath).save(BULK_PDF_BYTES, {
-        metadata: {
-          contentType: 'application/pdf',
-          contentDisposition: `inline; filename="${docId}.pdf"`,
-        },
-        resumable: false,
-      }),
-    );
-
-    if (uploadTasks.length === MAX_CONCURRENT_UPLOADS) {
-      await flushUploads();
-    }
+  // Seed all four statuses
+  const statusTypes = ['received' as const, 'county-review' as const, 'county-approved' as const, 'rejected' as const];
+  for (const statusType of statusTypes) {
+    await seedSubmissionsForStatus(statusType, count, bucket, statusType === 'received');
   }
 
-  await commitBatch();
-  await flushUploads();
   console.log(
-    `Seeded ${count} bulk "received" submissions (mode: ${mode}, Firestore batches: ${committedBatchCount}).`,
+    `\n✓ Seeded ${count} entries for each status (Received, County Review, County Approved, Rejected) - mode: ${mode}`,
   );
 }
 
