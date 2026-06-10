@@ -126,7 +126,7 @@ function createSubmissionDoc(i: number, docId: string, county: string, statusCon
     datum: 'geographic-nad83',
     submitted_by: {
       id: DAVIS_USER_ID,
-      name: 'Bulk Seed User',
+      name: 'Jackal Apple',
       ref: `submitters/${DAVIS_USER_ID}`,
     },
     geographic: {
