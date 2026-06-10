@@ -79,7 +79,7 @@ function resolveCount() {
   throw new Error(`Invalid --mode value: ${mode}. Use --mode=small or --mode=large.`);
 }
 
-// Reuse the Davis blm_point_id and doc ID so Storage resolves to an existing PDF.
+// Reuse the Davis blm_point_id and user ID so Storage resolves to an existing PDF.
 const DAVIS_BLM_POINT_ID = 'UT260030S0060W0_160340';
 const DAVIS_USER_ID = 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK';
 const DAVIS_PDF_PATH = `under-review/${DAVIS_BLM_POINT_ID}/${DAVIS_USER_ID}/seed-under-review-davis.pdf`;
