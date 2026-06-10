@@ -52,7 +52,19 @@ export default function Approved() {
 
           return value ? 'Yep' : 'Nope';
         },
-        enableSorting: false,
+        sortingFn: (rowA, rowB, columnId) => {
+          const rank = (value: boolean | undefined) => {
+            if (value === undefined) {
+              return 0;
+            }
+
+            return value ? 2 : 1;
+          };
+
+          return (
+            rank(rowA.getValue<boolean | undefined>(columnId)) - rank(rowB.getValue<boolean | undefined>(columnId))
+          );
+        },
       }),
     ],
     [],
