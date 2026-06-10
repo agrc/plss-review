@@ -34,7 +34,7 @@ export default function Approved() {
       columnHelper.accessor('submitter', {
         id: 'submitter',
         header: () => 'Submitter',
-        enableSorting: false,
+        sortingFn: 'alphanumeric',
       }),
       columnHelper.accessor('date', {
         id: 'date',
