@@ -11,11 +11,13 @@
     "dev:firebase": "cross-env NODE_ENV=development firebase emulators:start --import=.emulator-data --only auth,functions,firestore,storage,pubsub",
     "dev:firebase-state": "cross-env NODE_ENV=development concurrently 'firebase emulators:start --import=.emulator-data --export-on-exit=.emulator-data --only auth,functions,firestore,storage' 'pnpm run dev:vite'",
     "dev:vite": "vite",
+    "dev-windows": "cross-env NODE_ENV=development NODE_OPTIONS=--no-deprecation concurrently \"wait-on http://127.0.0.1:4000 && bash .\\scripts\\seed.sh && pnpm run dev:vite\" \"pnpm run dev:firebase\" \"cd functions && pnpm run build:watch\"",
     "format": "prettier . --write",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "pnpm run dev",
     "start:ci": "vite --host",
+    "start-win": "pnpm run dev-windows",
     "test": "vitest --silent --coverage --ui --open --passWithNoTests",
     "test:ci": "firebase emulators:exec --only storage,firestore 'vitest run --coverage'"
   },

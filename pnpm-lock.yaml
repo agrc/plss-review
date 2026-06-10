@@ -196,6 +196,9 @@ importers:
         specifier: ^13.6.0
         version: 13.9.0
     devDependencies:
+      cross-env:
+        specifier: ^10.1.0
+        version: 10.1.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@25.6.2)(typescript@5.9.3)

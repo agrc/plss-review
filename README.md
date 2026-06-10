@@ -8,12 +8,18 @@ A website to view and approve to monument record sheet submissions
 
 1. Install dependencies
    - `pnpm install`
+   - `pnpm copy:arcgis`
 1. Duplicate `.env` as `.env.local` with local secrets.
 1. Install functions dependencies
-   - `pnpm install --filter functions`
+   - `cd functions`
+   - `pnpm install`
 1. Duplicate `functions/.secrets` as `.secrets.local` with local secrets.
 1. Start the website
    - `pnpm start`
+   - Windows: `pnpm start-win`
+     - **Note:** If restarting pnpm, be sure to close the `cmd` windows that it opens first.
+1. Log in via Firebase in order to access the `Staff Reviewer` user
+   - `pnpx firebase-tools login --reauth`
 1. Browse to the [development server](http://localhost:5173/) and login as `Staff Reviewer`
 
 ## Deployment
