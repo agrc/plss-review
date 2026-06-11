@@ -119,7 +119,7 @@ function createSubmissionDoc(i: number, docId: string, county: string, statusCon
   const isUgrcRejected = isRejected && i % 5 === 0;
 
   const countyApproved = isUgrcRejected ? null : statusConfig.countyApproved;
-  const countyReviewedBy = countyApproved === false ? (statusConfig.countyReviewedBy ?? null) : null;
+  const countyReviewedBy = countyApproved !== null ? (statusConfig.countyReviewedBy ?? null) : null;
   const countyComments =
     countyApproved === false && useAlternateRejectedValues
       ? ALT_COUNTY_REJECTION_REASON
