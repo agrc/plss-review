@@ -40,9 +40,18 @@ export default function Rejected() {
         id: 'date',
         header: () => 'Rejected Date',
         sortingFn: (rowA, rowB, columnId) => {
-          const dateA = new Date(rowA.getValue<string>(columnId));
-          const dateB = new Date(rowB.getValue<string>(columnId));
-          return dateA.getTime() - dateB.getTime();
+          const parse = (value: string) => {
+            const ms = Date.parse(value);
+            return Number.isNaN(ms) ? null : ms;
+          };
+
+          const timeA = parse(rowA.getValue<string>(columnId));
+          const timeB = parse(rowB.getValue<string>(columnId));
+
+          if (timeA === null && timeB === null) return 0;
+          if (timeA === null) return -1;
+          if (timeB === null) return 1;
+          return timeA - timeB;
         },
       }),
       columnHelper.accessor('rejectedFrom', {
