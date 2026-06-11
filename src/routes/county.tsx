@@ -12,6 +12,7 @@ import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { CountySubmission, FormValues } from '../components/shared/types';
 import { forCountySubmissions } from '../queries';
+import { dateStringSortingFn, mrrcCellText, nullableBooleanSortingFn } from '../sortingFns';
 import type { CountyReview, UpdateDocumentParams } from '../types';
 import { getFiscalYear } from '../utils';
 
@@ -166,63 +167,18 @@ export default function County() {
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Submission Date',
-        sortingFn: (rowA, rowB, columnId) => {
-          const parse = (value: string) => {
-            const ms = Date.parse(value);
-            return Number.isNaN(ms) ? null : ms;
-          };
-
-          const timeA = parse(rowA.getValue<string>(columnId));
-          const timeB = parse(rowB.getValue<string>(columnId));
-
-          if (timeA === null && timeB === null) return 0;
-          if (timeA === null) return -1;
-          if (timeB === null) return 1;
-          return timeA - timeB;
-        },
+        sortingFn: dateStringSortingFn,
       }),
       columnHelper.accessor('ugrcApprovedDate', {
         id: 'ugrcApprovedDate',
         header: () => 'UGRC Approved Date',
-        sortingFn: (rowA, rowB, columnId) => {
-          const parse = (value: string) => {
-            const ms = Date.parse(value);
-            return Number.isNaN(ms) ? null : ms;
-          };
-
-          const timeA = parse(rowA.getValue<string>(columnId));
-          const timeB = parse(rowB.getValue<string>(columnId));
-
-          if (timeA === null && timeB === null) return 0;
-          if (timeA === null) return -1;
-          if (timeB === null) return 1;
-          return timeA - timeB;
-        },
+        sortingFn: dateStringSortingFn,
       }),
       columnHelper.accessor('mrrc', {
         id: 'mrrc',
         header: () => 'MRRC',
-        cell: (info) => {
-          const value = info.getValue();
-          if (value === undefined) {
-            return 'Unknown';
-          }
-
-          return value ? 'Yep' : 'Nope';
-        },
-        sortingFn: (rowA, rowB, columnId) => {
-          const rank = (value: boolean | undefined) => {
-            if (value === undefined) {
-              return 0;
-            }
-
-            return value ? 2 : 1;
-          };
-
-          return (
-            rank(rowA.getValue<boolean | undefined>(columnId)) - rank(rowB.getValue<boolean | undefined>(columnId))
-          );
-        },
+        cell: (info) => mrrcCellText(info.getValue()),
+        sortingFn: nullableBooleanSortingFn,
       }),
       columnHelper.accessor('actions', {
         id: 'actions',
