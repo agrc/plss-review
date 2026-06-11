@@ -166,12 +166,20 @@ export default function County() {
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Submission Date',
-        enableSorting: false,
+        sortingFn: (rowA, rowB, columnId) => {
+          const dateA = new Date(rowA.getValue<string>(columnId));
+          const dateB = new Date(rowB.getValue<string>(columnId));
+          return dateA.getTime() - dateB.getTime();
+        },
       }),
       columnHelper.accessor('ugrcApprovedDate', {
         id: 'ugrcApprovedDate',
         header: () => 'UGRC Approved Date',
-        enableSorting: false,
+        sortingFn: (rowA, rowB, columnId) => {
+          const dateA = new Date(rowA.getValue<string>(columnId));
+          const dateB = new Date(rowB.getValue<string>(columnId));
+          return dateA.getTime() - dateB.getTime();
+        },
       }),
       columnHelper.accessor('mrrc', {
         id: 'mrrc',

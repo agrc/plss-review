@@ -45,6 +45,8 @@ const SMALL_COUNT = 30;
 const LARGE_COUNT = 2000;
 const MAX_BATCH_WRITES = 500;
 const MAX_CONCURRENT_UPLOADS = 100;
+const ALT_COUNTY_REJECTION_REASON = 'missing-photo';
+const ALT_UGRC_REJECTION_REASON = 'illegible-scan';
 
 function readArg(name: string): string | undefined {
   const prefix = `${name}=`;
@@ -112,6 +114,28 @@ function getStatusConfig(statusType: 'received' | 'county-review' | 'county-appr
 }
 
 function createSubmissionDoc(i: number, docId: string, county: string, statusConfig: StatusConfig) {
+  const isRejected = statusConfig.countyApproved === false;
+  const useAlternateRejectedValues = isRejected && i % 7 === 0;
+  const isUgrcRejected = isRejected && i % 5 === 0;
+
+  const countyApproved = isUgrcRejected ? null : statusConfig.countyApproved;
+  const countyReviewedBy = countyApproved === false ? (statusConfig.countyReviewedBy ?? null) : null;
+  const countyComments =
+    countyApproved === false && useAlternateRejectedValues
+      ? ALT_COUNTY_REJECTION_REASON
+      : countyApproved === false
+        ? 'Rejected during county review'
+        : null;
+
+  const ugrcApproved = isUgrcRejected ? false : statusConfig.ugrcApproved;
+  const ugrcReviewedBy = ugrcApproved !== null ? 'seed' : null;
+  const ugrcComments =
+    ugrcApproved === false
+      ? useAlternateRejectedValues
+        ? ALT_UGRC_REJECTION_REASON
+        : 'Rejected during UGRC review'
+      : null;
+
   return {
     blm_point_id: DAVIS_BLM_POINT_ID,
     created_at: new Date(),
@@ -145,16 +169,16 @@ function createSubmissionDoc(i: number, docId: string, county: string, statusCon
     },
     status: {
       ugrc: {
-        approved: statusConfig.ugrcApproved,
-        comments: statusConfig.ugrcApproved === false ? 'Rejected during UGRC review' : null,
-        reviewedAt: statusConfig.ugrcApproved !== null ? new Date() : null,
-        reviewedBy: statusConfig.ugrcApproved !== null ? 'seed' : null,
+        approved: ugrcApproved,
+        comments: ugrcComments,
+        reviewedAt: ugrcReviewedBy ? new Date() : null,
+        reviewedBy: ugrcReviewedBy,
       },
       county: {
-        approved: statusConfig.countyApproved,
-        comments: statusConfig.countyApproved === false ? 'Rejected during county review' : null,
-        reviewedAt: statusConfig.countyReviewedBy ? new Date() : null,
-        reviewedBy: statusConfig.countyReviewedBy ?? null,
+        approved: countyApproved,
+        comments: countyComments,
+        reviewedAt: countyReviewedBy ? new Date() : null,
+        reviewedBy: countyReviewedBy,
       },
       sgid: {
         approved: null,

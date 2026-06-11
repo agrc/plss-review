@@ -39,18 +39,26 @@ export default function Rejected() {
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Rejected Date',
-        enableSorting: false,
+        sortingFn: (rowA, rowB, columnId) => {
+          const dateA = new Date(rowA.getValue<string>(columnId));
+          const dateB = new Date(rowB.getValue<string>(columnId));
+          return dateA.getTime() - dateB.getTime();
+        },
       }),
       columnHelper.accessor('rejectedFrom', {
         id: 'rejectedFrom',
         header: () => 'Rejected by',
         cell: (info) => <span aria-label={`Rejected by ${info.row.original.rejectedBy}`}>{info.getValue()}</span>,
-        enableSorting: false,
+        sortingFn: (rowA, rowB) => {
+          const valueA = rowA.original.rejectedBy;
+          const valueB = rowB.original.rejectedBy;
+          return valueA.localeCompare(valueB);
+        },
       }),
       columnHelper.accessor('reason', {
         id: 'reason',
         header: () => 'Reason',
-        enableSorting: false,
+        sortingFn: 'alphanumeric',
       }),
     ],
     [],
