@@ -58,9 +58,9 @@ export default function Rejected() {
         id: 'rejectedFrom',
         header: () => 'Rejected by',
         cell: (info) => <span aria-label={`Rejected by ${info.row.original.rejectedBy}`}>{info.getValue()}</span>,
-        sortingFn: (rowA, rowB) => {
-          const valueA = rowA.original.rejectedBy;
-          const valueB = rowB.original.rejectedBy;
+        sortingFn: (rowA, rowB, columnId) => {
+          const valueA = rowA.getValue<string>(columnId);
+          const valueB = rowB.getValue<string>(columnId);
           return valueA.localeCompare(valueB);
         },
       }),
