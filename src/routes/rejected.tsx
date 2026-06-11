@@ -7,6 +7,7 @@ import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { RejectedSubmission } from '../components/shared/types';
 import { forRejectedSubmissions } from '../queries';
+import { dateStringSortingFn, localeStringSortingFn } from '../sortingFns';
 
 const columnHelper = createColumnHelper<RejectedSubmission>();
 
@@ -34,23 +35,23 @@ export default function Rejected() {
       columnHelper.accessor('submitter', {
         id: 'submitter',
         header: () => 'Submitter',
-        enableSorting: false,
+        sortingFn: 'alphanumeric',
       }),
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Rejected Date',
-        enableSorting: false,
+        sortingFn: dateStringSortingFn,
       }),
       columnHelper.accessor('rejectedFrom', {
         id: 'rejectedFrom',
         header: () => 'Rejected by',
         cell: (info) => <span aria-label={`Rejected by ${info.row.original.rejectedBy}`}>{info.getValue()}</span>,
-        enableSorting: false,
+        sortingFn: localeStringSortingFn,
       }),
       columnHelper.accessor('reason', {
         id: 'reason',
         header: () => 'Reason',
-        enableSorting: false,
+        sortingFn: 'alphanumeric',
       }),
     ],
     [],

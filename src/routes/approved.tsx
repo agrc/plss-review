@@ -7,6 +7,7 @@ import type { Submission } from '../components/shared/types';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import { forApprovedSubmissions } from '../queries';
+import { dateStringSortingFn, mrrcCellText, nullableBooleanSortingFn } from '../sortingFns';
 
 const columnHelper = createColumnHelper<Submission>();
 
@@ -34,25 +35,18 @@ export default function Approved() {
       columnHelper.accessor('submitter', {
         id: 'submitter',
         header: () => 'Submitter',
-        enableSorting: false,
+        sortingFn: 'alphanumeric',
       }),
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Approved Date',
-        enableSorting: false,
+        sortingFn: dateStringSortingFn,
       }),
       columnHelper.accessor('mrrc', {
         id: 'mrrc',
         header: () => 'MRRC',
-        cell: (info) => {
-          const value = info.getValue();
-          if (value === undefined) {
-            return 'Unknown';
-          }
-
-          return value ? 'Yep' : 'Nope';
-        },
-        enableSorting: false,
+        cell: (info) => mrrcCellText(info.getValue()),
+        sortingFn: nullableBooleanSortingFn,
       }),
     ],
     [],

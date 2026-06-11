@@ -12,6 +12,7 @@ import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { CountySubmission, FormValues } from '../components/shared/types';
 import { forCountySubmissions } from '../queries';
+import { dateStringSortingFn, mrrcCellText, nullableBooleanSortingFn } from '../sortingFns';
 import type { CountyReview, UpdateDocumentParams } from '../types';
 import { getFiscalYear } from '../utils';
 
@@ -161,30 +162,23 @@ export default function County() {
       columnHelper.accessor('submitter', {
         id: 'submitter',
         header: () => 'Submitter',
-        enableSorting: false,
+        sortingFn: 'alphanumeric',
       }),
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Submission Date',
-        enableSorting: false,
+        sortingFn: dateStringSortingFn,
       }),
       columnHelper.accessor('ugrcApprovedDate', {
         id: 'ugrcApprovedDate',
         header: () => 'UGRC Approved Date',
-        enableSorting: false,
+        sortingFn: dateStringSortingFn,
       }),
       columnHelper.accessor('mrrc', {
         id: 'mrrc',
         header: () => 'MRRC',
-        cell: (info) => {
-          const value = info.getValue();
-          if (value === undefined) {
-            return 'Unknown';
-          }
-
-          return value ? 'Yep' : 'Nope';
-        },
-        enableSorting: false,
+        cell: (info) => mrrcCellText(info.getValue()),
+        sortingFn: nullableBooleanSortingFn,
       }),
       columnHelper.accessor('actions', {
         id: 'actions',

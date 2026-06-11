@@ -20,6 +20,7 @@ A website to view and approve to monument record sheet submissions
      - **Note:** If restarting pnpm, be sure to close the `cmd` windows that it opens first.
 1. Log in via Firebase in order to access the `Staff Reviewer` user
    - `pnpx firebase-tools login --reauth`
+   - Select A and Yes, hit Enter, and click Allow on the browser popup
 1. Browse to the [development server](http://localhost:5173/) and login as `Staff Reviewer`
 
 ## Deployment
