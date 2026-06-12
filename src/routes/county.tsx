@@ -247,7 +247,14 @@ export default function County() {
 
   return (
     <div className="grid w-full gap-4 p-2">
-      <Table data={data} columns={columns} emptyMessage="⏳⏳There are no submissions waiting on the county.⏳⏳" />
+      <Table
+        data={data}
+        columns={columns}
+        emptyMessage="⏳⏳There are no submissions waiting on the county.⏳⏳"
+        onClick={(row) => {
+          navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
+        }}
+      />
       <DialogTrigger isOpen={dialogOpen} onOpenChange={setDialogOpen}>
         <Modal>
           <AlertDialog
