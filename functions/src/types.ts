@@ -31,6 +31,7 @@ export type SubmissionRejectedEvent = {
     blmPointId: string;
     county: string;
     surveyor: Contact;
+    rejectionReason?: string;
   };
 };
 

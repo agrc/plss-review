@@ -214,6 +214,7 @@ export async function queueTasks(
                 blmPointId: after.blm_point_id,
                 county: after.county,
                 surveyor,
+                rejectionReason: after.status.ugrc.comments ?? undefined,
               },
             } satisfies SubmissionRejectedEvent,
             {
@@ -264,6 +265,7 @@ export async function queueTasks(
                 blmPointId: after.blm_point_id,
                 county: after.county,
                 surveyor,
+                rejectionReason: after.status.county.comments ?? undefined,
               },
             } satisfies SubmissionRejectedEvent,
             {
@@ -433,6 +435,7 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
         blmPointId: payload.blmPointId,
         surveyor: payload.surveyor.name,
         county: payload.county,
+        rejectionReason: payload.rejectionReason ?? 'No reason provided',
       };
 
       const template = {
