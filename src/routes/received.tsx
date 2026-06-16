@@ -43,6 +43,11 @@ const columns = [
     cell: (info) => mrrcCellText(info.getValue()),
     sortingFn: nullableBooleanSortingFn,
   }),
+  columnHelper.accessor('rejectReason', {
+    id: 'rejectReason',
+    header: () => 'Reject Reason',
+    sortingFn: 'alphanumeric',
+  }),
 ];
 
 export default function Received() {
