@@ -157,6 +157,7 @@ export default function Review() {
     },
   });
   const [operatorLoaded, setOperatorLoaded] = useState<boolean>(geodeticLengthOperator.isLoaded());
+  const [forgiveDialogOpen, setForgiveDialogOpen] = useState<boolean>(false);
 
   const { data, status: firestoreStatus } = useQuery({
     queryKey: ['firestore', id, firestore, storage],
@@ -477,14 +478,29 @@ export default function Review() {
             </>
           )}
           {canForgive && (
-            <Button
-              variant="secondary"
-              className="bg-sky-600 text-white hover:bg-sky-700 pressed:bg-sky-800"
-              onPress={() => forgive()}
-              isPending={forgiveStatus === 'pending'}
-            >
-              Forgive
-            </Button>
+            <DialogTrigger isOpen={forgiveDialogOpen} onOpenChange={setForgiveDialogOpen}>
+              <Button
+                variant="secondary"
+                className="bg-sky-600 text-white hover:bg-sky-700 pressed:bg-sky-800"
+                onPress={() => setForgiveDialogOpen(true)}
+                isPending={forgiveStatus === 'pending'}
+              >
+                Forgive
+              </Button>
+              <Modal>
+                <AlertDialog
+                  title="Forgive submission"
+                  actionLabel="Yes"
+                  onAction={() => {
+                    setForgiveDialogOpen(false);
+                    forgive();
+                  }}
+                >
+                  Are you sure you want to forgive this monument record and send it back to the &quot;Received&quot;
+                  tab?
+                </AlertDialog>
+              </Modal>
+            </DialogTrigger>
           )}
           <Button variant="secondary" onPress={() => navigate(-1)}>
             Back
