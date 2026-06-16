@@ -3,6 +3,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { getDocs } from 'firebase/firestore';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import type { Submission } from '../components/shared/types';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
@@ -13,6 +14,7 @@ const columnHelper = createColumnHelper<Submission>();
 
 export default function Approved() {
   const { firestore } = useFirestore();
+  const navigate = useNavigate();
 
   const columns = useMemo(
     () => [
@@ -89,6 +91,9 @@ export default function Approved() {
         data={data}
         columns={columns}
         emptyMessage="⏳⏳There are no approved submissions. Start approving the received submissions first!⏳⏳"
+        onClick={(row) => {
+          navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
+        }}
       />
     </div>
   );

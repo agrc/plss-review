@@ -281,7 +281,7 @@ async function main() {
   // Seed all four statuses
   const statusTypes = ['received' as const, 'county-review' as const, 'county-approved' as const, 'rejected' as const];
   for (const statusType of statusTypes) {
-    await seedSubmissionsForStatus(statusType, count, bucket, statusType === 'received');
+    await seedSubmissionsForStatus(statusType, count, bucket, true);
   }
 
   console.log(
