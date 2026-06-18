@@ -1,71 +1,90 @@
-import { createColumnHelper } from '@tanstack/react-table';
-import { describe, expect, it } from 'vitest';
-import type { Submission } from '../components/shared/types';
-import { dateStringSortingFn, mrrcCellText, nullableBooleanSortingFn } from '../sortingFns';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { dateStringSortingFn, nullableBooleanSortingFn } from '../sortingFns';
+import Approved from './approved';
 
-const columnHelper = createColumnHelper<Submission>();
+const mocks = vi.hoisted(() => ({
+  navigateMock: vi.fn(),
+  useQueryMock: vi.fn(),
+  tableProps: null as {
+    columns: Array<{ id?: string; sortingFn?: unknown }>;
+    onClick?: (row: { original: { blmPointId: string; id: string } }) => void;
+  } | null,
+}));
+
+vi.mock('react-router', () => ({
+  useNavigate: () => mocks.navigateMock,
+}));
+
+vi.mock('@tanstack/react-query', () => ({
+  useQuery: mocks.useQueryMock,
+}));
+
+vi.mock('@ugrc/utah-design-system', () => ({
+  useFirestore: () => ({ firestore: {} }),
+  Spinner: { minDelay: vi.fn() },
+  Banner: () => null,
+}));
+
+vi.mock('../components/TableLoader', () => ({
+  TableLoader: () => null,
+}));
+
+vi.mock('../components/Table', () => ({
+  default: (props: {
+    columns: Array<{ id?: string; sortingFn?: unknown }>;
+    onClick?: (row: { original: { blmPointId: string; id: string } }) => void;
+  }) => {
+    mocks.tableProps = props;
+
+    return null;
+  },
+}));
 
 describe('approved.tsx', () => {
-  it('should verify onClick includes blmPointId', () => {
-    const mockRow = {
+  beforeEach(() => {
+    mocks.navigateMock.mockReset();
+    mocks.tableProps = null;
+
+    mocks.useQueryMock.mockReturnValue({
+      status: 'success',
+      data: [],
+      error: null,
+    });
+  });
+
+  it('uses a row click handler that navigates with blmPointId and id', () => {
+    renderToStaticMarkup(<Approved />);
+
+    expect(mocks.tableProps).not.toBeNull();
+    expect(mocks.tableProps?.onClick).toBeDefined();
+
+    mocks.tableProps?.onClick?.({
       original: {
         id: 'test-id',
         blmPointId: 'BLM-123',
-        county: 'Salt Lake',
-        submitter: 'John Doe',
-        date: '2024-01-01',
-        mrrc: true,
       },
-    };
+    });
 
-    // Simulate the onClick logic
-    const navigatePath = `/secure/received/${mockRow.original.blmPointId}/${mockRow.original.id}`;
-
-    expect(navigatePath).toContain(mockRow.original.blmPointId);
-    expect(navigatePath).toContain('BLM-123');
+    expect(mocks.navigateMock).toHaveBeenCalledWith('/secure/received/BLM-123/test-id');
   });
 
-  it('should verify each accessor has a sortingFn', () => {
-    const columns = [
-      columnHelper.accessor('id', {
-        id: 'id',
-        header: () => null,
-      }),
-      columnHelper.accessor('blmPointId', {
-        id: 'blmPointId',
-        header: () => 'BLM Point Id',
-        sortingFn: 'alphanumeric',
-        size: 215,
-      }),
-      columnHelper.accessor('county', {
-        id: 'county',
-        header: () => 'County',
-        sortingFn: 'alphanumeric',
-        size: 160,
-      }),
-      columnHelper.accessor('submitter', {
-        id: 'submitter',
-        header: () => 'Submitter',
-        sortingFn: 'alphanumeric',
-      }),
-      columnHelper.accessor('date', {
-        id: 'date',
-        header: () => 'Approved Date',
-        sortingFn: dateStringSortingFn,
-      }),
-      columnHelper.accessor('mrrc', {
-        id: 'mrrc',
-        header: () => 'MRRC',
-        cell: (info) => mrrcCellText(info.getValue()),
-        sortingFn: nullableBooleanSortingFn,
-      }),
-    ];
+  it('passes real approved columns with sorting functions to Table', () => {
+    renderToStaticMarkup(<Approved />);
 
-    // Check that all columns except 'id' have a sortingFn
-    columns.forEach((column) => {
-      if (column.id !== 'id') {
-        expect(column.sortingFn).toBeDefined();
-      }
+    expect(mocks.tableProps).not.toBeNull();
+    const columns = mocks.tableProps?.columns ?? [];
+
+    const sortableColumns = columns.filter((column) => column.id !== 'id');
+    expect(sortableColumns).not.toHaveLength(0);
+    sortableColumns.forEach((column) => {
+      expect(column.sortingFn).toBeDefined();
     });
+
+    const dateColumn = columns.find((column) => column.id === 'date');
+    const mrrcColumn = columns.find((column) => column.id === 'mrrc');
+
+    expect(dateColumn?.sortingFn).toBe(dateStringSortingFn);
+    expect(mrrcColumn?.sortingFn).toBe(nullableBooleanSortingFn);
   });
 });
