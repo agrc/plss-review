@@ -1,7 +1,7 @@
 import { Timestamp, type QueryDocumentSnapshot, type SnapshotOptions } from 'firebase/firestore';
 import { describe, expect, it } from 'vitest';
 import type { Corner } from './components/shared/types';
-import { asCountySubmission } from './converters';
+import { asCountySubmission, asNewSubmission } from './converters';
 
 const formatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -121,5 +121,28 @@ describe('asCountySubmission', () => {
     const result = asCountySubmission.fromFirestore(createSnapshot(corner), {} as SnapshotOptions);
 
     expect(result.ugrcApprovedDate).toBe('Unknown');
+  });
+});
+
+describe('asNewSubmission', () => {
+  it('includes a reject reason when one exists', () => {
+    const corner = createCorner({
+      status: {
+        ...createCorner().status,
+        ugrc: {
+          ...createCorner().status.ugrc,
+          approved: false,
+          comments: 'Needs more detail',
+        },
+      },
+    });
+
+    const result = asNewSubmission.fromFirestore(createSnapshot(corner), {} as SnapshotOptions);
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        rejectReason: 'Needs more detail',
+      }),
+    );
   });
 });
