@@ -18,7 +18,7 @@ import { getFiscalYear } from '../utils';
 
 const columnHelper = createColumnHelper<CountySubmission>();
 
-const updateFirestoreDocument = async ({ id, approved, firestore, comments }: UpdateDocumentParams) => {
+const updateFirestoreDocument = async ({ id, approved, firestore, comments, stage }: UpdateDocumentParams) => {
   const submissionRef = doc(firestore, 'submissions', id);
   const submissionSnap = await getDoc(submissionRef);
 
@@ -32,8 +32,12 @@ const updateFirestoreDocument = async ({ id, approved, firestore, comments }: Up
     throw new Error('Submission data is empty');
   }
 
-  if (submissionData.status.county.approved !== null) {
-    throw new Error('Submission has already been reviewed');
+  if (stage !== 'county') {
+    throw new Error('Invalid review stage for county submission');
+  }
+
+  if (submissionData.status.ugrc.approved !== true || submissionData.status.county.approved !== null) {
+    throw new Error('Submission is no longer in the county review stage');
   }
 
   const updates = {
@@ -84,6 +88,7 @@ export default function County() {
         approved,
         firestore,
         comments,
+        stage: 'county',
       });
     },
     onSuccess: async (_, variables) => {

@@ -66,7 +66,14 @@ const getFirestoreDocument = async (id: string | undefined, firestore: Firestore
   } as Corner & { pdf: string };
 };
 
-const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, comments }: UpdateDocumentParams) => {
+const updateFirestoreDocument = async ({
+  id,
+  approved,
+  firestore,
+  currentUser,
+  comments,
+  stage,
+}: UpdateDocumentParams) => {
   const submissionRef = doc(firestore, 'submissions', id);
   const submissionSnap = await getDoc(submissionRef);
 
@@ -84,7 +91,12 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
     throw new Error('Submission has been cancelled by user');
   }
 
-  if (submissionData.status.ugrc.approved === null && submissionData.status.county.approved === null) {
+  // Validate that the submission is in the expected stage
+  if (stage === 'received') {
+    if (submissionData.status.ugrc.approved !== null || submissionData.status.county.approved !== null) {
+      throw new Error('Submission is no longer in the received stage');
+    }
+
     const updates = {
       'status.ugrc.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
       'status.ugrc.reviewedBy': currentUser!.email!,
@@ -96,7 +108,11 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
     return;
   }
 
-  if (submissionData.status.ugrc.approved === true && submissionData.status.county.approved === null) {
+  if (stage === 'county') {
+    if (submissionData.status.ugrc.approved !== true || submissionData.status.county.approved !== null) {
+      throw new Error('Submission is no longer in the county review stage');
+    }
+
     const updates = {
       'status.county.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
       'status.county.reviewedBy': 'County',
@@ -108,7 +124,7 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
     return;
   }
 
-  throw new Error('Submission has already been reviewed');
+  throw new Error('Invalid review stage');
 };
 
 const forgiveFirestoreDocument = async ({ id, firestore }: { id: string; firestore: Firestore }) => {
@@ -183,13 +199,14 @@ export default function Review() {
       data?.status.user.cancelled !== null);
 
   const { mutate: updateStatus, status: mutateStatus } = useMutation({
-    mutationFn: ({ approved, comments = '' }: { approved: boolean; comments?: string; stage: ReviewStage }) =>
+    mutationFn: ({ approved, comments = '', stage }: { approved: boolean; comments?: string; stage: ReviewStage }) =>
       updateFirestoreDocument({
         id: id!,
         approved,
         firestore,
         currentUser,
         comments,
+        stage,
       }),
     onSuccess: async (_: unknown, variables: { approved: boolean; comments?: string; stage: ReviewStage }) => {
       const fromCountyReview = variables.stage === 'county';
