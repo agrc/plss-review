@@ -115,7 +115,7 @@ const forgiveFirestoreDocument = async ({ id, firestore }: { id: string; firesto
   const submissionRef = doc(firestore, 'submissions', id);
   const submissionSnap = await getDoc(submissionRef);
 
-  if (!submissionSnap.exists) {
+  if (!submissionSnap.exists()) {
     throw new Error('Submission not found');
   }
 
