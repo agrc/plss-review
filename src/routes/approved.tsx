@@ -7,14 +7,29 @@ import { useNavigate } from 'react-router';
 import type { Submission } from '../components/shared/types';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
+import { caseInsensitiveIncludesFilter, dateRangeFilter, mrrcFilter, useTableFilters } from '../hooks/useTableFilters';
 import { forApprovedSubmissions } from '../queries';
 import { dateStringSortingFn, mrrcCellText, nullableBooleanSortingFn } from '../sortingFns';
 
 const columnHelper = createColumnHelper<Submission>();
 
+const MRRC_FILTER_OPTIONS = [
+  { label: 'All', value: '' },
+  { label: 'Yep', value: 'yep' },
+  { label: 'Nope', value: 'nope' },
+  { label: 'Unknown', value: 'unknown' },
+];
+
 export default function Approved() {
   const { firestore } = useFirestore();
   const navigate = useNavigate();
+  const {
+    columnFilters,
+    setColumnFilters,
+    renderTextFilterControl,
+    renderSelectFilterControl,
+    renderDateRangeFilterControl,
+  } = useTableFilters();
 
   const columns = useMemo(
     () => [
@@ -26,29 +41,34 @@ export default function Approved() {
         id: 'blmPointId',
         header: () => 'BLM Point Id',
         sortingFn: 'alphanumeric',
+        filterFn: caseInsensitiveIncludesFilter,
         size: 215,
       }),
       columnHelper.accessor('county', {
         id: 'county',
         header: () => 'County',
         sortingFn: 'alphanumeric',
+        filterFn: caseInsensitiveIncludesFilter,
         size: 160,
       }),
       columnHelper.accessor('submitter', {
         id: 'submitter',
         header: () => 'Submitter',
         sortingFn: 'alphanumeric',
+        filterFn: caseInsensitiveIncludesFilter,
       }),
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Approved Date',
         sortingFn: dateStringSortingFn,
+        filterFn: dateRangeFilter,
       }),
       columnHelper.accessor('mrrc', {
         id: 'mrrc',
         header: () => 'MRRC',
         cell: (info) => mrrcCellText(info.getValue()),
         sortingFn: nullableBooleanSortingFn,
+        filterFn: mrrcFilter,
       }),
     ],
     [],
@@ -90,6 +110,15 @@ export default function Approved() {
       <Table
         data={data}
         columns={columns}
+        columnFilters={columnFilters}
+        setColumnFilters={setColumnFilters}
+        headerControls={{
+          blmPointId: renderTextFilterControl('blmPointId'),
+          county: renderTextFilterControl('county'),
+          submitter: renderTextFilterControl('submitter'),
+          date: renderDateRangeFilterControl(),
+          mrrc: renderSelectFilterControl('mrrc', MRRC_FILTER_OPTIONS, 'Filter MRRC'),
+        }}
         emptyMessage="⏳⏳There are no approved submissions. Start approving the received submissions first!⏳⏳"
         onClick={(row) => {
           navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
