@@ -1,9 +1,10 @@
 import type { ColumnFiltersState } from '@tanstack/react-table';
 import { useState } from 'react';
+import { DateRangePicker } from '../components/DateRangePicker';
 import { mrrcCellText } from '../sortingFns';
 
 const TEXT_FILTER_INPUT_CLASS =
-  'w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400';
+  'w-full h-9 appearance-none rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400';
 
 // Filter functions
 export const caseInsensitiveIncludesFilter = (
@@ -125,57 +126,25 @@ export const useTableFilters = () => {
 
   const renderDateRangeFilterControl = (columnId: string = 'date') => {
     const filterValue = getFilterValue(columnId);
-    const [startStr, endStr] = filterValue.split('|');
 
     return (
-      <div className="flex flex-col gap-2 pt-4">
-        <div className="flex items-start gap-2">
-          <div className="flex flex-col gap-1">
-            <input
-              id={`date-filter-start-${columnId}`}
-              type="date"
-              value={startStr || ''}
-              onChange={(e) => {
-                const newValue = `${e.target.value}|${endStr || ''}`;
-                setColumnFilter(columnId, newValue);
-              }}
-              className={TEXT_FILTER_INPUT_CLASS}
-            />
-            <label
-              htmlFor={`date-filter-start-${columnId}`}
-              className="text-xs font-medium text-gray-700 dark:text-gray-300"
-            >
-              From
-            </label>
-          </div>
-          <div className="flex flex-col gap-1">
-            <input
-              id={`date-filter-end-${columnId}`}
-              type="date"
-              value={endStr || ''}
-              onChange={(e) => {
-                const newValue = `${startStr || ''}|${e.target.value}`;
-                setColumnFilter(columnId, newValue);
-              }}
-              className={TEXT_FILTER_INPUT_CLASS}
-            />
-            <label
-              htmlFor={`date-filter-end-${columnId}`}
-              className="text-xs font-medium text-gray-700 dark:text-gray-300"
-            >
-              To
-            </label>
-          </div>
-          {filterValue && filterValue !== '|' && (
-            <button
-              onClick={() => setColumnFilter(columnId, '')}
-              className="mt-1 rounded bg-gray-200 px-2 py-1 text-sm hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500"
-              aria-label={`Clear ${columnId} filter`}
-            >
-              ✕
-            </button>
-          )}
+      <div className="flex gap-2">
+        <div className="w-full min-w-0 max-w-64">
+          <DateRangePicker
+            label={`${columnId} date range`}
+            value={filterValue}
+            onChange={(newValue) => setColumnFilter(columnId, newValue)}
+          />
         </div>
+        {filterValue && filterValue !== '|' && (
+          <button
+            onClick={() => setColumnFilter(columnId, '')}
+            className="rounded bg-gray-200 px-2 py-1 text-sm hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500"
+            aria-label={`Clear ${columnId} filter`}
+          >
+            ✕
+          </button>
+        )}
       </div>
     );
   };
