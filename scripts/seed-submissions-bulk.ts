@@ -259,7 +259,8 @@ async function seedSubmissionsForStatus(
 
 async function main() {
   const { count, mode } = resolveCount();
-  const bucket = getStorage().bucket('localhost');
+  const bucketName = process.env.STORAGE_BUCKET || 'localhost';
+  const bucket = getStorage().bucket(bucketName);
   const uploadTasks: Promise<unknown>[] = [];
 
   // Ensure the known Davis path exists for baseline/manual testing.
