@@ -124,16 +124,21 @@ export const useTableFilters = () => {
     );
   };
 
-  const renderDateRangeFilterControl = (columnId: string = 'date') => {
+  const renderDateRangeFilterControl = (
+    columnId: string = 'date',
+    widthClass: string = 'max-w-64',
+    compact: boolean = false,
+  ) => {
     const filterValue = getFilterValue(columnId);
 
     return (
       <div className="flex gap-2">
-        <div className="w-full min-w-0 max-w-64">
+        <div className={`w-full min-w-0 ${widthClass}`}>
           <DateRangePicker
             label={`${columnId} date range`}
             value={filterValue}
             onChange={(newValue) => setColumnFilter(columnId, newValue)}
+            compact={compact}
           />
         </div>
         {filterValue && filterValue !== '|' && (

@@ -21,9 +21,10 @@ type Props = {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  compact?: boolean;
 };
 
-export function DateRangePicker({ label, value, onChange }: Props) {
+export function DateRangePicker({ label, value, onChange, compact = false }: Props) {
   const [startStr, endStr] = value.split('|');
   const parsedValue =
     startStr && endStr
@@ -44,27 +45,31 @@ export function DateRangePicker({ label, value, onChange }: Props) {
       className="w-full"
     >
       <Label className="sr-only">{label}</Label>
-      <Group className="flex h-9 w-full items-center rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus-within:border-blue-500 dark:bg-gray-700 dark:text-white">
-        <DateInput slot="start" className="flex">
+      <Group
+        className={`flex h-9 w-full items-center rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus-within:border-blue-500 dark:bg-gray-700 dark:text-white ${compact ? 'overflow-hidden' : ''}`}
+      >
+        <DateInput slot="start" className={compact ? 'flex min-w-0 shrink' : 'flex'}>
           {(segment) => (
             <DateSegment
               segment={segment}
-              className="rounded px-0.5 data-[placeholder]:text-gray-500 focus:bg-blue-100 focus:outline-none dark:data-[placeholder]:text-gray-400 dark:focus:bg-blue-900"
+              className={`rounded px-0.5 data-[placeholder]:text-gray-500 focus:bg-blue-100 focus:outline-none dark:data-[placeholder]:text-gray-400 dark:focus:bg-blue-900 ${compact ? 'max-w-full overflow-hidden text-ellipsis whitespace-nowrap' : ''}`}
             />
           )}
         </DateInput>
-        <span aria-hidden className="px-1 text-gray-500 dark:text-gray-400">
+        <span aria-hidden className={`px-1 text-gray-500 dark:text-gray-400 ${compact ? 'shrink-0' : ''}`}>
           -
         </span>
-        <DateInput slot="end" className="flex">
+        <DateInput slot="end" className={compact ? 'flex min-w-0 shrink' : 'flex'}>
           {(segment) => (
             <DateSegment
               segment={segment}
-              className="rounded px-0.5 data-[placeholder]:text-gray-500 focus:bg-blue-100 focus:outline-none dark:data-[placeholder]:text-gray-400 dark:focus:bg-blue-900"
+              className={`rounded px-0.5 data-[placeholder]:text-gray-500 focus:bg-blue-100 focus:outline-none dark:data-[placeholder]:text-gray-400 dark:focus:bg-blue-900 ${compact ? 'max-w-full overflow-hidden text-ellipsis whitespace-nowrap' : ''}`}
             />
           )}
         </DateInput>
-        <Button className="ml-auto rounded p-1 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600">
+        <Button
+          className={`ml-auto rounded p-1 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 ${compact ? 'shrink-0' : ''}`}
+        >
           <ChevronDownIcon className="h-4 w-4" />
         </Button>
       </Group>
