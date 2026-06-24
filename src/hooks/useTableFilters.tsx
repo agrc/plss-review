@@ -91,12 +91,13 @@ export const useTableFilters = () => {
         />
         {value && (
           <button
+            type="button"
             onClick={() => setColumnFilter(columnId, '')}
             className="rounded bg-gray-200 px-2 py-1 text-sm hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500"
+            aria-label={`Clear ${columnId} filter`}
           >
             ✕
           </button>
-        )}
       </div>
     );
   };
