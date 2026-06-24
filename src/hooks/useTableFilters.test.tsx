@@ -67,10 +67,12 @@ describe('mrrcFilter', () => {
     expect(result).toBe(true);
   });
 
-  it('should filter based on mrrc cell text value', () => {
-    const row = createRow(true);
-    const result = mrrcFilter(row, 'mrrc', 'Yes');
-    expect(typeof result).toBe('boolean');
+  it('should match Yep/Nope/Unknown values (case-insensitive)', () => {
+    expect(mrrcFilter(createRow(true), 'mrrc', 'yep')).toBe(true);
+    expect(mrrcFilter(createRow(true), 'mrrc', 'nope')).toBe(false);
+    expect(mrrcFilter(createRow(false), 'mrrc', 'nope')).toBe(true);
+    expect(mrrcFilter(createRow(undefined), 'mrrc', 'unknown')).toBe(true);
+    expect(mrrcFilter(createRow(undefined), 'mrrc', 'yep')).toBe(false);
   });
 });
 
