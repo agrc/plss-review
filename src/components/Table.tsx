@@ -6,6 +6,7 @@ import {
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
+  type OnChangeFn,
   type Row,
 } from '@tanstack/react-table';
 import { ChevronDownIcon } from 'lucide-react';
@@ -27,7 +28,7 @@ export default function Table<T>({
   onClick?: (row: Row<T>) => void;
   emptyMessage: string;
   columnFilters?: ColumnFiltersState;
-  setColumnFilters?: (filters: ColumnFiltersState) => void;
+  setColumnFilters?: OnChangeFn<ColumnFiltersState>;
   headerControls?: Partial<Record<string, ReactNode>>;
 }) {
   const empty = [] as T[];
@@ -43,9 +44,7 @@ export default function Table<T>({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: (updaterOrValue) => {
-      setColumnFilters?.(typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters) : updaterOrValue);
-    },
+    onColumnFiltersChange: setColumnFilters,
   });
 
   if (!data || data.length === 0) {
