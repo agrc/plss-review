@@ -24,6 +24,19 @@ export const asNewSubmission = {
   fromFirestore(snapshot: QueryDocumentSnapshot<Corner>, options: SnapshotOptions): Submission {
     const data = snapshot.data(options);
 
+    let rejectReason: string | undefined;
+    if (data.status.ugrc.approved === false) {
+      rejectReason = data.status.ugrc.comments ?? undefined;
+    } else if (data.status.county.approved === false) {
+      rejectReason = data.status.county.comments ?? undefined;
+    } else if (data.status.ugrc.comments) {
+      // Previously rejected by UGRC but forgiven
+      rejectReason = data.status.ugrc.comments;
+    } else if (data.status.county.comments) {
+      // Previously rejected by County but forgiven
+      rejectReason = data.status.county.comments;
+    }
+
     return {
       id: snapshot.id,
       blmPointId: data.blm_point_id,
@@ -31,6 +44,7 @@ export const asNewSubmission = {
       date: formatTimestamp(data.created_at, 'Unknown'),
       mrrc: data.metadata?.mrrc ?? undefined,
       submitter: data.submitted_by.name,
+      rejectReason,
     };
   },
 };

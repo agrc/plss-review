@@ -7,6 +7,7 @@ import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { Submission } from '../components/shared/types';
 import { forNewSubmissions } from '../queries';
+import { dateStringSortingFn, mrrcCellText, nullableBooleanSortingFn } from '../sortingFns';
 
 const columnHelper = createColumnHelper<Submission>();
 const columns = [
@@ -29,25 +30,23 @@ const columns = [
   columnHelper.accessor('submitter', {
     id: 'submitter',
     header: () => 'Submitter',
-    enableSorting: false,
+    sortingFn: 'alphanumeric',
   }),
   columnHelper.accessor('date', {
     id: 'date',
     header: () => 'Submission Date',
-    enableSorting: false,
+    sortingFn: dateStringSortingFn,
   }),
   columnHelper.accessor('mrrc', {
     id: 'mrrc',
     header: () => 'MRRC',
-    cell: (info) => {
-      const value = info.getValue();
-      if (value === undefined) {
-        return 'Unknown';
-      }
-
-      return value ? 'Yep' : 'Nope';
-    },
-    enableSorting: false,
+    cell: (info) => mrrcCellText(info.getValue()),
+    sortingFn: nullableBooleanSortingFn,
+  }),
+  columnHelper.accessor('rejectReason', {
+    id: 'rejectReason',
+    header: () => 'Reject Reason',
+    sortingFn: 'alphanumeric',
   }),
 ];
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0-rc.21](https://github.com/agrc/plss-review/compare/v1.0.17...v1.1.0-rc.21) (2026-06-11)
+
+
+### Features
+
+* 165 display all records in each tab ([#171](https://github.com/agrc/plss-review/issues/171)) ([14b4058](https://github.com/agrc/plss-review/commit/14b405892566f96ceb2fcb62771e74cd741d0570))
+* 166 expand sorting to all columns ([#172](https://github.com/agrc/plss-review/issues/172)) ([e985e54](https://github.com/agrc/plss-review/commit/e985e5487f749cbac8b221db47f6817e3b39c67d))
+* add UGRC approved date column to under county review tab ([6158ef2](https://github.com/agrc/plss-review/commit/6158ef25edfa5937b945d2cf25f043da9a1a41eb)), closes [#141](https://github.com/agrc/plss-review/issues/141)
+
 ## [1.0.17](https://github.com/agrc/plss-review/compare/v1.0.16...v1.0.17) (2026-04-27)
 
 

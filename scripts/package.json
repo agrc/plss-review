@@ -6,12 +6,15 @@
     "dev:migrate-published": "ts-node ./2.0.3__add_published.ts",
     "dev:migrate-status": "ts-node ./2.0.1__update-status.ts",
     "dev:update-contacts": "ts-node ./seed-contacts.ts",
-    "local:migrate-mrrc": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./2.0.2__mrrc-totals.ts",
-    "local:migrate-published": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./2.0.3__add_published.ts",
-    "local:migrate-status": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./2.0.1__update-status.ts",
-    "local:seed-auth": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./seed-auth.ts",
-    "local:seed-contacts": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./seed-contacts.ts",
-    "local:seed-submissions": "FIRESTORE_EMULATOR_HOST='127.0.0.1:8080' FIREBASE_AUTH_EMULATOR_HOST='127.0.0.1:9099' ts-node ./seed-submissions.ts",
+    "local:migrate-mrrc": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 ts-node ./2.0.2__mrrc-totals.ts",
+    "local:migrate-published": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 ts-node ./2.0.3__add_published.ts",
+    "local:migrate-status": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 ts-node ./2.0.1__update-status.ts",
+    "local:seed-auth": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 ts-node ./seed-auth.ts",
+    "local:seed-bulk": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 FIREBASE_STORAGE_EMULATOR_HOST=127.0.0.1:9199 ts-node ./seed-submissions-bulk.ts",
+    "local:seed-bulk-large": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 FIREBASE_STORAGE_EMULATOR_HOST=127.0.0.1:9199 ts-node ./seed-submissions-bulk.ts --mode=large",
+    "local:seed-bulk-small": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 FIREBASE_STORAGE_EMULATOR_HOST=127.0.0.1:9199 ts-node ./seed-submissions-bulk.ts --mode=small",
+    "local:seed-contacts": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 ts-node ./seed-contacts.ts",
+    "local:seed-submissions": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 ts-node ./seed-submissions.ts",
     "prod:migrate-mrrc": "ts-node ./2.0.2__mrrc-totals.ts --project=ut-dts-agrc-plss-prod",
     "prod:migrate-published": "ts-node ./2.0.3__add_published.ts --project=ut-dts-agrc-plss-prod",
     "prod:migrate-status": "ts-node ./2.0.1__update-status.ts --project=ut-dts-agrc-plss-prod",
@@ -21,6 +24,7 @@
     "firebase-admin": "^13.6.0"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "ts-node": "^10.9.2"
   }
 }

@@ -8,12 +8,19 @@ A website to view and approve to monument record sheet submissions
 
 1. Install dependencies
    - `pnpm install`
+   - `pnpm copy:arcgis`
 1. Duplicate `.env` as `.env.local` with local secrets.
 1. Install functions dependencies
-   - `pnpm install --filter functions`
+   - `cd functions`
+   - `pnpm install`
 1. Duplicate `functions/.secrets` as `.secrets.local` with local secrets.
 1. Start the website
    - `pnpm start`
+   - Windows: `pnpm start-win`
+     - **Note:** If restarting pnpm, be sure to close the `cmd` windows that it opens first.
+1. Log in via Firebase in order to access the `Staff Reviewer` user
+   - `pnpx firebase-tools login --reauth`
+   - Select A and Yes, hit Enter, and click Allow on the browser popup
 1. Browse to the [development server](http://localhost:5173/) and login as `Staff Reviewer`
 
 ## Deployment
@@ -25,6 +32,14 @@ A website to view and approve to monument record sheet submissions
 1. Allow the storage rules to query the database in the firebase console
 
 GitHub Actions installs dependencies for the standalone `functions/` package before Firebase deploys, and `firebase.json` continues to use `functions` as the deploy source for both local development and CI.
+
+
+## User Management
+
+To add new users:
+
+1. Ask the user to register on plss.utah.gov (or plss.dev.utah.gov in dev)
+1. Find the user's record in the submitters collection in firebase and update the elevated field to be true.
 
 ## :robot: Dependabot
 

@@ -31,7 +31,9 @@ import { RejectionReasons } from '../components/RejectionReasons';
 import { ImageLoader } from '../components/TableLoader';
 import { useMap } from '../components/hooks';
 import type { Corner, FormValues } from '../components/shared/types';
-import type { UgrcReview, UpdateDocumentParams } from '../types';
+import type { CountyReview, UgrcReview, UpdateDocumentParams } from '../types';
+
+type ReviewStage = 'received' | 'county';
 
 const getFirestoreDocument = async (id: string | undefined, firestore: Firestore, storage: FirebaseStorage) => {
   if (!id) {
@@ -64,7 +66,14 @@ const getFirestoreDocument = async (id: string | undefined, firestore: Firestore
   } as Corner & { pdf: string };
 };
 
-const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, comments }: UpdateDocumentParams) => {
+const updateFirestoreDocument = async ({
+  id,
+  approved,
+  firestore,
+  currentUser,
+  comments,
+  stage,
+}: UpdateDocumentParams) => {
   const submissionRef = doc(firestore, 'submissions', id);
   const submissionSnap = await getDoc(submissionRef);
 
@@ -78,18 +87,74 @@ const updateFirestoreDocument = async ({ id, approved, firestore, currentUser, c
     throw new Error('Submission data is empty');
   }
 
-  if (submissionData.status.ugrc.approved !== null) {
-    throw new Error('Submission has already been reviewed');
+  if (submissionData.status.user.cancelled !== null) {
+    throw new Error('Submission has been cancelled by user');
   }
 
-  const updates = {
-    'status.ugrc.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
-    'status.ugrc.reviewedBy': currentUser!.email!,
-    'status.ugrc.approved': approved,
-    'status.ugrc.comments': comments,
-  } satisfies UgrcReview;
+  // Validate that the submission is in the expected stage
+  if (stage === 'received') {
+    if (submissionData.status.ugrc.approved !== null || submissionData.status.county.approved !== null) {
+      throw new Error('Submission is no longer in the received stage');
+    }
 
-  await updateDoc(submissionRef, updates);
+    const updates = {
+      'status.ugrc.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
+      'status.ugrc.reviewedBy': currentUser!.email!,
+      'status.ugrc.approved': approved,
+      'status.ugrc.comments': comments,
+    } satisfies UgrcReview;
+
+    await updateDoc(submissionRef, updates);
+    return;
+  }
+
+  if (stage === 'county') {
+    if (submissionData.status.ugrc.approved !== true || submissionData.status.county.approved !== null) {
+      throw new Error('Submission is no longer in the county review stage');
+    }
+
+    const updates = {
+      'status.county.reviewedAt': DateTime.now().setZone('America/Denver').toJSDate(),
+      'status.county.reviewedBy': 'County',
+      'status.county.approved': approved,
+      'status.county.comments': comments,
+    } satisfies CountyReview;
+
+    await updateDoc(submissionRef, updates);
+    return;
+  }
+
+  throw new Error('Invalid review stage');
+};
+
+const forgiveFirestoreDocument = async ({ id, firestore }: { id: string; firestore: Firestore }) => {
+  const submissionRef = doc(firestore, 'submissions', id);
+  const submissionSnap = await getDoc(submissionRef);
+
+  if (!submissionSnap.exists()) {
+    throw new Error('Submission not found');
+  }
+
+  const submissionData = submissionSnap.data();
+
+  if (!submissionData) {
+    throw new Error('Submission data is empty');
+  }
+
+  const isRejected =
+    submissionData.status.ugrc.approved === false ||
+    submissionData.status.county.approved === false ||
+    submissionData.status.user.cancelled !== null;
+
+  if (!isRejected) {
+    throw new Error('Submission is not in a rejected state');
+  }
+
+  await updateDoc(submissionRef, {
+    'status.ugrc.approved': null,
+    'status.county.approved': null,
+    'status.user.cancelled': null,
+  });
 };
 
 export default function Review() {
@@ -108,6 +173,7 @@ export default function Review() {
     },
   });
   const [operatorLoaded, setOperatorLoaded] = useState<boolean>(geodeticLengthOperator.isLoaded());
+  const [forgiveDialogOpen, setForgiveDialogOpen] = useState<boolean>(false);
 
   const { data, status: firestoreStatus } = useQuery({
     queryKey: ['firestore', id, firestore, storage],
@@ -115,31 +181,54 @@ export default function Review() {
     enabled: !!id,
   });
 
+  const canReviewReceived =
+    firestoreStatus === 'success' &&
+    data?.status.user.cancelled === null &&
+    data?.status.ugrc.approved === null &&
+    data?.status.county.approved === null;
+  const canReviewCounty =
+    firestoreStatus === 'success' &&
+    data?.status.user.cancelled === null &&
+    data?.status.ugrc.approved === true &&
+    data?.status.county.approved === null;
+  const canReview = canReviewReceived || canReviewCounty;
+  const canForgive =
+    firestoreStatus === 'success' &&
+    (data?.status.ugrc.approved === false ||
+      data?.status.county.approved === false ||
+      data?.status.user.cancelled !== null);
+
   const { mutate: updateStatus, status: mutateStatus } = useMutation({
-    mutationFn: ({ approved, comments = '' }: { approved: boolean; comments?: string }) =>
+    mutationFn: ({ approved, comments = '', stage }: { approved: boolean; comments?: string; stage: ReviewStage }) =>
       updateFirestoreDocument({
         id: id!,
         approved,
         firestore,
         currentUser,
         comments,
+        stage,
       }),
-    onSuccess: async (_: unknown, variables: { approved: boolean; comments?: string }) => {
+    onSuccess: async (_: unknown, variables: { approved: boolean; comments?: string; stage: ReviewStage }) => {
+      const fromCountyReview = variables.stage === 'county';
+      const sourceTab = fromCountyReview ? 'county' : 'received';
+
       await queryClient.invalidateQueries({
-        queryKey: ['monuments', { type: 'received' }],
+        queryKey: ['monuments', { type: sourceTab }],
       });
 
       await queryClient.prefetchQuery({
-        queryKey: ['monuments', { type: 'received' }],
+        queryKey: ['monuments', { type: sourceTab }],
       });
 
       if (variables.approved) {
+        const destinationTab = fromCountyReview ? 'approved' : 'county';
+
         await queryClient.invalidateQueries({
-          queryKey: ['monuments', { type: 'county' }],
+          queryKey: ['monuments', { type: destinationTab }],
         });
 
         await queryClient.prefetchQuery({
-          queryKey: ['monuments', { type: 'county' }],
+          queryKey: ['monuments', { type: destinationTab }],
         });
       } else {
         await queryClient.invalidateQueries({
@@ -151,7 +240,17 @@ export default function Review() {
         });
       }
 
-      await navigate('/secure/received');
+      await navigate(fromCountyReview ? '/secure/county' : '/secure/received');
+    },
+  });
+
+  const { mutate: forgive, status: forgiveStatus } = useMutation({
+    mutationFn: () => forgiveFirestoreDocument({ id: id!, firestore }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'rejected' }] });
+      await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'received' }] });
+      await queryClient.prefetchQuery({ queryKey: ['monuments', { type: 'received' }] });
+      await navigate('/secure/rejected');
     },
   });
 
@@ -347,7 +446,7 @@ export default function Review() {
       comments += ` - ${data.notes}`;
     }
 
-    updateStatus({ approved: false, comments });
+    updateStatus({ approved: false, comments, stage: canReviewCounty ? 'county' : 'received' });
   };
 
   return (
@@ -363,11 +462,11 @@ export default function Review() {
           )}
         </div>
         <div className="order-first flex flex-col items-center gap-2 md:order-none">
-          {firestoreStatus === 'success' && data?.status.ugrc.reviewedBy === null && (
+          {canReview && (
             <>
               <Button
                 variant="primary"
-                onPress={() => updateStatus({ approved: true })}
+                onPress={() => updateStatus({ approved: true, stage: canReviewCounty ? 'county' : 'received' })}
                 isDisabled={firestoreStatus !== 'success'}
                 isPending={mutateStatus === 'pending'}
               >
@@ -394,6 +493,31 @@ export default function Review() {
                 </Modal>
               </DialogTrigger>
             </>
+          )}
+          {canForgive && (
+            <DialogTrigger isOpen={forgiveDialogOpen} onOpenChange={setForgiveDialogOpen}>
+              <Button
+                variant="secondary"
+                className="bg-sky-600 text-white hover:bg-sky-700 pressed:bg-sky-800"
+                onPress={() => setForgiveDialogOpen(true)}
+                isPending={forgiveStatus === 'pending'}
+              >
+                Forgive
+              </Button>
+              <Modal>
+                <AlertDialog
+                  title="Forgive submission"
+                  actionLabel="Yes"
+                  onAction={() => {
+                    setForgiveDialogOpen(false);
+                    forgive();
+                  }}
+                >
+                  Are you sure you want to forgive this monument record and send it back to the &quot;Received&quot;
+                  tab?
+                </AlertDialog>
+              </Modal>
+            </DialogTrigger>
           )}
           <Button variant="secondary" onPress={() => navigate(-1)}>
             Back

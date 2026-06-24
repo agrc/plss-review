@@ -1,4 +1,4 @@
-import { and, collection, Firestore, limit, or, orderBy, query, where } from 'firebase/firestore';
+import { and, collection, Firestore, or, orderBy, query, where } from 'firebase/firestore';
 import { asApprovalSubmission, asCountySubmission, asNewSubmission, asRejectedSubmission } from './converters';
 
 export const forNewSubmissions = (firestore: Firestore) =>
@@ -6,7 +6,6 @@ export const forNewSubmissions = (firestore: Firestore) =>
     collection(firestore, 'submissions').withConverter(asNewSubmission),
     and(where('status.ugrc.approved', '==', null), where('status.user.cancelled', '==', null)),
     orderBy('blm_point_id'),
-    limit(25),
   );
 
 export const forCountySubmissions = (firestore: Firestore) =>
@@ -18,7 +17,6 @@ export const forCountySubmissions = (firestore: Firestore) =>
       where('status.user.cancelled', '==', null),
     ),
     orderBy('blm_point_id'),
-    limit(25),
   );
 
 export const forApprovedSubmissions = (firestore: Firestore) =>
@@ -30,7 +28,6 @@ export const forApprovedSubmissions = (firestore: Firestore) =>
       where('status.user.cancelled', '==', null),
     ),
     orderBy('blm_point_id'),
-    limit(25),
   );
 
 export const forRejectedSubmissions = (firestore: Firestore) =>
@@ -42,5 +39,4 @@ export const forRejectedSubmissions = (firestore: Firestore) =>
       where('status.user.cancelled', '==', true),
     ),
     orderBy('blm_point_id'),
-    limit(25),
   );

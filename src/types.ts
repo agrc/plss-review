@@ -14,6 +14,7 @@ export type UpdateDocumentParams = {
   firestore: Firestore;
   currentUser?: User;
   comments?: string;
+  stage: 'received' | 'county';
 };
 
 export type UgrcReview = {

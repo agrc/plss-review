@@ -9,6 +9,7 @@ export type Submission = {
   date: string;
   mrrc?: boolean;
   actions?: string;
+  rejectReason?: string;
 };
 
 export type CountySubmission = Submission & {

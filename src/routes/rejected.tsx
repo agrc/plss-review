@@ -3,15 +3,18 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { Banner, Spinner, useFirestore } from '@ugrc/utah-design-system';
 import { getDocs } from 'firebase/firestore';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { RejectedSubmission } from '../components/shared/types';
 import { forRejectedSubmissions } from '../queries';
+import { dateStringSortingFn, localeStringSortingFn } from '../sortingFns';
 
 const columnHelper = createColumnHelper<RejectedSubmission>();
 
 export default function Rejected() {
   const { firestore } = useFirestore();
+  const navigate = useNavigate();
 
   const columns = useMemo(
     () => [
@@ -34,23 +37,23 @@ export default function Rejected() {
       columnHelper.accessor('submitter', {
         id: 'submitter',
         header: () => 'Submitter',
-        enableSorting: false,
+        sortingFn: 'alphanumeric',
       }),
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Rejected Date',
-        enableSorting: false,
+        sortingFn: dateStringSortingFn,
       }),
       columnHelper.accessor('rejectedFrom', {
         id: 'rejectedFrom',
         header: () => 'Rejected by',
         cell: (info) => <span aria-label={`Rejected by ${info.row.original.rejectedBy}`}>{info.getValue()}</span>,
-        enableSorting: false,
+        sortingFn: localeStringSortingFn,
       }),
       columnHelper.accessor('reason', {
         id: 'reason',
         header: () => 'Reason',
-        enableSorting: false,
+        sortingFn: 'alphanumeric',
       }),
     ],
     [],
@@ -93,6 +96,9 @@ export default function Rejected() {
         data={data}
         columns={columns}
         emptyMessage="🙏🙏There are no rejected submissions. Everyone is doing a great job!🙏🙏"
+        onClick={(row) => {
+          navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
+        }}
       />
     </div>
   );
