@@ -77,7 +77,7 @@ describe('mrrcFilter', () => {
 });
 
 describe('dateRangeFilter', () => {
-  const createRow = (value: string) =>
+  const createRow = (value: string | undefined) =>
     ({
       getValue: () => value,
     }) as { getValue: <TValue>(_columnId: string) => TValue };
@@ -110,6 +110,24 @@ describe('dateRangeFilter', () => {
     const row = createRow('2024-02-01');
     const result = dateRangeFilter(row, 'date', '2024-01-01|2024-01-31');
     expect(result).toBe(false);
+  });
+
+  it('should exclude rows with missing values when a range is active', () => {
+    const row = createRow(undefined);
+    const result = dateRangeFilter(row, 'date', '2024-01-01|2024-01-31');
+    expect(result).toBe(false);
+  });
+
+  it('should exclude rows with invalid date strings when a range is active', () => {
+    const row = createRow('Unknown');
+    const result = dateRangeFilter(row, 'date', '2024-01-01|2024-01-31');
+    expect(result).toBe(false);
+  });
+
+  it('should include timestamps later on the selected end date', () => {
+    const row = createRow('2024-01-31T15:30:00');
+    const result = dateRangeFilter(row, 'date', '2024-01-01|2024-01-31');
+    expect(result).toBe(true);
   });
 });
 

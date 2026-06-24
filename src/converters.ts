@@ -5,8 +5,6 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'numeric',
   day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
 });
 
 const formatTimestamp = (timestamp: Timestamp | null | undefined, fallback = 'Unknown') => {
