@@ -236,22 +236,20 @@ async function seedSubmissionsForStatus(
       await commitBatch();
     }
 
-    // Only upload PDFs for 'received' status
-    if (shouldUploadPdfs) {
-      const targetPdfPath = `under-review/${DAVIS_BLM_POINT_ID}/${DAVIS_USER_ID}/${docId}.pdf`;
-      uploadTasks.push(
-        bucket.file(targetPdfPath).save(BULK_PDF_BYTES, {
-          metadata: {
-            contentType: 'application/pdf',
-            contentDisposition: `inline; filename="${docId}.pdf"`,
-          },
-          resumable: false,
-        }),
-      );
+    // Upload PDFs for seeded submissions
+    const targetPdfPath = `under-review/${DAVIS_BLM_POINT_ID}/${DAVIS_USER_ID}/${docId}.pdf`;
+    uploadTasks.push(
+      bucket.file(targetPdfPath).save(BULK_PDF_BYTES, {
+        metadata: {
+          contentType: 'application/pdf',
+          contentDisposition: `inline; filename="${docId}.pdf"`,
+        },
+        resumable: false,
+      }),
+    );
 
-      if (uploadTasks.length === MAX_CONCURRENT_UPLOADS) {
-        await flushUploads();
-      }
+    if (uploadTasks.length === MAX_CONCURRENT_UPLOADS) {
+      await flushUploads();
     }
   }
 
@@ -281,7 +279,7 @@ async function main() {
   // Seed all four statuses
   const statusTypes = ['received' as const, 'county-review' as const, 'county-approved' as const, 'rejected' as const];
   for (const statusType of statusTypes) {
-    await seedSubmissionsForStatus(statusType, count, bucket, true);
+    await seedSubmissionsForStatus(statusType, count, bucket);
   }
 
   console.log(
