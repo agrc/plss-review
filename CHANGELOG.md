@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/agrc/plss-review/compare/v1.0.17...v1.1.0) (2026-06-24)
+
+
+### Features
+
+* 164, 165, 166, 167: plss-review enhancements ([#177](https://github.com/agrc/plss-review/issues/177)) ([09c65d3](https://github.com/agrc/plss-review/commit/09c65d3a5254da4136c7520cbe2d0a91e112aa15))
+* add UGRC approved date column to under county review tab ([6158ef2](https://github.com/agrc/plss-review/commit/6158ef25edfa5937b945d2cf25f043da9a1a41eb)), closes [#141](https://github.com/agrc/plss-review/issues/141)
+
 ## [1.1.0-rc.21](https://github.com/agrc/plss-review/compare/v1.0.17...v1.1.0-rc.21) (2026-06-11)
 
 
