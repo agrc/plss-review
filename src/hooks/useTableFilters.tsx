@@ -6,6 +6,16 @@ import { mrrcCellText } from '../sortingFns';
 const TEXT_FILTER_INPUT_CLASS =
   'w-full h-9 appearance-none rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400';
 
+const DATE_ONLY_VALUE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
+const parseRowDate = (value: string): Date => {
+  if (DATE_ONLY_VALUE_REGEX.test(value)) {
+    return new Date(`${value}T00:00:00`);
+  }
+
+  return new Date(value);
+};
+
 // Filter functions
 export const caseInsensitiveIncludesFilter = (
   row: { getValue: <TValue>(columnId: string) => TValue },
@@ -41,18 +51,25 @@ export const dateRangeFilter = (
   const cellValue = row.getValue<string>(columnId);
 
   if (!cellValue) {
-    return true;
-  }
-
-  const cellDate = new Date(cellValue);
-  const startDate = startStr ? new Date(startStr) : null;
-  const endDate = endStr ? new Date(endStr) : null;
-
-  if (startDate && cellDate < startDate) {
     return false;
   }
 
-  if (endDate && cellDate > endDate) {
+  const cellDate = parseRowDate(cellValue);
+  if (Number.isNaN(cellDate.getTime())) {
+    return false;
+  }
+
+  const startDate = startStr ? new Date(`${startStr}T00:00:00`) : null;
+  const endDate = endStr ? new Date(`${endStr}T23:59:59.999`) : null;
+
+  const validStartDate = startDate && !Number.isNaN(startDate.getTime()) ? startDate : null;
+  const validEndDate = endDate && !Number.isNaN(endDate.getTime()) ? endDate : null;
+
+  if (validStartDate && cellDate < validStartDate) {
+    return false;
+  }
+
+  if (validEndDate && cellDate > validEndDate) {
     return false;
   }
 
@@ -98,6 +115,7 @@ export const useTableFilters = () => {
           >
             ✕
           </button>
+        )}
       </div>
     );
   };
