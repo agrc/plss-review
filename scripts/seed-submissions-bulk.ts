@@ -194,7 +194,6 @@ async function seedSubmissionsForStatus(
   statusType: 'received' | 'county-review' | 'county-approved' | 'rejected',
   count: number,
   bucket: ReturnType<ReturnType<typeof getStorage>['bucket']>,
-  shouldUploadPdfs: boolean,
 ) {
   let batch = db.batch();
   let writesInBatch = 0;
