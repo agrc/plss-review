@@ -282,8 +282,8 @@ export default function County() {
           blmPointId: renderTextFilterControl('blmPointId'),
           county: renderTextFilterControl('county'),
           submitter: renderTextFilterControl('submitter'),
-          date: renderDateRangeFilterControl('date'),
-          ugrcApprovedDate: renderDateRangeFilterControl('ugrcApprovedDate'),
+          date: renderDateRangeFilterControl('date', 'max-w-48', true),
+          ugrcApprovedDate: renderDateRangeFilterControl('ugrcApprovedDate', 'max-w-48', true),
           mrrc: renderSelectFilterControl('mrrc', MRRC_FILTER_OPTIONS, 'Filter MRRC'),
         }}
         emptyMessage="⏳⏳There are no submissions waiting on the county.⏳⏳"
