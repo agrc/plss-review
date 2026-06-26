@@ -59,7 +59,8 @@ export default function Approved() {
       }),
       columnHelper.accessor('date', {
         id: 'date',
-        header: () => 'Approved Date',
+        header: () => <span className="pl-3">Approved Date</span>,
+        cell: (info) => <div className="pl-3">{info.getValue()}</div>,
         sortingFn: dateStringSortingFn,
         filterFn: dateRangeFilter,
       }),
@@ -116,7 +117,7 @@ export default function Approved() {
           blmPointId: renderTextFilterControl('blmPointId'),
           county: renderTextFilterControl('county'),
           submitter: renderTextFilterControl('submitter'),
-          date: renderDateRangeFilterControl(),
+          date: <div className="pl-3">{renderDateRangeFilterControl()}</div>,
           mrrc: renderSelectFilterControl('mrrc', MRRC_FILTER_OPTIONS, 'Filter MRRC'),
         }}
         emptyMessage="⏳⏳There are no approved submissions. Start approving the received submissions first!⏳⏳"
