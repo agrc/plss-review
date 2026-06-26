@@ -1,5 +1,6 @@
 import type { ColumnFiltersState } from '@tanstack/react-table';
-import { useState } from 'react';
+import { Button, TextField } from '@ugrc/utah-design-system';
+import { useEffect, useState } from 'react';
 import { DateRangePicker } from '../components/DateRangePicker';
 import { mrrcCellText } from '../sortingFns';
 
@@ -7,6 +8,52 @@ const TEXT_FILTER_INPUT_CLASS =
   'w-full h-9 appearance-none rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400';
 
 const DATE_ONLY_VALUE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const FILTER_QUERY_PARAM_PREFIX = 'filter_';
+
+export const readFiltersFromSearch = (search: string): ColumnFiltersState => {
+  const params = new URLSearchParams(search);
+
+  return Array.from(params.entries())
+    .filter(([key, value]) => key.startsWith(FILTER_QUERY_PARAM_PREFIX) && value)
+    .map(([key, value]) => ({ id: key.replace(FILTER_QUERY_PARAM_PREFIX, ''), value }));
+};
+
+const readFiltersFromLocation = (): ColumnFiltersState => {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  return readFiltersFromSearch(window.location.search);
+};
+
+export const buildSearchWithFilters = (baseSearch: string, filters: ColumnFiltersState): string => {
+  const params = new URLSearchParams(baseSearch);
+
+  for (const key of Array.from(params.keys())) {
+    if (key.startsWith(FILTER_QUERY_PARAM_PREFIX)) {
+      params.delete(key);
+    }
+  }
+
+  for (const filter of filters) {
+    const value = String(filter.value ?? '').trim();
+
+    if (value) {
+      params.set(`${FILTER_QUERY_PARAM_PREFIX}${filter.id}`, value);
+    }
+  }
+
+  const nextSearch = params.toString();
+  return nextSearch ? `?${nextSearch}` : '';
+};
+
+const areFiltersEqual = (a: ColumnFiltersState, b: ColumnFiltersState): boolean => {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  return a.every((filter, index) => filter.id === b[index]?.id && String(filter.value) === String(b[index]?.value));
+};
 
 const parseRowDate = (value: string): Date => {
   if (DATE_ONLY_VALUE_REGEX.test(value)) {
@@ -78,7 +125,42 @@ export const dateRangeFilter = (
 
 // Hook
 export const useTableFilters = () => {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => readFiltersFromLocation());
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const syncFromLocation = () => {
+      const locationFilters = readFiltersFromLocation();
+
+      setColumnFilters((previousFilters) =>
+        areFiltersEqual(previousFilters, locationFilters) ? previousFilters : locationFilters,
+      );
+    };
+
+    window.addEventListener('popstate', syncFromLocation);
+
+    return () => {
+      window.removeEventListener('popstate', syncFromLocation);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const nextSearch = buildSearchWithFilters(window.location.search, columnFilters);
+
+    if (nextSearch === window.location.search) {
+      return;
+    }
+
+    const nextUrl = `${window.location.pathname}${nextSearch}${window.location.hash}`;
+    window.history.replaceState(window.history.state, '', nextUrl);
+  }, [columnFilters]);
 
   const getFilterValue = (columnId: string) => (columnFilters.find((f) => f.id === columnId)?.value as string) || '';
 
@@ -99,22 +181,27 @@ export const useTableFilters = () => {
 
     return (
       <div className="flex gap-2">
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => setColumnFilter(columnId, e.target.value)}
-          className={TEXT_FILTER_INPUT_CLASS}
-        />
+        <div className="min-w-0 flex-1">
+          <TextField
+            label=""
+            aria-label={placeholder}
+            value={value}
+            onChange={(newValue) => setColumnFilter(columnId, newValue)}
+            inputProps={{
+              placeholder,
+              className: TEXT_FILTER_INPUT_CLASS,
+            }}
+          />
+        </div>
         {value && (
-          <button
-            type="button"
-            onClick={() => setColumnFilter(columnId, '')}
-            className="rounded bg-gray-200 px-2 py-1 text-sm hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500"
+          <Button
+            variant="icon"
+            size="small"
+            onPress={() => setColumnFilter(columnId, '')}
             aria-label={`Clear ${columnId} filter`}
           >
             ✕
-          </button>
+          </Button>
         )}
       </div>
     );
@@ -161,13 +248,14 @@ export const useTableFilters = () => {
           />
         </div>
         {filterValue && filterValue !== '|' && (
-          <button
-            onClick={() => setColumnFilter(columnId, '')}
-            className="rounded bg-gray-200 px-2 py-1 text-sm hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500"
+          <Button
+            variant="icon"
+            size="small"
+            onPress={() => setColumnFilter(columnId, '')}
             aria-label={`Clear ${columnId} filter`}
           >
             ✕
-          </button>
+          </Button>
         )}
       </div>
     );
