@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { caseInsensitiveIncludesFilter, dateRangeFilter, mrrcFilter } from './useTableFilters';
+import {
+  buildSearchWithFilters,
+  caseInsensitiveIncludesFilter,
+  dateRangeFilter,
+  mrrcFilter,
+  readFiltersFromSearch,
+} from './useTableFilters';
 
 describe('caseInsensitiveIncludesFilter', () => {
   const createRow = (value: string | undefined) =>
@@ -313,5 +319,38 @@ describe('filtering and sorting together', () => {
     // Verify both worked: filtered results are sorted
     expect(filtered[0]?.submitter).toBe('Raccoon Apple');
     expect(filtered[1]?.submitter).toBe('Raccoon Peach');
+  });
+});
+
+describe('URL filter persistence helpers', () => {
+  it('reads filter params from query string', () => {
+    const filters = readFiltersFromSearch('?filter_county=Beaver&foo=bar&filter_mrrc=yep');
+
+    expect(filters).toEqual([
+      { id: 'county', value: 'Beaver' },
+      { id: 'mrrc', value: 'yep' },
+    ]);
+  });
+
+  it('writes filter params while preserving unrelated query params', () => {
+    const nextSearch = buildSearchWithFilters('?foo=bar&filter_old=remove-me', [
+      { id: 'county', value: 'Utah' },
+      { id: 'submitter', value: 'Raccoon' },
+    ]);
+
+    const params = new URLSearchParams(nextSearch);
+    expect(params.get('foo')).toBe('bar');
+    expect(params.get('filter_county')).toBe('Utah');
+    expect(params.get('filter_submitter')).toBe('Raccoon');
+    expect(params.has('filter_old')).toBe(false);
+  });
+
+  it('omits empty filter values from search params', () => {
+    const nextSearch = buildSearchWithFilters('?foo=bar', [
+      { id: 'county', value: '' },
+      { id: 'submitter', value: '  ' },
+    ]);
+
+    expect(nextSearch).toBe('?foo=bar');
   });
 });
