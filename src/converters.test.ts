@@ -1,4 +1,9 @@
-import { Timestamp, type QueryDocumentSnapshot, type SnapshotOptions } from 'firebase/firestore';
+import {
+  Timestamp,
+  type DocumentReference,
+  type QueryDocumentSnapshot,
+  type SnapshotOptions,
+} from 'firebase/firestore';
 import { describe, expect, it } from 'vitest';
 import type { Corner } from './components/shared/types';
 import { asCountySubmission, asNewSubmission } from './converters';
@@ -81,7 +86,7 @@ const createCorner = (overrides?: Partial<Corner>): Corner => ({
   submitted_by: {
     id: 'submitter-1',
     name: 'A. Submitter',
-    ref: 'users/submitter-1',
+    ref: {} as DocumentReference,
   },
   type: 'new',
   ...overrides,
