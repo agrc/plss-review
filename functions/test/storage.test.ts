@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, it, test } from 'vitest';
-import { generateSheetName, incrementName } from '../src/storage.js';
+import { generateSheetName, incrementName } from '../src/storage';
 
 // Store original process.env
 const originalEnv = process.env.AGOL_CREDENTIALS;

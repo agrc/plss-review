@@ -1,6 +1,6 @@
 import { Timestamp } from 'firebase-admin/firestore';
 import { afterAll, describe, expect, it } from 'vitest';
-import { determineStatusChange, getFiscalYear, getMountainTimeFutureDate } from '../src/utils.js';
+import { determineStatusChange, getFiscalYear, getMountainTimeFutureDate } from '../src/utils';
 
 // Store original process.env
 const originalEnv = process.env.AGOL_CREDENTIALS;

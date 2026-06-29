@@ -7,10 +7,10 @@
  */
 import { GeoPoint, getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import * as agolModule from '../src/agol.js';
-import { safelyInitializeApp } from '../src/firebase.js';
-import { publishSubmissions } from '../src/functions.js';
-import * as storageModule from '../src/storage.js';
+import * as agolModule from '../src/agol';
+import { safelyInitializeApp } from '../src/firebase';
+import { publishSubmissions } from '../src/functions';
+import * as storageModule from '../src/storage';
 
 async function ensureEmulatorConnection(): Promise<void> {
   const emulatorHost = process.env.FIRESTORE_EMULATOR_HOST;
@@ -44,8 +44,8 @@ async function ensureEmulatorConnection(): Promise<void> {
 }
 
 // Mock the external dependencies that publishSubmissions calls
-vi.mock('../src/agol.js', async () => {
-  const actual = (await vi.importActual('../src/agol.js')) as typeof agolModule;
+vi.mock('../src/agol', async () => {
+  const actual = (await vi.importActual('../src/agol')) as typeof agolModule;
 
   return {
     ...actual,
@@ -80,8 +80,8 @@ vi.mock('../src/agol.js', async () => {
   };
 });
 
-vi.mock('../src/storage.js', async () => {
-  const actual = await vi.importActual('../src/storage.js');
+vi.mock('../src/storage', async () => {
+  const actual = await vi.importActual('../src/storage');
   return {
     ...actual,
     generateSheetName: vi.fn().mockReturnValue('test-sheet.pdf'), // Mock to return consistent test value

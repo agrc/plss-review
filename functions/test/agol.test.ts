@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, it } from 'vitest';
-import { calculateFeatureUpdates, getAGOLToken, mergeUpdates } from '../src/agol.js';
-import { AGOLAttributes } from '../src/types.js';
+import { calculateFeatureUpdates, getAGOLToken, mergeUpdates } from '../src/agol';
+import { AGOLAttributes } from '../src/types';
 
 // Store original process.env
 const originalEnv = process.env.AGOL_CREDENTIALS;
