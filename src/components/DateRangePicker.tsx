@@ -10,7 +10,6 @@ import {
   Dialog,
   Group,
   Heading,
-  Label,
   Popover,
   RangeCalendar,
   type DateValue,
@@ -33,6 +32,7 @@ export function DateRangePicker({ label, value, onChange, compact = false }: Pro
 
   return (
     <AriaDateRangePicker
+      aria-label={label}
       value={parsedValue}
       onChange={(nextRange) => {
         if (!nextRange) {
@@ -44,7 +44,6 @@ export function DateRangePicker({ label, value, onChange, compact = false }: Pro
       }}
       className="w-full"
     >
-      <Label className="sr-only">{label}</Label>
       <Group
         className={`flex h-9 w-full items-center rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus-within:border-blue-500 dark:bg-gray-700 dark:text-white ${compact ? 'overflow-hidden' : ''}`}
       >
