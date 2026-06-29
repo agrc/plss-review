@@ -4,7 +4,7 @@ import { AlertDialog, Banner, Button, Modal, Spinner, useFirestore } from '@ugrc
 import { doc, getDoc, getDocs, runTransaction, Transaction, updateDoc } from 'firebase/firestore';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
-import { DialogTrigger } from 'react-aria-components';
+
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { RejectionReasons } from '../components/RejectionReasons';
@@ -291,21 +291,19 @@ export default function County() {
           navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
         }}
       />
-      <DialogTrigger isOpen={dialogOpen} onOpenChange={setDialogOpen}>
-        <Modal>
-          <AlertDialog
-            title="Reject submission"
-            variant="destructive"
-            actionLabel="Reject"
-            onAction={() => {
-              setDialogOpen(false);
-              handleSubmit(reject)();
-            }}
-          >
-            <RejectionReasons control={control} />
-          </AlertDialog>
-        </Modal>
-      </DialogTrigger>
+      <Modal isOpen={dialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialog
+          title="Reject submission"
+          variant="destructive"
+          actionLabel="Reject"
+          onAction={() => {
+            setDialogOpen(false);
+            handleSubmit(reject)();
+          }}
+        >
+          <RejectionReasons control={control} />
+        </AlertDialog>
+      </Modal>
     </div>
   );
 }
