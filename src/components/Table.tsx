@@ -68,14 +68,25 @@ export default function Table<T>({
                     style={{ width: `${header.getSize()}px` }}
                   >
                     {header.isPlaceholder ? null : (
-                      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
                       <div
                         className={twJoin(
                           header.column.getCanSort() && 'flex cursor-pointer select-none items-center justify-between',
                           header.column.getIsSorted() &&
                             'before:absolute before:-bottom-1 before:left-0 before:z-10 before:block before:h-2 before:w-full before:rounded-full before:bg-secondary-500 before:transition-all before:duration-300',
                         )}
+                        role={header.column.getCanSort() ? 'button' : undefined}
+                        tabIndex={header.column.getCanSort() ? 0 : undefined}
                         onClick={header.column.getToggleSortingHandler()}
+                        onKeyDown={(event) => {
+                          if (!header.column.getCanSort()) {
+                            return;
+                          }
+
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            header.column.getToggleSortingHandler()?.(event);
+                          }
+                        }}
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {{
