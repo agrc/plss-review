@@ -54,6 +54,7 @@ vi.mock('@ugrc/utah-design-system', () => ({
   },
   TabList: () => null,
   Tab: () => null,
+  TabPanel: () => null,
 }));
 
 vi.mock('react-router', () => ({
