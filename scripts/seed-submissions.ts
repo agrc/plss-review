@@ -14,6 +14,8 @@ eightDaysAgo.setDate(eightDaysAgo.getDate() - 8);
 const threeDaysAgo = new Date();
 threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
+const seededSubmitterRef = db.collection('submitters').doc('Y0D4o9od4ojHpGaL9gg6uK3dgNuK');
+
 async function main() {
   await db
     .collection('submissions')
@@ -33,7 +35,7 @@ async function main() {
       submitted_by: {
         id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
         name: 'Raccoon Peach',
-        ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+        ref: seededSubmitterRef,
       },
       geographic: {
         northing: { seconds: 10, minutes: 14, degrees: 41 },
@@ -89,7 +91,7 @@ async function main() {
       submitted_by: {
         id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
         name: 'Raccoon Peach',
-        ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+        ref: seededSubmitterRef,
       },
       geographic: {
         northing: { seconds: 10, minutes: 14, degrees: 41 },
@@ -145,7 +147,7 @@ async function main() {
       submitted_by: {
         id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
         name: 'Raccoon Peach',
-        ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+        ref: seededSubmitterRef,
       },
       geographic: {
         northing: { seconds: 10, minutes: 14, degrees: 41 },
@@ -201,7 +203,7 @@ async function main() {
       submitted_by: {
         id: 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
         name: 'Raccoon Peach',
-        ref: 'submitters/Y0D4o9od4ojHpGaL9gg6uK3dgNuK',
+        ref: seededSubmitterRef,
       },
       geographic: {
         northing: { seconds: 10, minutes: 14, degrees: 41 },

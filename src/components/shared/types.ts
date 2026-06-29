@@ -1,5 +1,5 @@
 import type Graphic from '@arcgis/core/Graphic';
-import type { GeoPoint, Timestamp } from 'firebase/firestore';
+import type { DocumentReference, GeoPoint, Timestamp } from 'firebase/firestore';
 
 export type Submission = {
   id: string;
@@ -142,7 +142,7 @@ export type Corner = {
   submitted_by: {
     id: string;
     name: string;
-    ref: string;
+    ref: DocumentReference;
   };
   type: 'new' | 'existing';
 };
