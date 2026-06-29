@@ -58,6 +58,19 @@ vi.mock('../components/Table', () => ({
   },
 }));
 
+vi.mock('../hooks/useTableFilters', () => ({
+  useTableFilters: () => ({
+    columnFilters: [],
+    setColumnFilters: vi.fn(),
+    renderTextFilterControl: () => null,
+    renderSelectFilterControl: () => null,
+    renderDateRangeFilterControl: () => null,
+  }),
+  caseInsensitiveIncludesFilter: vi.fn(),
+  dateRangeFilter: vi.fn(),
+  mrrcFilter: vi.fn(),
+}));
+
 describe('county.tsx', () => {
   beforeEach(() => {
     mocks.navigateMock.mockReset();

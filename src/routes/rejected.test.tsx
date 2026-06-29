@@ -36,6 +36,17 @@ vi.mock('../components/Table', () => ({
   },
 }));
 
+vi.mock('../hooks/useTableFilters', () => ({
+  useTableFilters: () => ({
+    columnFilters: [],
+    setColumnFilters: vi.fn(),
+    renderTextFilterControl: () => null,
+    renderDateRangeFilterControl: () => null,
+  }),
+  caseInsensitiveIncludesFilter: vi.fn(),
+  dateRangeFilter: vi.fn(),
+}));
+
 describe('rejected.tsx', () => {
   beforeEach(() => {
     mocks.navigateMock.mockReset();

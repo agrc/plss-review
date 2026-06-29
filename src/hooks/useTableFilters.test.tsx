@@ -5,7 +5,7 @@ import {
   dateRangeFilter,
   mrrcFilter,
   readFiltersFromSearch,
-} from './useTableFilters';
+} from './tableFilters';
 
 describe('caseInsensitiveIncludesFilter', () => {
   const createRow = (value: string | undefined) =>

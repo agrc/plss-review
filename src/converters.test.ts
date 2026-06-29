@@ -7,6 +7,8 @@ const formatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'numeric',
   day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
 });
 
 const createCorner = (overrides?: Partial<Corner>): Corner => ({
