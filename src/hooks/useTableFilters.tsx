@@ -1,5 +1,5 @@
 import type { ColumnFiltersState } from '@tanstack/react-table';
-import { Button, TextField } from '@ugrc/utah-design-system';
+import { Button, Select, SelectItem, TextField } from '@ugrc/utah-design-system';
 import { useEffect, useState } from 'react';
 import { DateRangePicker } from '../components/DateRangePicker';
 import { buildSearchWithFilters, readFiltersFromSearch } from './tableFilters';
@@ -121,20 +121,24 @@ export const useTableFilters = () => {
     ariaLabel: string,
   ) => {
     const value = getFilterValue(columnId);
+    const allOptionKey = '__all__';
+    const selectedKey = value || allOptionKey;
 
     return (
-      <select
-        value={value}
-        onChange={(e) => setColumnFilter(columnId, e.target.value)}
-        className={TEXT_FILTER_INPUT_CLASS}
+      <Select
+        selectedKey={selectedKey}
+        onSelectionChange={(key) => {
+          const nextValue = String(key);
+          setColumnFilter(columnId, nextValue === allOptionKey ? '' : nextValue);
+        }}
         aria-label={ariaLabel}
       >
         {options.map((option) => (
-          <option key={option.value || 'all'} value={option.value}>
+          <SelectItem key={option.value || allOptionKey} id={option.value || allOptionKey}>
             {option.label}
-          </option>
+          </SelectItem>
         ))}
-      </select>
+      </Select>
     );
   };
 

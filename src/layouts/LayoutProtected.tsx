@@ -1,4 +1,4 @@
-import { Tab, TabList, Tabs, useFirebaseAuth } from '@ugrc/utah-design-system';
+import { Tab, TabList, TabPanel, Tabs, useFirebaseAuth } from '@ugrc/utah-design-system';
 import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import type { Key } from 'react-stately';
@@ -85,9 +85,9 @@ export default function ProtectedLayout() {
             </Tab>
           ))}
         </TabList>
-        <div className="w-full overflow-y-auto">
+        <TabPanel id={activeTab} className="w-full overflow-y-auto p-0">
           <Outlet />
-        </div>
+        </TabPanel>
       </Tabs>
     </>
   );
