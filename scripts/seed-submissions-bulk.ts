@@ -85,6 +85,7 @@ function resolveCount() {
 const DAVIS_BLM_POINT_ID = 'UT260030S0060W0_160340';
 const DAVIS_USER_ID = 'Y0D4o9od4ojHpGaL9gg6uK3dgNuK';
 const DAVIS_PDF_PATH = `under-review/${DAVIS_BLM_POINT_ID}/${DAVIS_USER_ID}/seed-under-review-davis.pdf`;
+const DAVIS_SUBMITTER_REF = db.collection('submitters').doc(DAVIS_USER_ID);
 
 // Minimal valid PDF content for local emulator seeding. PDF contains one text string.
 const BULK_PDF_BYTES = Buffer.from(
@@ -151,7 +152,7 @@ function createSubmissionDoc(i: number, docId: string, county: string, statusCon
     submitted_by: {
       id: DAVIS_USER_ID,
       name: 'Jackal Apple',
-      ref: `submitters/${DAVIS_USER_ID}`,
+      ref: DAVIS_SUBMITTER_REF,
     },
     geographic: {
       northing: { seconds: 10, minutes: 14, degrees: 41 },
@@ -259,7 +260,8 @@ async function seedSubmissionsForStatus(
 
 async function main() {
   const { count, mode } = resolveCount();
-  const bucket = getStorage().bucket('localhost');
+  const bucketName = process.env.STORAGE_BUCKET || 'localhost';
+  const bucket = getStorage().bucket(bucketName);
   const uploadTasks: Promise<unknown>[] = [];
 
   // Ensure the known Davis path exists for baseline/manual testing.

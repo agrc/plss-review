@@ -4,13 +4,14 @@ import { AlertDialog, Banner, Button, Modal, Spinner, useFirestore } from '@ugrc
 import { doc, getDoc, getDocs, runTransaction, Transaction, updateDoc } from 'firebase/firestore';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
-import { DialogTrigger } from 'react-aria-components';
+
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { RejectionReasons } from '../components/RejectionReasons';
 import Table from '../components/Table';
 import { TableLoader } from '../components/TableLoader';
 import type { CountySubmission, FormValues } from '../components/shared/types';
+import { caseInsensitiveIncludesFilter, dateRangeFilter, mrrcFilter, useTableFilters } from '../hooks/useTableFilters';
 import { forCountySubmissions } from '../queries';
 import { dateStringSortingFn, mrrcCellText, nullableBooleanSortingFn } from '../sortingFns';
 import type { CountyReview, UpdateDocumentParams } from '../types';
@@ -78,6 +79,20 @@ export default function County() {
       notes: '',
     },
   });
+  const {
+    columnFilters,
+    setColumnFilters,
+    renderTextFilterControl,
+    renderSelectFilterControl,
+    renderDateRangeFilterControl,
+  } = useTableFilters();
+
+  const MRRC_FILTER_OPTIONS = [
+    { label: 'All', value: '' },
+    { label: 'Yep', value: 'yep' },
+    { label: 'Nope', value: 'nope' },
+    { label: 'Unknown', value: 'unknown' },
+  ];
 
   const { mutate: updateStatus, status: mutateStatus } = useMutation({
     mutationFn: ({ id, approved, comments = '' }: { id?: string; approved: boolean; comments?: string }) => {
@@ -156,34 +171,40 @@ export default function County() {
         id: 'blmPointId',
         header: () => 'BLM Point Id',
         sortingFn: 'alphanumeric',
+        filterFn: caseInsensitiveIncludesFilter,
         size: 215,
       }),
       columnHelper.accessor('county', {
         id: 'county',
         header: () => 'County',
         sortingFn: 'alphanumeric',
+        filterFn: caseInsensitiveIncludesFilter,
         size: 160,
       }),
       columnHelper.accessor('submitter', {
         id: 'submitter',
         header: () => 'Submitter',
         sortingFn: 'alphanumeric',
+        filterFn: caseInsensitiveIncludesFilter,
       }),
       columnHelper.accessor('date', {
         id: 'date',
         header: () => 'Submission Date',
         sortingFn: dateStringSortingFn,
+        filterFn: dateRangeFilter,
       }),
       columnHelper.accessor('ugrcApprovedDate', {
         id: 'ugrcApprovedDate',
         header: () => 'UGRC Approved Date',
         sortingFn: dateStringSortingFn,
+        filterFn: dateRangeFilter,
       }),
       columnHelper.accessor('mrrc', {
         id: 'mrrc',
         header: () => 'MRRC',
         cell: (info) => mrrcCellText(info.getValue()),
         sortingFn: nullableBooleanSortingFn,
+        filterFn: mrrcFilter,
       }),
       columnHelper.accessor('actions', {
         id: 'actions',
@@ -255,26 +276,34 @@ export default function County() {
       <Table
         data={data}
         columns={columns}
+        columnFilters={columnFilters}
+        setColumnFilters={setColumnFilters}
+        headerControls={{
+          blmPointId: renderTextFilterControl('blmPointId'),
+          county: renderTextFilterControl('county'),
+          submitter: renderTextFilterControl('submitter'),
+          date: renderDateRangeFilterControl('date', 'max-w-48', true),
+          ugrcApprovedDate: renderDateRangeFilterControl('ugrcApprovedDate', 'max-w-48', true),
+          mrrc: renderSelectFilterControl('mrrc', MRRC_FILTER_OPTIONS, 'Filter MRRC'),
+        }}
         emptyMessage="⏳⏳There are no submissions waiting on the county.⏳⏳"
         onClick={(row) => {
           navigate(`/secure/received/${row.original.blmPointId}/${row.original.id}`);
         }}
       />
-      <DialogTrigger isOpen={dialogOpen} onOpenChange={setDialogOpen}>
-        <Modal>
-          <AlertDialog
-            title="Reject submission"
-            variant="destructive"
-            actionLabel="Reject"
-            onAction={() => {
-              setDialogOpen(false);
-              handleSubmit(reject)();
-            }}
-          >
-            <RejectionReasons control={control} />
-          </AlertDialog>
-        </Modal>
-      </DialogTrigger>
+      <Modal isOpen={dialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialog
+          title="Reject submission"
+          variant="destructive"
+          actionLabel="Reject"
+          onAction={() => {
+            setDialogOpen(false);
+            handleSubmit(reject)();
+          }}
+        >
+          <RejectionReasons control={control} />
+        </AlertDialog>
+      </Modal>
     </div>
   );
 }

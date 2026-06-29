@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.1.1-rc.1](https://github.com/agrc/plss-review/compare/v1.1.0...v1.1.1-rc.1) (2026-06-29)
+
+
+### Features
+
+* add filtering ([d06d828](https://github.com/agrc/plss-review/commit/d06d8285746581ec5fa335c0d55298410be2fbf8))
+* tests ([7471de9](https://github.com/agrc/plss-review/commit/7471de91a621cb27fcbe4d61635c7d384b6c842d))
+
+
+### Bug Fixes
+
+* added some fixes based on Scott's suggestions ([e213493](https://github.com/agrc/plss-review/commit/e2134932210739757f2caffd6ae7115c522d6011))
+* based on copilot's edits, fixed date range timestamping ([55cad0e](https://github.com/agrc/plss-review/commit/55cad0eba1136fb7805c9e1054e2fda60c10aade))
+* Copilot suggested label improvements ([b8bc873](https://github.com/agrc/plss-review/commit/b8bc873213b005c5c9312fc7bcf5573172a88975))
+* copilot unit test expansion ([7b86bc8](https://github.com/agrc/plss-review/commit/7b86bc828afe67ce2c50bfd48c41cb270ff6c481))
+* fix unit tests and timestamp issue ([6092a4c](https://github.com/agrc/plss-review/commit/6092a4ce3c6b76ae363cc7df9b1a57dda140553b))
+* fixed potential race identified by copilot ([6041433](https://github.com/agrc/plss-review/commit/604143322ce6eb23db3063ccdc32833d75f15ef0))
+* No longer needing to bypass eslint code smell ([6cdecad](https://github.com/agrc/plss-review/commit/6cdecad7e7ec2ee419afdcd9e08541f0abb87b7e))
+* patch UI issues ([83ddcef](https://github.com/agrc/plss-review/commit/83ddcef13f4e10ed1da6598dd5df15f28ca3723a))
+* update submitter references to use DocumentReference type ([07ff394](https://github.com/agrc/plss-review/commit/07ff39476fed3895863ae14c1dd81eccf4fa3098))
+* updated to standard UI and eliminated console warnings ([9da636c](https://github.com/agrc/plss-review/commit/9da636c2ba81fb6c49f839a45d07d3d78668ab84))
+* warning about missing label ([0839098](https://github.com/agrc/plss-review/commit/0839098bb46b09221cb7dc88b5b4f962196d1b44))
+
 ## [1.1.0](https://github.com/agrc/plss-review/compare/v1.0.17...v1.1.0) (2026-06-24)
 
 

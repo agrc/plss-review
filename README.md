@@ -4,6 +4,10 @@
 
 A website to view and approve to monument record sheet submissions
 
+[Prod URL](https://plss-review.ugrc.utah.gov/)
+
+[Dev URL](https://plss-review.dev.utah.gov/)
+
 ## Development
 
 1. Install dependencies
@@ -32,7 +36,6 @@ A website to view and approve to monument record sheet submissions
 1. Allow the storage rules to query the database in the firebase console
 
 GitHub Actions installs dependencies for the standalone `functions/` package before Firebase deploys, and `firebase.json` continues to use `functions` as the deploy source for both local development and CI.
-
 
 ## User Management
 
