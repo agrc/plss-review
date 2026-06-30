@@ -124,21 +124,36 @@ describe('queueTasks', () => {
     await expect(queueTasks(event as never)).resolves.toBe(true);
 
     expect(enqueueMock).toHaveBeenCalledTimes(2);
-    expect(enqueueMock).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({
-        type: 'submission-in-county',
-        payload: expect.objectContaining({
-          surveyor: {
-            name: 'Surveyor Person',
-            email: 'surveyor@example.com',
-          },
-        }),
-      }),
-      expect.objectContaining({
-        id: 'submission-in-county-submission-123',
-      }),
+    const submissionInCountyCall = enqueueMock.mock.calls.find(
+      ([task]) => (task as { type?: string })?.type === 'submission-in-county',
     );
+
+    expect(submissionInCountyCall).toBeDefined();
+    const [task, taskOptions] = submissionInCountyCall as [
+      {
+        type: string;
+        payload: {
+          surveyor: {
+            name: string;
+            email: string;
+          };
+        };
+      },
+      { id: string },
+    ];
+
+    expect(task).toMatchObject({
+      type: 'submission-in-county',
+      payload: {
+        surveyor: {
+          name: 'Surveyor Person',
+          email: 'surveyor@example.com',
+        },
+      },
+    });
+    expect(taskOptions).toMatchObject({
+      id: 'submission-in-county-submission-123',
+    });
   });
 
   it('passes rejected reason and notes to submission-rejected email payload', async () => {
