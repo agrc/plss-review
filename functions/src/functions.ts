@@ -33,7 +33,7 @@ const wait =
 const rejectionTemplateId =
   process.env.NODE_ENV === 'production' ? 'd-27953d934df34a6eb39775402d826b9a' : 'd-4d5755ef2bb249b59b005ae64c791e13';
 
-const rejectionTestRecipient = process.env.REJECTION_TEST_RECIPIENT_EMAIL?.trim() || 'acneville@utah.gov';
+const rejectionTestRecipient = process.env.REJECTION_TEST_RECIPIENT_EMAIL?.trim();
 
 const db = getFirestore();
 const bucket = getStorage().bucket();
@@ -480,6 +480,20 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
 
     case 'submission-rejected': {
       logger.info(`[sendMail] Notifying surveyor about rejection of ${payload.blmPointId}`);
+
+      if (process.env.NODE_ENV !== 'production' && !rejectionTestRecipient) {
+        logger.error(
+          '[sendMail] Missing REJECTION_TEST_RECIPIENT_EMAIL in non-production environment. Refusing to send rejection email.',
+          {
+            environment: process.env.NODE_ENV,
+            blmPointId: payload.blmPointId,
+            submissionId: payload.submissionId,
+          },
+        );
+
+        throw new Error('Missing REJECTION_TEST_RECIPIENT_EMAIL in non-production environment');
+      }
+
       const recipient = process.env.NODE_ENV === 'production' ? payload.surveyor : { email: rejectionTestRecipient };
 
       const templateData = {
