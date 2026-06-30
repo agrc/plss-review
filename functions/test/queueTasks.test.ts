@@ -140,4 +140,89 @@ describe('queueTasks', () => {
       }),
     );
   });
+
+  it('passes rejected reason and notes to submission-rejected email payload', async () => {
+    const submitterRef = db.collection('submitters').doc('test-user-id');
+
+    await db.collection('submitters').doc('test-user-id').set({
+      displayName: 'Surveyor Person',
+      email: 'surveyor@example.com',
+    });
+
+    const event = {
+      params: {
+        docId: 'submission-456',
+      },
+      data: {
+        before: {
+          data: () => ({
+            blm_point_id: 'UT654321',
+            county: 'Salt Lake',
+            submitted_by: {
+              id: 'test-user-id',
+              ref: submitterRef,
+            },
+            status: {
+              ugrc: {
+                approved: null,
+                reviewedAt: null,
+                reviewedBy: null,
+                comments: null,
+              },
+              county: {
+                approved: null,
+                reviewedAt: null,
+                reviewedBy: null,
+                comments: null,
+              },
+            },
+          }),
+        },
+        after: {
+          data: () => ({
+            blm_point_id: 'UT654321',
+            county: 'Salt Lake',
+            submitted_by: {
+              id: 'test-user-id',
+              ref: submitterRef,
+            },
+            status: {
+              ugrc: {
+                approved: false,
+                reviewedAt: Timestamp.fromDate(new Date()),
+                reviewedBy: 'reviewer@example.com',
+                comments: 'missing-photo - Unable to read monument details',
+              },
+              county: {
+                approved: null,
+                reviewedAt: null,
+                reviewedBy: null,
+                comments: null,
+              },
+            },
+          }),
+        },
+      },
+    };
+
+    await expect(queueTasks(event as never)).resolves.toBe(true);
+
+    expect(enqueueMock).toHaveBeenCalledTimes(1);
+    const [task, taskOptions] = enqueueMock.mock.calls[0];
+
+    expect(task).toMatchObject({
+      type: 'submission-rejected',
+      payload: {
+        rejectedReason: 'Irrelevant or missing photos',
+        rejectedNotes: 'Unable to read monument details',
+        surveyor: {
+          name: 'Surveyor Person',
+          email: 'surveyor@example.com',
+        },
+      },
+    });
+    expect(taskOptions).toMatchObject({
+      id: 'ugrc-rejection-submission-456',
+    });
+  });
 });
