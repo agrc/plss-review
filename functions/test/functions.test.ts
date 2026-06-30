@@ -126,10 +126,6 @@ describe('functions', () => {
       ) as Promise<never[]>;
     });
 
-    // Re-establish storage mocks after clearing
-    vi.mocked(storageModule.generateSheetName).mockReturnValue('test-sheet.pdf');
-    vi.mocked(storageModule.moveSheetsToFinalLocation).mockResolvedValue(undefined);
-
     // Set up spies to track calls to the real functions
     vi.spyOn(agolModule, 'getAttributesFor');
     vi.spyOn(agolModule, 'calculateFeatureUpdates');
