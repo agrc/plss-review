@@ -58,7 +58,7 @@ function getRejectionDetails(comments: string | null | undefined): { rejectedRea
 
   if (!trimmedComments) {
     return {
-      rejectedReason: '',
+      rejectedReason: 'No rejection reason provided',
       rejectedNotes: '',
     };
   }
