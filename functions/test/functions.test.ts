@@ -91,6 +91,23 @@ vi.mock('../src/storage', async () => {
 
 let db: FirebaseFirestore.Firestore;
 
+function setDefaultUpdateFeatureServiceMock(): void {
+  vi.mocked(agolModule.updateFeatureService).mockImplementation((features) => {
+    // Return success results based on the objectIds in the features
+    return Promise.resolve(
+      features.map((feature) => ({
+        success: true,
+        objectId: feature.attributes.OBJECTID,
+      })),
+    ) as Promise<never[]>;
+  });
+}
+
+function setDefaultStorageMocks(): void {
+  vi.mocked(storageModule.generateSheetName).mockReturnValue('test-sheet.pdf');
+  vi.mocked(storageModule.moveSheetsToFinalLocation).mockResolvedValue(undefined);
+}
+
 describe('functions', () => {
   beforeAll(async () => {
     // Run safety check before any tests
@@ -115,16 +132,9 @@ describe('functions', () => {
     // Clear mock calls
     vi.clearAllMocks();
 
-    // Restore original mock implementations for each test
-    vi.mocked(agolModule.updateFeatureService).mockImplementation((features) => {
-      // Return success results based on the objectIds in the features
-      return Promise.resolve(
-        features.map((feature) => ({
-          success: true,
-          objectId: feature.attributes.OBJECTID,
-        })),
-      ) as Promise<never[]>;
-    });
+    // Re-establish default mock behavior for each test.
+    setDefaultUpdateFeatureServiceMock();
+    setDefaultStorageMocks();
 
     // Set up spies to track calls to the real functions
     vi.spyOn(agolModule, 'getAttributesFor');
