@@ -133,7 +133,6 @@ describe('functions', () => {
     // Set up spies to track calls to the real functions
     vi.spyOn(agolModule, 'getAttributesFor');
     vi.spyOn(agolModule, 'calculateFeatureUpdates');
-    vi.spyOn(storageModule, 'generateSheetName');
   });
 
   describe('publishSubmissions', () => {
