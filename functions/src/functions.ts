@@ -30,8 +30,54 @@ const wait =
       ? { hours: 1 }
       : { days: 10 };
 
+const rejectionTemplateId =
+  process.env.NODE_ENV === 'production' ? 'd-27953d934df34a6eb39775402d826b9a' : 'd-4d5755ef2bb249b59b005ae64c791e13';
+
+const rejectionTestRecipient = process.env.REJECTION_TEST_RECIPIENT_EMAIL?.trim() || 'acneville@utah.gov';
+
 const db = getFirestore();
 const bucket = getStorage().bucket();
+
+const rejectionReasonLabels: Record<string, string> = {
+  'missing-photo': 'Irrelevant or missing photos',
+  'incomplete-location': 'Inaccurate or incomplete location information',
+  'illegible-scan': 'Illegible or poorly scanned document',
+  'incomplete-description': 'Incorrect monument description',
+  'incomplete-sheet': 'Missing required fields',
+  other: 'Other',
+};
+
+function getRejectionReasonLabel(reason: string): string {
+  const normalizedReason = reason.trim();
+
+  return rejectionReasonLabels[normalizedReason] ?? normalizedReason;
+}
+
+function getRejectionDetails(comments: string | null | undefined): { rejectedReason: string; rejectedNotes: string } {
+  const trimmedComments = comments?.trim();
+
+  if (!trimmedComments) {
+    return {
+      rejectedReason: '',
+      rejectedNotes: '',
+    };
+  }
+
+  const separator = ' - ';
+  const separatorIndex = trimmedComments.indexOf(separator);
+
+  if (separatorIndex === -1) {
+    return {
+      rejectedReason: getRejectionReasonLabel(trimmedComments),
+      rejectedNotes: '',
+    };
+  }
+
+  return {
+    rejectedReason: getRejectionReasonLabel(trimmedComments.slice(0, separatorIndex)),
+    rejectedNotes: trimmedComments.slice(separatorIndex + separator.length).trim(),
+  };
+}
 
 export async function authorizeUser(event: AuthBlockingEvent) {
   const id = event.data?.uid;
@@ -203,6 +249,7 @@ export async function queueTasks(
         }
       } else {
         logger.debug('creating ugrc rejection queue task', statusChange);
+        const { rejectedReason, rejectedNotes } = getRejectionDetails(after.status.ugrc.comments);
 
         // ugrc rejection send email
         try {
@@ -214,6 +261,8 @@ export async function queueTasks(
                 blmPointId: after.blm_point_id,
                 county: after.county,
                 surveyor,
+                rejectedReason,
+                rejectedNotes,
               },
             } satisfies SubmissionRejectedEvent,
             {
@@ -253,6 +302,7 @@ export async function queueTasks(
     case 'County Review': {
       if (!statusChange.approved) {
         logger.debug('creating county rejection queue task', statusChange);
+        const { rejectedReason, rejectedNotes } = getRejectionDetails(after.status.county.comments);
 
         // county rejection send email
         try {
@@ -264,6 +314,8 @@ export async function queueTasks(
                 blmPointId: after.blm_point_id,
                 county: after.county,
                 surveyor,
+                rejectedReason,
+                rejectedNotes,
               },
             } satisfies SubmissionRejectedEvent,
             {
@@ -428,32 +480,39 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
 
     case 'submission-rejected': {
       logger.info(`[sendMail] Notifying surveyor about rejection of ${payload.blmPointId}`);
+      const recipient = process.env.NODE_ENV === 'production' ? payload.surveyor : { email: rejectionTestRecipient };
 
       const templateData = {
         blmPointId: payload.blmPointId,
         surveyor: payload.surveyor.name,
         county: payload.county,
+        rejectedReason: payload.rejectedReason,
+        rejectedNotes: payload.rejectedNotes,
       };
 
       const template = {
         method: 'POST' as const,
         url: '/v3/mail/send',
         body: {
-          template_id: 'd-27953d934df34a6eb39775402d826b9a',
+          template_id: rejectionTemplateId,
           from: {
             email: 'ugrc-plss-reviewers@utah.gov',
             name: 'UGRC PLSS Staff',
           },
           personalizations: [
             {
-              to: [payload.surveyor],
+              to: [recipient],
               dynamic_template_data: templateData,
             },
           ],
         },
       };
 
-      logger.info('[sendMail] sending rejection notification email to', { surveyor: payload.surveyor, templateData });
+      logger.info('[sendMail] sending rejection notification email to', {
+        recipient,
+        surveyor: payload.surveyor,
+        templateData,
+      });
 
       try {
         const result = await notify(process.env.SENDGRID_API_KEY ?? 'empty', template);
