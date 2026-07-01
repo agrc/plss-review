@@ -34,7 +34,7 @@ const wait =
 const rejectionTemplateId =
   process.env.NODE_ENV === 'production' ? 'd-27953d934df34a6eb39775402d826b9a' : 'd-4d5755ef2bb249b59b005ae64c791e13';
 
-const rejectionTestRecipient = process.env.REJECTION_TEST_RECIPIENT_EMAIL?.trim();
+const testRecipientEmail = process.env.TEST_RECIPIENT_EMAIL?.trim();
 
 const db = getFirestore();
 const bucket = getStorage().bucket();
@@ -80,6 +80,23 @@ function getRejectionDetails(comments: string | null | undefined): { rejectedRea
     rejectedReason: getRejectionReasonLabel(rejectionReasonWithNotes),
     rejectedNotes: trimmedComments.slice(separatorIndex + separator.length).trim(),
   };
+}
+
+function getTestRecipientOrThrow(metadata: Record<string, unknown>): { email: string } {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('Test recipient requested in production environment');
+  }
+
+  if (!testRecipientEmail) {
+    logger.error('[sendMail] Missing TEST_RECIPIENT_EMAIL in non-production environment. Refusing to send email.', {
+      environment: process.env.NODE_ENV,
+      ...metadata,
+    });
+
+    throw new Error('Missing TEST_RECIPIENT_EMAIL in non-production environment');
+  }
+
+  return { email: testRecipientEmail };
 }
 
 export async function authorizeUser(event: AuthBlockingEvent) {
@@ -446,6 +463,17 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
         day: getMountainTimeFutureDate(10),
       };
 
+      const recipients =
+        process.env.NODE_ENV === 'production'
+          ? contacts
+          : [
+              getTestRecipientOrThrow({
+                type,
+                blmPointId: payload.blmPointId,
+                submissionId: payload.submissionId,
+              }),
+            ];
+
       const template = {
         method: 'POST' as const,
         url: '/v3/mail/send',
@@ -457,7 +485,7 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
           },
           personalizations: [
             {
-              to: contacts,
+              to: recipients,
               dynamic_template_data: templateData,
             },
           ],
@@ -472,7 +500,11 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
         },
       };
 
-      logger.info('[sendMail] sending notification email to', { contacts, templateData });
+      logger.info('[sendMail] sending notification email to', {
+        recipients,
+        originalContacts: contacts,
+        templateData,
+      });
 
       const result = await notify(process.env.SENDGRID_API_KEY ?? 'empty', template);
 
@@ -484,20 +516,14 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
     case 'submission-rejected': {
       logger.info(`[sendMail] Notifying surveyor about rejection of ${payload.blmPointId}`);
 
-      if (process.env.NODE_ENV !== 'production' && !rejectionTestRecipient) {
-        logger.error(
-          '[sendMail] Missing REJECTION_TEST_RECIPIENT_EMAIL in non-production environment. Refusing to send rejection email.',
-          {
-            environment: process.env.NODE_ENV,
-            blmPointId: payload.blmPointId,
-            submissionId: payload.submissionId,
-          },
-        );
-
-        throw new Error('Missing REJECTION_TEST_RECIPIENT_EMAIL in non-production environment');
-      }
-
-      const recipient = process.env.NODE_ENV === 'production' ? payload.surveyor : { email: rejectionTestRecipient };
+      const recipient =
+        process.env.NODE_ENV === 'production'
+          ? payload.surveyor
+          : getTestRecipientOrThrow({
+              type,
+              blmPointId: payload.blmPointId,
+              submissionId: payload.submissionId,
+            });
 
       const templateData = {
         blmPointId: payload.blmPointId,
