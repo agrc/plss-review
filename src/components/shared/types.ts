@@ -1,5 +1,6 @@
 import type Graphic from '@arcgis/core/Graphic';
 import type { DocumentReference, GeoPoint, Timestamp } from 'firebase/firestore';
+import type { rejectionReasonLabels } from '../../../functions/shared/types';
 
 export type Submission = {
   id: string;
@@ -150,12 +151,6 @@ export type Corner = {
 export type GraphicOptions = Graphic | Graphic[] | null;
 
 export type FormValues = {
-  reason:
-    | 'missing-photo'
-    | 'incomplete-location'
-    | 'illegible-scan'
-    | 'incomplete-description'
-    | 'incomplete-sheet'
-    | 'other';
+  reason: keyof typeof rejectionReasonLabels;
   notes: string;
 };

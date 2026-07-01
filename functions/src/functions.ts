@@ -5,6 +5,7 @@ import { HttpsError, type AuthBlockingEvent } from 'firebase-functions/identity'
 import { logger } from 'firebase-functions/v2';
 import { Change, type FirestoreEvent, type QueryDocumentSnapshot } from 'firebase-functions/v2/firestore';
 import { DateTime } from 'luxon';
+import { rejectionReasonLabels } from '../shared/types.js';
 import { calculateFeatureUpdates, getAGOLToken, getAttributesFor, mergeUpdates, updateFeatureService } from './agol.js';
 import { getBase64EncodedAttachment, getContactsToNotify, notify } from './emailHelper.js';
 import { getFunctionUrl, safelyInitializeApp } from './firebase.js';
@@ -38,19 +39,12 @@ const rejectionTestRecipient = process.env.REJECTION_TEST_RECIPIENT_EMAIL?.trim(
 const db = getFirestore();
 const bucket = getStorage().bucket();
 
-const rejectionReasonLabels: Record<string, string> = {
-  'missing-photo': 'Irrelevant or missing photos',
-  'incomplete-location': 'Inaccurate or incomplete location information',
-  'illegible-scan': 'Illegible or poorly scanned document',
-  'incomplete-description': 'Incorrect monument description',
-  'incomplete-sheet': 'Missing required fields',
-  other: 'Other',
-};
+function getRejectionReasonLabel(reason: keyof typeof rejectionReasonLabels): string {
+  return rejectionReasonLabels[reason as keyof typeof rejectionReasonLabels] ?? reason;
+}
 
-function getRejectionReasonLabel(reason: string): string {
-  const normalizedReason = reason.trim();
-
-  return rejectionReasonLabels[normalizedReason] ?? normalizedReason;
+function isValidRejectionReason(reason: string): reason is keyof typeof rejectionReasonLabels {
+  return reason in rejectionReasonLabels;
 }
 
 function getRejectionDetails(comments: string | null | undefined): { rejectedReason: string; rejectedNotes: string } {
@@ -65,16 +59,25 @@ function getRejectionDetails(comments: string | null | undefined): { rejectedRea
 
   const separator = ' - ';
   const separatorIndex = trimmedComments.indexOf(separator);
+  const rejectionReason: keyof typeof rejectionReasonLabels = isValidRejectionReason(trimmedComments)
+    ? trimmedComments
+    : 'other';
 
   if (separatorIndex === -1) {
+    // No notes provided, only reason
     return {
-      rejectedReason: getRejectionReasonLabel(trimmedComments),
+      rejectedReason: getRejectionReasonLabel(rejectionReason),
       rejectedNotes: '',
     };
   }
 
+  const parsedReason = trimmedComments.slice(0, separatorIndex).trim();
+  const rejectionReasonWithNotes: keyof typeof rejectionReasonLabels = isValidRejectionReason(parsedReason)
+    ? parsedReason
+    : 'other';
+
   return {
-    rejectedReason: getRejectionReasonLabel(trimmedComments.slice(0, separatorIndex)),
+    rejectedReason: getRejectionReasonLabel(rejectionReasonWithNotes),
     rejectedNotes: trimmedComments.slice(separatorIndex + separator.length).trim(),
   };
 }
