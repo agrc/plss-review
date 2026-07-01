@@ -40,6 +40,18 @@ async function ensureEmulatorConnection(): Promise<void> {
 
 let db: FirebaseFirestore.Firestore;
 
+async function clearCollectionIfPresent(name: string): Promise<void> {
+  const collections = await db.listCollections();
+  const collection = collections.find((item) => item.id === name);
+
+  if (!collection) {
+    return;
+  }
+
+  const snapshot = await collection.get();
+  await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()));
+}
+
 describe('queueTasks', () => {
   beforeAll(async () => {
     await ensureEmulatorConnection();
@@ -48,14 +60,7 @@ describe('queueTasks', () => {
   });
 
   beforeEach(async () => {
-    const collections = await db.listCollections();
-    await Promise.all(
-      collections.map(async (collection) => {
-        const snapshot = await collection.get();
-
-        await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()));
-      }),
-    );
+    await clearCollectionIfPresent('submitters');
 
     enqueueMock.mockReset();
     enqueueMock.mockResolvedValue(undefined);
