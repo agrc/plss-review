@@ -92,6 +92,18 @@ vi.mock('../src/storage', async () => {
 
 let db: FirebaseFirestore.Firestore;
 
+async function clearCollectionIfPresent(name: string): Promise<void> {
+  const collections = await db.listCollections();
+  const collection = collections.find((item) => item.id === name);
+
+  if (!collection) {
+    return;
+  }
+
+  const snapshot = await collection.get();
+  await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()));
+}
+
 function setDefaultUpdateFeatureServiceMock(): void {
   vi.mocked(agolModule.updateFeatureService).mockImplementation((features: AGOLAttributes[]) => {
     // Return success results based on the objectIds in the features
@@ -119,16 +131,8 @@ describe('functions', () => {
   });
 
   beforeEach(async () => {
-    // Clear all data before each test
-    const collections = await db.listCollections();
-    const deletePromises = collections.map(async (collection) => {
-      const snapshot = await collection.get();
-      const deletePromises = snapshot.docs.map((doc) => doc.ref.delete());
-
-      return Promise.all(deletePromises);
-    });
-
-    await Promise.all(deletePromises);
+    // Clear only collections used by this suite.
+    await Promise.all([clearCollectionIfPresent('submissions'), clearCollectionIfPresent('stats')]);
 
     // Clear mock calls
     vi.clearAllMocks();
