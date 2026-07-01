@@ -11,6 +11,7 @@ import * as agolModule from '../src/agol';
 import { safelyInitializeApp } from '../src/firebase';
 import { publishSubmissions } from '../src/functions';
 import * as storageModule from '../src/storage';
+import type { AGOLAttributes } from '../src/types';
 
 async function ensureEmulatorConnection(): Promise<void> {
   const emulatorHost = process.env.FIRESTORE_EMULATOR_HOST;
@@ -68,7 +69,7 @@ vi.mock('../src/agol', async () => {
       });
     }),
     calculateFeatureUpdates: actual.calculateFeatureUpdates, // Call through to original
-    updateFeatureService: vi.fn().mockImplementation((features) => {
+    updateFeatureService: vi.fn().mockImplementation((features: AGOLAttributes[]) => {
       // Return success results based on the objectIds in the features
       return Promise.resolve(
         features.map((feature) => ({
@@ -92,7 +93,7 @@ vi.mock('../src/storage', async () => {
 let db: FirebaseFirestore.Firestore;
 
 function setDefaultUpdateFeatureServiceMock(): void {
-  vi.mocked(agolModule.updateFeatureService).mockImplementation((features) => {
+  vi.mocked(agolModule.updateFeatureService).mockImplementation((features: AGOLAttributes[]) => {
     // Return success results based on the objectIds in the features
     return Promise.resolve(
       features.map((feature) => ({
@@ -220,6 +221,12 @@ describe('functions', () => {
 
       // Check that moveSheetsToFinalLocation was called with a bucket and the correct migration data
       const moveSheetsCall = vi.mocked(storageModule.moveSheetsToFinalLocation).mock.calls[0];
+      expect(moveSheetsCall).toBeDefined();
+
+      if (!moveSheetsCall) {
+        throw new Error('Expected moveSheetsToFinalLocation to be called');
+      }
+
       expect(moveSheetsCall[0]).toBeDefined(); // Bucket parameter
       expect(moveSheetsCall[1]).toEqual([
         {
@@ -282,6 +289,12 @@ describe('functions', () => {
       expect(vi.mocked(storageModule.generateSheetName)).toHaveBeenCalledTimes(1);
 
       const moveSheetsCall = vi.mocked(storageModule.moveSheetsToFinalLocation).mock.calls[0];
+      expect(moveSheetsCall).toBeDefined();
+
+      if (!moveSheetsCall) {
+        throw new Error('Expected moveSheetsToFinalLocation to be called');
+      }
+
       expect(moveSheetsCall[0]).toBeDefined();
       expect(moveSheetsCall[1]).toEqual([
         {
@@ -380,6 +393,12 @@ describe('functions', () => {
 
       // Check that moveSheetsToFinalLocation was called with a bucket and the correct migration data
       const moveSheetsCall = vi.mocked(storageModule.moveSheetsToFinalLocation).mock.calls[0];
+      expect(moveSheetsCall).toBeDefined();
+
+      if (!moveSheetsCall) {
+        throw new Error('Expected moveSheetsToFinalLocation to be called');
+      }
+
       expect(moveSheetsCall[0]).toBeDefined(); // Bucket parameter
       expect(moveSheetsCall[1]).toEqual([
         {
@@ -458,8 +477,15 @@ describe('functions', () => {
 
       updatedSubmissions.forEach((snapshot, index) => {
         const data = snapshot.data();
+        const submission = testSubmissions[index];
 
-        expect(data?.published).toBe(testSubmissions[index].published);
+        expect(submission).toBeDefined();
+
+        if (!submission) {
+          throw new Error(`Expected test submission at index ${index}`);
+        }
+
+        expect(data?.published).toBe(submission.published);
         expect(data?.status.publishedAt).toBeUndefined();
       });
 
@@ -632,7 +658,14 @@ describe('functions', () => {
       expect(vi.mocked(storageModule.moveSheetsToFinalLocation)).toHaveBeenCalledTimes(1);
 
       const moveSheetsCalls = vi.mocked(storageModule.moveSheetsToFinalLocation).mock.calls;
-      expect(moveSheetsCalls[0][1]).toEqual(
+      const firstMoveSheetsCall = moveSheetsCalls[0];
+      expect(firstMoveSheetsCall).toBeDefined();
+
+      if (!firstMoveSheetsCall) {
+        throw new Error('Expected moveSheetsToFinalLocation to be called once');
+      }
+
+      expect(firstMoveSheetsCall[1]).toEqual(
         expect.arrayContaining([
           {
             from: 'under-review/UT260070N0020W0_200240/dbmtJakbFWM06YFtIvQCg6BrsCz1/' + submissionRef.id + '.pdf',
@@ -645,7 +678,7 @@ describe('functions', () => {
         ]),
       );
       // Also verify the array has the correct length
-      expect(moveSheetsCalls[0][1]).toHaveLength(2);
+      expect(firstMoveSheetsCall[1]).toHaveLength(2);
     });
   });
 });
