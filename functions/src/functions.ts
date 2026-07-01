@@ -5,6 +5,7 @@ import { HttpsError, type AuthBlockingEvent } from 'firebase-functions/identity'
 import { logger } from 'firebase-functions/v2';
 import { Change, type FirestoreEvent, type QueryDocumentSnapshot } from 'firebase-functions/v2/firestore';
 import { DateTime } from 'luxon';
+import { rejectionReasonLabels } from '../shared/types.js';
 import { calculateFeatureUpdates, getAGOLToken, getAttributesFor, mergeUpdates, updateFeatureService } from './agol.js';
 import { getBase64EncodedAttachment, getContactsToNotify, notify } from './emailHelper.js';
 import { getFunctionUrl, safelyInitializeApp } from './firebase.js';
@@ -30,8 +31,73 @@ const wait =
       ? { hours: 1 }
       : { days: 10 };
 
+const rejectionTemplateId =
+  process.env.NODE_ENV === 'production' ? 'd-27953d934df34a6eb39775402d826b9a' : 'd-4d5755ef2bb249b59b005ae64c791e13';
+
+const testRecipientEmail = process.env.TEST_RECIPIENT_EMAIL?.trim();
+
 const db = getFirestore();
 const bucket = getStorage().bucket();
+
+function getRejectionReasonLabel(reason: keyof typeof rejectionReasonLabels): string {
+  return rejectionReasonLabels[reason as keyof typeof rejectionReasonLabels] ?? reason;
+}
+
+function isValidRejectionReason(reason: string): reason is keyof typeof rejectionReasonLabels {
+  return reason in rejectionReasonLabels;
+}
+
+function getRejectionDetails(comments: string | null | undefined): { rejectedReason: string; rejectedNotes: string } {
+  const trimmedComments = comments?.trim();
+
+  if (!trimmedComments) {
+    return {
+      rejectedReason: 'No rejection reason provided',
+      rejectedNotes: '',
+    };
+  }
+
+  const separator = ' - ';
+  const separatorIndex = trimmedComments.indexOf(separator);
+  const rejectionReason: keyof typeof rejectionReasonLabels = isValidRejectionReason(trimmedComments)
+    ? trimmedComments
+    : 'other';
+
+  if (separatorIndex === -1) {
+    // No notes provided, only reason
+    return {
+      rejectedReason: getRejectionReasonLabel(rejectionReason),
+      rejectedNotes: '',
+    };
+  }
+
+  const parsedReason = trimmedComments.slice(0, separatorIndex).trim();
+  const rejectionReasonWithNotes: keyof typeof rejectionReasonLabels = isValidRejectionReason(parsedReason)
+    ? parsedReason
+    : 'other';
+
+  return {
+    rejectedReason: getRejectionReasonLabel(rejectionReasonWithNotes),
+    rejectedNotes: trimmedComments.slice(separatorIndex + separator.length).trim(),
+  };
+}
+
+function getTestRecipientOrThrow(metadata: Record<string, unknown>): { email: string } {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('Test recipient requested in production environment');
+  }
+
+  if (!testRecipientEmail) {
+    logger.error('[sendMail] Missing TEST_RECIPIENT_EMAIL in non-production environment. Refusing to send email.', {
+      environment: process.env.NODE_ENV,
+      ...metadata,
+    });
+
+    throw new Error('Missing TEST_RECIPIENT_EMAIL in non-production environment');
+  }
+
+  return { email: testRecipientEmail };
+}
 
 export async function authorizeUser(event: AuthBlockingEvent) {
   const id = event.data?.uid;
@@ -203,6 +269,7 @@ export async function queueTasks(
         }
       } else {
         logger.debug('creating ugrc rejection queue task', statusChange);
+        const { rejectedReason, rejectedNotes } = getRejectionDetails(after.status.ugrc.comments);
 
         // ugrc rejection send email
         try {
@@ -214,6 +281,8 @@ export async function queueTasks(
                 blmPointId: after.blm_point_id,
                 county: after.county,
                 surveyor,
+                rejectedReason,
+                rejectedNotes,
               },
             } satisfies SubmissionRejectedEvent,
             {
@@ -253,6 +322,7 @@ export async function queueTasks(
     case 'County Review': {
       if (!statusChange.approved) {
         logger.debug('creating county rejection queue task', statusChange);
+        const { rejectedReason, rejectedNotes } = getRejectionDetails(after.status.county.comments);
 
         // county rejection send email
         try {
@@ -264,6 +334,8 @@ export async function queueTasks(
                 blmPointId: after.blm_point_id,
                 county: after.county,
                 surveyor,
+                rejectedReason,
+                rejectedNotes,
               },
             } satisfies SubmissionRejectedEvent,
             {
@@ -391,6 +463,17 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
         day: getMountainTimeFutureDate(10),
       };
 
+      const recipients =
+        process.env.NODE_ENV === 'production'
+          ? contacts
+          : [
+              getTestRecipientOrThrow({
+                type,
+                blmPointId: payload.blmPointId,
+                submissionId: payload.submissionId,
+              }),
+            ];
+
       const template = {
         method: 'POST' as const,
         url: '/v3/mail/send',
@@ -402,7 +485,7 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
           },
           personalizations: [
             {
-              to: contacts,
+              to: recipients,
               dynamic_template_data: templateData,
             },
           ],
@@ -417,7 +500,11 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
         },
       };
 
-      logger.info('[sendMail] sending notification email to', { contacts, templateData });
+      logger.info('[sendMail] sending notification email to', {
+        recipients,
+        originalContacts: contacts,
+        templateData,
+      });
 
       const result = await notify(process.env.SENDGRID_API_KEY ?? 'empty', template);
 
@@ -429,31 +516,46 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
     case 'submission-rejected': {
       logger.info(`[sendMail] Notifying surveyor about rejection of ${payload.blmPointId}`);
 
+      const recipient =
+        process.env.NODE_ENV === 'production'
+          ? payload.surveyor
+          : getTestRecipientOrThrow({
+              type,
+              blmPointId: payload.blmPointId,
+              submissionId: payload.submissionId,
+            });
+
       const templateData = {
         blmPointId: payload.blmPointId,
         surveyor: payload.surveyor.name,
         county: payload.county,
+        rejectedReason: payload.rejectedReason,
+        rejectedNotes: payload.rejectedNotes,
       };
 
       const template = {
         method: 'POST' as const,
         url: '/v3/mail/send',
         body: {
-          template_id: 'd-27953d934df34a6eb39775402d826b9a',
+          template_id: rejectionTemplateId,
           from: {
             email: 'ugrc-plss-reviewers@utah.gov',
             name: 'UGRC PLSS Staff',
           },
           personalizations: [
             {
-              to: [payload.surveyor],
+              to: [recipient],
               dynamic_template_data: templateData,
             },
           ],
         },
       };
 
-      logger.info('[sendMail] sending rejection notification email to', { surveyor: payload.surveyor, templateData });
+      logger.info('[sendMail] sending rejection notification email to', {
+        recipient,
+        surveyor: payload.surveyor,
+        templateData,
+      });
 
       try {
         const result = await notify(process.env.SENDGRID_API_KEY ?? 'empty', template);

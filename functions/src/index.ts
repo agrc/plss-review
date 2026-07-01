@@ -8,6 +8,7 @@ import { approveCounty, authorizeUser, publishSubmissions, queueTasks, sendMail 
 
 const sendGridApiKey = defineSecret('SENDGRID_API_KEY');
 const agolCredentials = defineSecret('AGOL_CREDENTIALS');
+const testRecipientEmail = defineSecret('TEST_RECIPIENT_EMAIL');
 
 const basicQueueSettings = {
   retryConfig: {
@@ -34,7 +35,7 @@ export const autoApprovals = onTaskDispatched({ ...basicQueueSettings }, approve
 export const email = onTaskDispatched(
   {
     ...basicQueueSettings,
-    secrets: [sendGridApiKey],
+    secrets: [sendGridApiKey, testRecipientEmail],
   },
   sendMail,
 );

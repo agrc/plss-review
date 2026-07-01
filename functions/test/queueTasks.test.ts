@@ -40,6 +40,18 @@ async function ensureEmulatorConnection(): Promise<void> {
 
 let db: FirebaseFirestore.Firestore;
 
+async function clearCollectionIfPresent(name: string): Promise<void> {
+  const collections = await db.listCollections();
+  const collection = collections.find((item) => item.id === name);
+
+  if (!collection) {
+    return;
+  }
+
+  const snapshot = await collection.get();
+  await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()));
+}
+
 describe('queueTasks', () => {
   beforeAll(async () => {
     await ensureEmulatorConnection();
@@ -48,14 +60,7 @@ describe('queueTasks', () => {
   });
 
   beforeEach(async () => {
-    const collections = await db.listCollections();
-    await Promise.all(
-      collections.map(async (collection) => {
-        const snapshot = await collection.get();
-
-        await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()));
-      }),
-    );
+    await clearCollectionIfPresent('submitters');
 
     enqueueMock.mockReset();
     enqueueMock.mockResolvedValue(undefined);
@@ -124,20 +129,127 @@ describe('queueTasks', () => {
     await expect(queueTasks(event as never)).resolves.toBe(true);
 
     expect(enqueueMock).toHaveBeenCalledTimes(2);
-    expect(enqueueMock).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({
-        type: 'submission-in-county',
-        payload: expect.objectContaining({
-          surveyor: {
-            name: 'Surveyor Person',
-            email: 'surveyor@example.com',
-          },
-        }),
-      }),
-      expect.objectContaining({
-        id: 'submission-in-county-submission-123',
-      }),
+    const submissionInCountyCall = enqueueMock.mock.calls.find(
+      ([task]) => (task as { type?: string })?.type === 'submission-in-county',
     );
+
+    expect(submissionInCountyCall).toBeDefined();
+    const [task, taskOptions] = submissionInCountyCall as [
+      {
+        type: string;
+        payload: {
+          surveyor: {
+            name: string;
+            email: string;
+          };
+        };
+      },
+      { id: string },
+    ];
+
+    expect(task).toMatchObject({
+      type: 'submission-in-county',
+      payload: {
+        surveyor: {
+          name: 'Surveyor Person',
+          email: 'surveyor@example.com',
+        },
+      },
+    });
+    expect(taskOptions).toMatchObject({
+      id: 'submission-in-county-submission-123',
+    });
+  });
+
+  it('passes rejected reason and notes to submission-rejected email payload', async () => {
+    const submitterRef = db.collection('submitters').doc('test-user-id');
+
+    await db.collection('submitters').doc('test-user-id').set({
+      displayName: 'Surveyor Person',
+      email: 'surveyor@example.com',
+    });
+
+    const event = {
+      params: {
+        docId: 'submission-456',
+      },
+      data: {
+        before: {
+          data: () => ({
+            blm_point_id: 'UT654321',
+            county: 'Salt Lake',
+            submitted_by: {
+              id: 'test-user-id',
+              ref: submitterRef,
+            },
+            status: {
+              ugrc: {
+                approved: null,
+                reviewedAt: null,
+                reviewedBy: null,
+                comments: null,
+              },
+              county: {
+                approved: null,
+                reviewedAt: null,
+                reviewedBy: null,
+                comments: null,
+              },
+            },
+          }),
+        },
+        after: {
+          data: () => ({
+            blm_point_id: 'UT654321',
+            county: 'Salt Lake',
+            submitted_by: {
+              id: 'test-user-id',
+              ref: submitterRef,
+            },
+            status: {
+              ugrc: {
+                approved: false,
+                reviewedAt: Timestamp.fromDate(new Date()),
+                reviewedBy: 'reviewer@example.com',
+                comments: 'missing-photo - Unable to read monument details',
+              },
+              county: {
+                approved: null,
+                reviewedAt: null,
+                reviewedBy: null,
+                comments: null,
+              },
+            },
+          }),
+        },
+      },
+    };
+
+    await expect(queueTasks(event as never)).resolves.toBe(true);
+
+    expect(enqueueMock).toHaveBeenCalledTimes(1);
+    const firstCall = enqueueMock.mock.calls[0];
+    expect(firstCall).toBeDefined();
+
+    if (!firstCall) {
+      throw new Error('Expected enqueue to be called with a task payload');
+    }
+
+    const [task, taskOptions] = firstCall;
+
+    expect(task).toMatchObject({
+      type: 'submission-rejected',
+      payload: {
+        rejectedReason: 'Irrelevant or missing photos',
+        rejectedNotes: 'Unable to read monument details',
+        surveyor: {
+          name: 'Surveyor Person',
+          email: 'surveyor@example.com',
+        },
+      },
+    });
+    expect(taskOptions).toMatchObject({
+      id: 'ugrc-rejection-submission-456',
+    });
   });
 });

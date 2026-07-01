@@ -11,20 +11,6 @@ export type Contact = {
 };
 
 export const notify = (key: string, template: ClientRequest) => {
-  if (process.env.NODE_ENV !== 'production') {
-    logger.warn('Skipping mail send and returning a fake promise', { nodeEnv: process.env.NODE_ENV });
-
-    return Promise.resolve([
-      {
-        statusCode: 202,
-        body: '',
-        headers: {
-          server: 'nginx',
-        },
-      },
-    ]);
-  }
-
   const keySnippet = key.slice(0, 4);
 
   logger.debug('sendgrid key', { keySnippet });
