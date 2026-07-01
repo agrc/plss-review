@@ -223,7 +223,14 @@ describe('queueTasks', () => {
     await expect(queueTasks(event as never)).resolves.toBe(true);
 
     expect(enqueueMock).toHaveBeenCalledTimes(1);
-    const [task, taskOptions] = enqueueMock.mock.calls[0];
+    const firstCall = enqueueMock.mock.calls[0];
+    expect(firstCall).toBeDefined();
+
+    if (!firstCall) {
+      throw new Error('Expected enqueue to be called with a task payload');
+    }
+
+    const [task, taskOptions] = firstCall;
 
     expect(task).toMatchObject({
       type: 'submission-rejected',
