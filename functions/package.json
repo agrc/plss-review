@@ -2,7 +2,7 @@
   "name": "@ugrc/plss-review-functions",
   "private": true,
   "type": "module",
-  "main": "lib/index.js",
+  "main": "lib/src/index.js",
   "scripts": {
     "build": "tsc",
     "build:clean": "pnpm run clean && pnpm run build",
