@@ -34,7 +34,7 @@ describe('generateSheetName', () => {
       { referenceCorner: true, mrrc: false, blmPointId: standardBlmId, cornerType: undefined },
       `tiesheets/${standardBlmId}/${standardBlmId}_2025-01-15.pdf`,
     ],
-  ] as const)('%s', (description, input, expected) => {
+  ] as const)('%s', (_, input, expected) => {
     const result = generateSheetName({ ...input, today: testDate });
     expect(result).toBe(expected);
   });
@@ -64,7 +64,7 @@ describe('generateSheetName', () => {
         { referenceCorner: true, mrrc: true, blmPointId: standardBlmId, cornerType: 'WC' },
         `tiesheets/${standardBlmId}/MRRC_WC_${standardBlmId}_2025-01-15.pdf`,
       ],
-    ] as const)('%s', (description, input, expected) => {
+    ] as const)('%s', (_, input, expected) => {
       const result = generateSheetName({ ...input, today: testDate });
       expect(result).toBe(expected);
     });
