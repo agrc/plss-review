@@ -31,8 +31,7 @@ const wait =
       ? { hours: 1 }
       : { days: 10 };
 
-const rejectionTemplateId =
-  process.env.NODE_ENV === 'production' ? 'd-27953d934df34a6eb39775402d826b9a' : 'd-4d5755ef2bb249b59b005ae64c791e13';
+const rejectionTemplateId = process.env.SENDGRID_TEMPLATE_ID?.trim();
 
 const testRecipientEmail = process.env.TEST_RECIPIENT_EMAIL?.trim();
 
@@ -515,6 +514,16 @@ export async function sendMail(event: { data: EmailEvent }): Promise<void> {
 
     case 'submission-rejected': {
       logger.info(`[sendMail] Notifying surveyor about rejection of ${payload.blmPointId}`);
+
+      if (!rejectionTemplateId) {
+        logger.error('[sendMail] Missing SENDGRID_TEMPLATE_ID. Refusing to send rejection email.', {
+          type,
+          submissionId: payload.submissionId,
+          blmPointId: payload.blmPointId,
+        });
+
+        throw new Error('Missing SENDGRID_TEMPLATE_ID');
+      }
 
       const recipient =
         process.env.NODE_ENV === 'production'
