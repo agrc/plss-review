@@ -11,6 +11,21 @@ export type Contact = {
 };
 
 export const notify = (key: string, template: ClientRequest) => {
+  if (process.env.NODE_ENV === 'test' || process.env.VITEST) {
+    logger.debug('Skipping SendGrid request in test environment');
+
+    return Promise.resolve([
+      {
+        statusCode: 202,
+        body: '',
+        headers: {
+          server: 'nginx',
+        },
+      },
+      {},
+    ]) as unknown as ReturnType<typeof client.request>;
+  }
+
   const keySnippet = key.slice(0, 4);
 
   logger.debug('sendgrid key', { keySnippet });
