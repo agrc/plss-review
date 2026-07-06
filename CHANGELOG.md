@@ -1,5 +1,44 @@
 # Changelog
 
+## [1.1.1-rc.1](https://github.com/agrc/plss-review/compare/v1.1.0...v1.1.1-rc.1) (2026-07-06)
+
+
+### Features
+
+* add filtering ([d06d828](https://github.com/agrc/plss-review/commit/d06d8285746581ec5fa335c0d55298410be2fbf8))
+* changing secret name to apply to all emails ([16228e5](https://github.com/agrc/plss-review/commit/16228e5d7f30d53c916fb3ddd1da1d3b00d698f0))
+* improved email message with rejection-specific data ([637dc97](https://github.com/agrc/plss-review/commit/637dc9747395c78db26fd28025ec079bff4cff11))
+* refactoring to secret paradigm ([212349a](https://github.com/agrc/plss-review/commit/212349aaa94a41f3aedfdf1fa15c7a8eab4c2279))
+* tests ([7471de9](https://github.com/agrc/plss-review/commit/7471de91a621cb27fcbe4d61635c7d384b6c842d))
+
+
+### Bug Fixes
+
+* add default rejected reason as per copilot's suggestion ([7ee4eaf](https://github.com/agrc/plss-review/commit/7ee4eaf7f2779f75c3aa0c215fde60cbe027b799))
+* added some fixes based on Scott's suggestions ([e213493](https://github.com/agrc/plss-review/commit/e2134932210739757f2caffd6ae7115c522d6011))
+* adjusted email fallback ([82616e0](https://github.com/agrc/plss-review/commit/82616e0769e8981ab4a89b892801b40707aa9b75))
+* aria info for rejection added as per copilot's suggestion ([f244685](https://github.com/agrc/plss-review/commit/f244685d81911703cb72b1b21ce56fc6f042c0dc))
+* based on copilot's edits, fixed date range timestamping ([55cad0e](https://github.com/agrc/plss-review/commit/55cad0eba1136fb7805c9e1054e2fda60c10aade))
+* Copilot suggested label improvements ([b8bc873](https://github.com/agrc/plss-review/commit/b8bc873213b005c5c9312fc7bcf5573172a88975))
+* copilot unit test expansion ([7b86bc8](https://github.com/agrc/plss-review/commit/7b86bc828afe67ce2c50bfd48c41cb270ff6c481))
+* failing unit test edit ([b9d6838](https://github.com/agrc/plss-review/commit/b9d6838a06f73e425dc2223d59c937184dc25c7d))
+* fix unit test ([52d7f6b](https://github.com/agrc/plss-review/commit/52d7f6bb55309021e71ef74691faea46a6f0a9a1))
+* fix unit tests ([df1c83e](https://github.com/agrc/plss-review/commit/df1c83e96d0674cd916cd774a284b1c885436f4b))
+* fix unit tests and timestamp issue ([6092a4c](https://github.com/agrc/plss-review/commit/6092a4ce3c6b76ae363cc7df9b1a57dda140553b))
+* fixed potential race identified by copilot ([6041433](https://github.com/agrc/plss-review/commit/604143322ce6eb23db3063ccdc32833d75f15ef0))
+* linter error fix ([fe028ed](https://github.com/agrc/plss-review/commit/fe028ed9d0e78dd34ba0bd98a00681146a14cde8))
+* local env should still receive emails ([3ae7e72](https://github.com/agrc/plss-review/commit/3ae7e72a7711b980eafc34803a307fe2a51d0050))
+* making sure no emails are sent during test ([2e6d2db](https://github.com/agrc/plss-review/commit/2e6d2db111846d03d587ea3f1d85860a0e962274))
+* No longer needing to bypass eslint code smell ([6cdecad](https://github.com/agrc/plss-review/commit/6cdecad7e7ec2ee419afdcd9e08541f0abb87b7e))
+* patch UI issues ([83ddcef](https://github.com/agrc/plss-review/commit/83ddcef13f4e10ed1da6598dd5df15f28ca3723a))
+* remoing unneeded mocks ([7a042e8](https://github.com/agrc/plss-review/commit/7a042e8e1d1e0f19212a19a58dd148c084a161e4))
+* undid the copilot changes that were not fixing the unit tests ([4c7da37](https://github.com/agrc/plss-review/commit/4c7da37b8ec941b5a23d7d20deb56413cc7e70de))
+* unit test ([7435cbd](https://github.com/agrc/plss-review/commit/7435cbdccf81c8e0421886a3aeb4eae13fecc219))
+* unit test issue ([a433de3](https://github.com/agrc/plss-review/commit/a433de3607d0da59b68daba37022b7dff1c77ab2))
+* update submitter references to use DocumentReference type ([07ff394](https://github.com/agrc/plss-review/commit/07ff39476fed3895863ae14c1dd81eccf4fa3098))
+* updated to standard UI and eliminated console warnings ([9da636c](https://github.com/agrc/plss-review/commit/9da636c2ba81fb6c49f839a45d07d3d78668ab84))
+* warning about missing label ([0839098](https://github.com/agrc/plss-review/commit/0839098bb46b09221cb7dc88b5b4f962196d1b44))
+
 ## [1.1.0](https://github.com/agrc/plss-review/compare/v1.0.17...v1.1.0) (2026-06-24)
 
 
