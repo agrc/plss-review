@@ -8,7 +8,6 @@ import { approveCounty, authorizeUser, publishSubmissions, queueTasks, sendMail 
 
 const sendGridApiKey = defineSecret('SENDGRID_API_KEY');
 const agolCredentials = defineSecret('AGOL_CREDENTIALS');
-const testRecipientEmail = defineSecret('TEST_RECIPIENT_EMAIL');
 const sendGridTemplateId = defineSecret('SENDGRID_TEMPLATE_ID');
 
 const basicQueueSettings = {
@@ -36,7 +35,7 @@ export const autoApprovals = onTaskDispatched({ ...basicQueueSettings }, approve
 export const email = onTaskDispatched(
   {
     ...basicQueueSettings,
-    secrets: [sendGridApiKey, testRecipientEmail, sendGridTemplateId],
+    secrets: [sendGridApiKey, sendGridTemplateId],
   },
   sendMail,
 );
