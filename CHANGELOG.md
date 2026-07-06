@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1-rc.1](https://github.com/agrc/plss-review/compare/v1.1.0-rc.22...v1.1.1-rc.1) (2026-07-06)
+
+
+### Features
+
+* add filtering ([9ff5c03](https://github.com/agrc/plss-review/commit/9ff5c03642e5f3fa0916580c6a5148bc31f0d9a9))
+* improved email message with rejection-specific data ([1953891](https://github.com/agrc/plss-review/commit/195389183be08be927df9c0c1e6fbeacc9086c13))
+
 ## [1.1.0](https://github.com/agrc/plss-review/compare/v1.0.17...v1.1.0) (2026-06-24)
 
 
