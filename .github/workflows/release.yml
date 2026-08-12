@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: ⬇️ Set up code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 🚀 Deploy
         uses: agrc/firebase-website-deploy-composite-action@v2
@@ -51,7 +51,7 @@ jobs:
 
     steps:
       - name: ⬇️ Set up code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 🚀 Deploy
         uses: agrc/firebase-website-deploy-composite-action@v2
