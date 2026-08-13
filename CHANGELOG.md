@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/agrc/plss-review/compare/v1.1.1...v1.1.2) (2026-08-13)
+
+
+### Dependencies
+
+* bump react-router from 7.15.0 to 7.18.2 ([06c7dbc](https://github.com/agrc/plss-review/commit/06c7dbc0d6cb22c17938cbe9ece4e386ae4a7745))
+* **dev:** bump postcss from 8.5.14 to 8.5.23 ([2b1b898](https://github.com/agrc/plss-review/commit/2b1b8982b614b05fa7509d2e8e1061bc0505f5c7))
+
 ## [1.1.1](https://github.com/agrc/plss-review/compare/v1.1.0-rc.22...v1.1.1) (2026-07-07)
 
 
