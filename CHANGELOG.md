@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3-rc.2](https://github.com/agrc/plss-review/compare/v1.1.3-rc.1...v1.1.3-rc.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* use correct PDF path for approved documents ([37a304c](https://github.com/agrc/plss-review/commit/37a304c1dc03cdce4927f51698a109cba7f591de))
+
 ## [1.1.3-rc.1](https://github.com/agrc/plss-review/compare/v1.1.2...v1.1.3-rc.1) (2026-09-08)
 
 
