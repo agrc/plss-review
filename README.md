@@ -8,6 +8,56 @@ A website to view and approve to monument record sheet submissions
 
 [Dev URL](https://plss-review.dev.utah.gov/)
 
+## Submission flow
+
+The submission app creates the Firestore document and uploads the original PDF. This review app reads the document and PDF, records review decisions, and publishes approved submissions. The diagram shows the changes made to Firestore and Cloud Storage by each step.
+
+```mermaid
+flowchart TD
+   submitter[Submission app] -->|creates| submission[(Firestore: submissions/ID)]
+   submitter -->|uploads| reviewPdf[(Cloud Storage: under-review/BLM_POINT_ID/SUBMITTER_ID/ID.pdf)]
+
+   submission --> review[Reviewer opens submission]
+   reviewPdf --> review
+
+   review -->|UGRC approves| ugrcApproved[Firestore update: status.ugrc.approved = true\nstatus.ugrc.reviewedAt / reviewedBy]
+   review -->|UGRC rejects| ugrcRejected[Firestore update: status.ugrc.approved = false\nstatus.ugrc.comments / reviewedAt / reviewedBy]
+   ugrcApproved --> updated{{onSubmissionUpdated}}
+   ugrcRejected --> updated
+
+   updated -->|approved| countyTasks[Queue auto-approval task\nQueue county notification email]
+   updated -->|rejected| rejectedEmail[Queue rejection email]
+   rejectedEmail --> rejected[Rejected\nPDF remains in under-review]
+
+   countyTasks --> countyNotice[County receives PDF attachment\nand review notification]
+   countyTasks --> autoApproval[After configured delay\nauto-approval task runs]
+   countyNotice --> countyReview[County reviewer opens submission]
+   reviewPdf --> countyReview
+
+   countyReview -->|approves| countyApproved[Firestore update: status.county.approved = true\nstatus.county.reviewedAt / reviewedBy]
+   countyReview -->|rejects| countyRejected[Firestore update: status.county.approved = false\nstatus.county.comments / reviewedAt / reviewedBy]
+   autoApproval --> countyApproved
+   countyApproved --> mrrc{metadata.mrrc?}
+   mrrc -->|yes| stats[(Firestore: stats/mrrc-FISCAL_YEAR)]
+   mrrc -->|no| ready
+   stats --> ready[Both review approvals recorded]
+   countyRejected --> countyRejectedEmail[Queue rejection email]
+   countyRejectedEmail --> rejected
+
+   ready --> publishCheck{Scheduled publisher\napproval + waiting period\npublished = false}
+   publishCheck -->|not ready| wait[Remain in review\nPDF remains in under-review]
+   publishCheck -->|ready| agol[Update ArcGIS feature service]
+   agol --> movePdf[Move PDF to public path\ntiesheets/BLM_POINT_ID/GENERATED_NAME.pdf]
+   movePdf --> published[Firestore update: published = true\nstatus.publishedAt / publishedBy\nmonument = public PDF path]
+
+   classDef firestore fill:#e8f1ff,stroke:#2563eb,color:#172554
+   classDef storage fill:#fff4df,stroke:#d97706,color:#431407
+   classDef process fill:#eef7ee,stroke:#2f855a,color:#173b20
+   class submission,stats,ugrcApproved,ugrcRejected,countyApproved,countyRejected,published firestore
+   class reviewPdf,movePdf storage
+   class review,updated,countyTasks,rejectedEmail,countyNotice,autoApproval,countyReview,mrrc,ready,publishCheck,wait,agol,rejected,countyRejectedEmail process
+```
+
 ## Development
 
 1. Install dependencies
