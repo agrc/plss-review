@@ -374,6 +374,7 @@ describe('functions', () => {
       expect(updatedData?.published).toBe(true);
       expect(updatedData?.status.publishedAt).toBeDefined();
       expect(updatedData?.status.publishedBy).toBe('System');
+      expect(updatedData?.monument).toBe('test-sheet.pdf');
 
       // Verify external services were called with correct arguments
       expect(vi.mocked(agolModule.getAttributesFor)).toHaveBeenCalledTimes(1);

@@ -633,6 +633,7 @@ export async function publishSubmissions(): Promise<void> {
   const updateMap: (PublishingMetadata & { id: number; submissionId: string })[] = [];
   const storageMigrations: BucketFileMigration[] = [];
   const successfulSubmissions = new Set<string>();
+  const destinationPaths = {} as Record<string, string>;
 
   const token = await getAGOLToken();
 
@@ -693,6 +694,8 @@ export async function publishSubmissions(): Promise<void> {
           from: metadata.document,
           to: destinationPath,
         });
+
+        destinationPaths[submissionId] = destinationPath;
 
         // Track this submission as successful since it doesn't need AGOL updates
         successfulSubmissions.add(submissionId);
@@ -784,6 +787,8 @@ export async function publishSubmissions(): Promise<void> {
           to: destinationPath,
         });
 
+        destinationPaths[metadata.submissionId] = destinationPath;
+
         // Track this submission as successful
         successfulSubmissions.add(metadata.submissionId);
       }
@@ -835,6 +840,7 @@ export async function publishSubmissions(): Promise<void> {
         published: true,
         'status.publishedAt': DateTime.now().setZone('America/Denver').toJSDate(),
         'status.publishedBy': 'System',
+        monument: destinationPaths[submissionId],
       });
 
       logger.info(`[publishSubmissions] Updated submission ${submissionId} to published`);
