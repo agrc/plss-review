@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
 
 export function initializeFirebase(args: string[] = []): { db: admin.firestore.Firestore; auth: admin.auth.Auth } {
   let projectId = 'ut-dts-agrc-plss-dev';
