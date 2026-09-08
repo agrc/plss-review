@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3-rc.1](https://github.com/agrc/plss-review/compare/v1.1.2...v1.1.3-rc.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* update PDF path during publish ([ab6847d](https://github.com/agrc/plss-review/commit/ab6847d0c4a8d13bae648a44804a498a6a946d2e))
+
 ## [1.1.2](https://github.com/agrc/plss-review/compare/v1.1.1...v1.1.2) (2026-08-13)
 
 
