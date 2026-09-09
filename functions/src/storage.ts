@@ -39,7 +39,12 @@ export const generateSheetName = (metadata: {
   return `tiesheets/${metadata.blmPointId}/${name}.pdf`;
 };
 
-export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFileMigration[]) => {
+export const moveSheetsToFinalLocation = async (
+  bucket: Bucket,
+  data: BucketFileMigration[],
+): Promise<BucketFileMigration[]> => {
+  const successfulMigrations: BucketFileMigration[] = [];
+
   for (const migration of data) {
     const file = bucket.file(migration.from);
     let destinationPath = migration.to;
@@ -66,7 +71,6 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
       logger.debug(`[publishSubmissions] Destination file ${migration.to} already exists. Renaming.`, { migration });
 
       destinationPath = incrementName(destinationPath);
-      migration.to = destinationPath;
 
       try {
         exists = (await bucket.file(destinationPath).exists())[0];
@@ -77,6 +81,8 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
           error,
           stack: errorDetails.stack,
         });
+
+        throw error;
       }
 
       attempts++;
@@ -89,6 +95,10 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
     try {
       await file.move(bucket.file(destinationPath));
       logger.info(`[publishSubmissions] Moved pdf to production path`, { migration });
+      successfulMigrations.push({
+        from: migration.from,
+        to: destinationPath,
+      });
     } catch (error) {
       const errorDetails = getErrorLogDetails(error);
 
@@ -99,6 +109,8 @@ export const moveSheetsToFinalLocation = async (bucket: Bucket, data: BucketFile
       });
     }
   }
+
+  return successfulMigrations;
 };
 
 export const incrementName = (name: string): string => {
