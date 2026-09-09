@@ -90,7 +90,9 @@ export const moveSheetsToFinalLocation = async (
 
     try {
       await file.move(bucket.file(destinationPath));
-      logger.info(`[publishSubmissions] Moved pdf to production path`, { migration });
+      logger.info(`[publishSubmissions] Moved pdf to production path`, {
+        migration: { ...migration, to: destinationPath },
+      });
       successfulMigrations.push({
         from: migration.from,
         to: destinationPath,
