@@ -23,11 +23,7 @@ const generateSheetName = (metadata: {
     name = `MRRC_${name}`;
   }
 
-  const formattedDate = metadata.today.toLocaleDateString('en-CA', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
+  const formattedDate = metadata.today.toISOString().slice(0, 10);
 
   name = `${name}_${formattedDate}`;
 
