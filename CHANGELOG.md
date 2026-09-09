@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.3](https://github.com/agrc/plss-review/compare/v1.1.2...v1.1.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* fallback to dynamic pdf path if monument path does not exist ([b89d8f7](https://github.com/agrc/plss-review/commit/b89d8f7b2db4fa7b64d014d759c9e7c88a0d32c2))
+* **functions:** better handling of storage object migration errors ([4c8fc9a](https://github.com/agrc/plss-review/commit/4c8fc9a98344c61dbc752a7a011f3e3545b3a8af)), refs [#197](https://github.com/agrc/plss-review/issues/197)
+* **functions:** use UTC date for published PDF filenames ([3820640](https://github.com/agrc/plss-review/commit/3820640299dd6fc56414438bf0992c0c89271439))
+* update PDF path during publish ([9498b29](https://github.com/agrc/plss-review/commit/9498b29e7727a963c960ded1f4407566c1d7d945))
+* use correct PDF path for approved documents ([2b5c23c](https://github.com/agrc/plss-review/commit/2b5c23cb5fa2ce4680ea6d1c284bbbdfb09e22d1))
+
 ## [1.1.3-rc.5](https://github.com/agrc/plss-review/compare/v1.1.3-rc.4...v1.1.3-rc.5) (2026-09-09)
 
 
