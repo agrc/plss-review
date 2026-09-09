@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3-rc.4](https://github.com/agrc/plss-review/compare/v1.1.3-rc.3...v1.1.3-rc.4) (2026-09-09)
+
+
+### Bug Fixes
+
+* **functions:** better handling of storage object migration errors ([0ae868b](https://github.com/agrc/plss-review/commit/0ae868bbf1e0207f8eb187b818656df8d75aacfa)), refs [#197](https://github.com/agrc/plss-review/issues/197)
+
 ## [1.1.3-rc.3](https://github.com/agrc/plss-review/compare/v1.1.3-rc.2...v1.1.3-rc.3) (2026-09-09)
 
 
