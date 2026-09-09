@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3-rc.5](https://github.com/agrc/plss-review/compare/v1.1.3-rc.4...v1.1.3-rc.5) (2026-09-09)
+
+
+### Bug Fixes
+
+* **functions:** use UTC date for published PDF filenames ([09c1045](https://github.com/agrc/plss-review/commit/09c1045574e95c69b9de9a064087207517e10035))
+
 ## [1.1.3-rc.4](https://github.com/agrc/plss-review/compare/v1.1.3-rc.3...v1.1.3-rc.4) (2026-09-09)
 
 
