@@ -10,24 +10,15 @@ A website to view and approve to monument record sheet submissions
 
 ## Submission flow
 
-The submission app uploads source files and previews to `submitters/`, creates the Firestore document, and generates the review PDF under `under-review/`. This review app reads the review document and PDF, records review decisions, and publishes approved submissions. The diagram shows the changes made to Firestore and Cloud Storage by each step.
+The submission app creates the Firestore document and review PDF under `under-review/`. This review app reads the review document and PDF, records review decisions, queues notifications and automatic county approvals, and publishes eligible submissions. The diagram shows the Firestore and Cloud Storage changes owned by each step.
 
 ```mermaid
 flowchart TD
    submitter[Submission app] -->|creates| submission[(Firestore: submissions/ID)]
-   submitter -->|uploads source files| sourceFiles[(Cloud Storage: submitters/UID/new/POINT_ID/...)]
-   submitter -->|uploads existing sheet| existingFile[(Cloud Storage: submitters/UID/existing/POINT_ID/SOURCE.pdf)]
-   submitter -->|requests preview| previewPdf[(Cloud Storage: submitters/UID/new/POINT_ID/preview.pdf)]
-
-   submission --> createMonument[onCreateMonument]
-   sourceFiles --> createMonument
-   existingFile --> createMonument
-   createMonument -->|generates or copies review PDF| reviewPdf[(Cloud Storage: under-review/BLM_POINT_ID/SUBMITTER_ID/ID.pdf)]
-   createMonument -->|sets monument path| monumentPath[Firestore update: monument = under-review PDF path]
+   submitter -->|creates| reviewPdf[(Cloud Storage: under-review/BLM_POINT_ID/SUBMITTER_ID/ID.pdf)]
 
    submission --> review[Reviewer opens submission]
    reviewPdf --> review
-   monumentPath --> review
 
    review -->|UGRC approves| ugrcApproved[Firestore update: status.ugrc.approved = true\nstatus.ugrc.reviewedAt / reviewedBy]
    review -->|UGRC rejects| ugrcRejected[Firestore update: status.ugrc.approved = false\nstatus.ugrc.comments / reviewedAt / reviewedBy]
@@ -45,15 +36,18 @@ flowchart TD
 
    countyReview -->|approves| countyApproved[Firestore update: status.county.approved = true\nstatus.county.reviewedAt / reviewedBy]
    countyReview -->|rejects| countyRejected[Firestore update: status.county.approved = false\nstatus.county.comments / reviewedAt / reviewedBy]
-   autoApproval --> countyApproved
-   countyApproved --> mrrc{metadata.mrrc?}
+   autoApproval --> automaticCountyApproval[Firestore update: status.county.approved = true\nreviewedBy = County*]
+   automaticCountyApproval --> mrrc{metadata.mrrc?}
    mrrc -->|yes| stats[(Firestore: stats/mrrc-FISCAL_YEAR)]
    mrrc -->|no| ready
+   countyApproved --> ready
    stats --> ready[Both review approvals recorded]
    countyRejected --> countyRejectedEmail[Queue rejection email]
    countyRejectedEmail --> rejected
+   rejected --> forgive[Reviewer forgives rejection or user cancellation]
+   forgive -->|resets review approvals and cancellation| review
 
-   ready --> publishCheck{Scheduled publisher\napproval + waiting period\npublished = false}
+   ready --> publishCheck{Daily publisher at 22:00 MT\nUGRC + county approved\ncounty approval >= 7 days ago\npublished = false}
    publishCheck -->|not ready| wait[Remain in review\nPDF remains in under-review]
    publishCheck -->|ready| agol[Update ArcGIS feature service]
    agol --> movePdf[Move PDF to public path\ntiesheets/BLM_POINT_ID/GENERATED_NAME.pdf]
@@ -64,7 +58,7 @@ flowchart TD
    classDef process fill:#eef7ee,stroke:#2f855a,color:#173b20
    class submission,stats,ugrcApproved,ugrcRejected,countyApproved,countyRejected,published firestore
    class reviewPdf,movePdf storage
-   class review,updated,countyTasks,rejectedEmail,countyNotice,autoApproval,countyReview,mrrc,ready,publishCheck,wait,agol,rejected,countyRejectedEmail process
+   class review,updated,countyTasks,rejectedEmail,countyNotice,autoApproval,countyReview,automaticCountyApproval,mrrc,ready,publishCheck,wait,agol,rejected,countyRejectedEmail,forgive process
 ```
 
 ## Development

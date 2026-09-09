@@ -36,3 +36,4 @@ Use this file for repository-specific behavior that is not obvious from the file
 - Commit messages follow Angular-style Conventional Commits. See [CONTRIBUTING.md](../CONTRIBUTING.md).
 - Tailwind-related packages are intentionally pinned to Tailwind v3-compatible versions. Check [README.md](../README.md) before changing Tailwind dependencies.
 - Check [scripts/package.json](../scripts/package.json) before running any migration or seed command, especially `prod:*` variants.
+- Update the [README.md submission-flow Mermaid diagram](../README.md#submission-flow) whenever relevant submission, review, task, publishing, Firestore, or Cloud Storage behavior changes.
