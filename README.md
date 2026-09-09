@@ -10,15 +10,24 @@ A website to view and approve to monument record sheet submissions
 
 ## Submission flow
 
-The submission app creates the Firestore document and uploads the original PDF. This review app reads the document and PDF, records review decisions, and publishes approved submissions. The diagram shows the changes made to Firestore and Cloud Storage by each step.
+The submission app uploads source files and previews to `submitters/`, creates the Firestore document, and generates the review PDF under `under-review/`. This review app reads the review document and PDF, records review decisions, and publishes approved submissions. The diagram shows the changes made to Firestore and Cloud Storage by each step.
 
 ```mermaid
 flowchart TD
    submitter[Submission app] -->|creates| submission[(Firestore: submissions/ID)]
-   submitter -->|uploads| reviewPdf[(Cloud Storage: under-review/BLM_POINT_ID/SUBMITTER_ID/ID.pdf)]
+   submitter -->|uploads source files| sourceFiles[(Cloud Storage: submitters/UID/new/POINT_ID/...)]
+   submitter -->|uploads existing sheet| existingFile[(Cloud Storage: submitters/UID/existing/POINT_ID/SOURCE.pdf)]
+   submitter -->|requests preview| previewPdf[(Cloud Storage: submitters/UID/new/POINT_ID/preview.pdf)]
+
+   submission --> createMonument[onCreateMonument]
+   sourceFiles --> createMonument
+   existingFile --> createMonument
+   createMonument -->|generates or copies review PDF| reviewPdf[(Cloud Storage: under-review/BLM_POINT_ID/SUBMITTER_ID/ID.pdf)]
+   createMonument -->|sets monument path| monumentPath[Firestore update: monument = under-review PDF path]
 
    submission --> review[Reviewer opens submission]
    reviewPdf --> review
+   monumentPath --> review
 
    review -->|UGRC approves| ugrcApproved[Firestore update: status.ugrc.approved = true\nstatus.ugrc.reviewedAt / reviewedBy]
    review -->|UGRC rejects| ugrcRejected[Firestore update: status.ugrc.approved = false\nstatus.ugrc.comments / reviewedAt / reviewedBy]
