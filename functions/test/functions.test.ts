@@ -86,7 +86,7 @@ vi.mock('../src/storage', async () => {
   return {
     ...actual,
     generateSheetName: vi.fn().mockReturnValue('test-sheet.pdf'), // Mock to return consistent test value
-    moveSheetsToFinalLocation: vi.fn().mockResolvedValue(undefined),
+    moveSheetsToFinalLocation: vi.fn().mockImplementation(async (_bucket, migrations) => migrations),
   };
 });
 
@@ -118,7 +118,7 @@ function setDefaultUpdateFeatureServiceMock(): void {
 
 function setDefaultStorageMocks(): void {
   vi.mocked(storageModule.generateSheetName).mockReturnValue('test-sheet.pdf');
-  vi.mocked(storageModule.moveSheetsToFinalLocation).mockResolvedValue(undefined);
+  vi.mocked(storageModule.moveSheetsToFinalLocation).mockImplementation(async (_bucket, migrations) => migrations);
 }
 
 describe('functions', () => {
@@ -306,6 +306,56 @@ describe('functions', () => {
           to: 'test-sheet.pdf',
         },
       ]);
+    });
+
+    it("writes the storage helper's collision-resolved destination to Firestore", async () => {
+      const eightDaysAgo = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000);
+      const submissionRef = await db.collection('submissions').add({
+        blm_point_id: 'UT123456',
+        county: 'Salt Lake',
+        published: false,
+        status: {
+          ugrc: { approved: true, reviewedAt: Timestamp.fromDate(new Date()), reviewedBy: 'test-ugrc-user' },
+          county: { approved: true, reviewedAt: Timestamp.fromDate(eightDaysAgo), reviewedBy: 'test-county-user' },
+        },
+        submitted_by: { id: 'test-user-id' },
+        metadata: { mrrc: false },
+      });
+
+      vi.mocked(storageModule.moveSheetsToFinalLocation).mockImplementation(async (_bucket, migrations) =>
+        migrations.map((migration) => ({ ...migration, to: 'tiesheets/UT123456/test-sheet_1.pdf' })),
+      );
+
+      await publishSubmissions();
+
+      const submission = (await submissionRef.get()).data();
+      expect(submission?.published).toBe(true);
+      expect(submission?.monument).toBe('tiesheets/UT123456/test-sheet_1.pdf');
+    });
+
+    it('leaves a submission unpublished when its storage move fails', async () => {
+      const eightDaysAgo = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000);
+      const submissionRef = await db.collection('submissions').add({
+        blm_point_id: 'UT123456',
+        county: 'Salt Lake',
+        monument: 'under-review/original.pdf',
+        published: false,
+        status: {
+          ugrc: { approved: true, reviewedAt: Timestamp.fromDate(new Date()), reviewedBy: 'test-ugrc-user' },
+          county: { approved: true, reviewedAt: Timestamp.fromDate(eightDaysAgo), reviewedBy: 'test-county-user' },
+        },
+        submitted_by: { id: 'test-user-id' },
+        metadata: { mrrc: false },
+      });
+
+      vi.mocked(storageModule.moveSheetsToFinalLocation).mockResolvedValue([]);
+
+      await publishSubmissions();
+
+      const submission = (await submissionRef.get()).data();
+      expect(submission?.published).toBe(false);
+      expect(submission?.monument).toBe('under-review/original.pdf');
+      expect(submission?.status.publishedAt).toBeUndefined();
     });
 
     it('processes submissions that meet publishing criteria and updates AGOL features', async () => {

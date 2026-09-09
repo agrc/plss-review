@@ -1,5 +1,5 @@
-import { afterAll, describe, expect, it, test } from 'vitest';
-import { generateSheetName, incrementName } from '../src/storage';
+import { afterAll, describe, expect, it, test, vi } from 'vitest';
+import { generateSheetName, incrementName, moveSheetsToFinalLocation } from '../src/storage';
 
 // Store original process.env
 const originalEnv = process.env.AGOL_CREDENTIALS;
@@ -267,5 +267,43 @@ describe('incrementName', () => {
       const result = incrementName(longName);
       expect(result).toBe(expected);
     });
+  });
+});
+
+describe('moveSheetsToFinalLocation', () => {
+  it('returns the collision-resolved destination after moving the file', async () => {
+    const migration = { from: 'under-review/submission.pdf', to: 'tiesheets/point/sheet.pdf' };
+    const move = vi.fn().mockResolvedValue(undefined);
+    const bucket = {
+      file: vi.fn((path: string) => {
+        if (path === migration.from) {
+          return { move };
+        }
+
+        return { exists: vi.fn().mockResolvedValue([path === migration.to]) };
+      }),
+    } as never;
+
+    await expect(moveSheetsToFinalLocation(bucket, [migration])).resolves.toEqual([
+      { from: migration.from, to: 'tiesheets/point/sheet_1.pdf' },
+    ]);
+    expect(move).toHaveBeenCalledOnce();
+  });
+
+  it('returns no migration when moving a file fails', async () => {
+    const migration = { from: 'under-review/submission.pdf', to: 'tiesheets/point/sheet.pdf' };
+    const move = vi.fn().mockRejectedValue(new Error('Storage unavailable'));
+    const bucket = {
+      file: vi.fn((path: string) => {
+        if (path === migration.from) {
+          return { move };
+        }
+
+        return { exists: vi.fn().mockResolvedValue([false]) };
+      }),
+    } as never;
+
+    await expect(moveSheetsToFinalLocation(bucket, [migration])).resolves.toEqual([]);
+    expect(move).toHaveBeenCalledOnce();
   });
 });

@@ -633,7 +633,7 @@ export async function publishSubmissions(): Promise<void> {
   const updateMap: (PublishingMetadata & { id: number; submissionId: string })[] = [];
   const storageMigrations: BucketFileMigration[] = [];
   const successfulSubmissions = new Set<string>();
-  const destinationPaths = {} as Record<string, string>;
+  const submissionSourcePaths = {} as Record<string, string>;
 
   const token = await getAGOLToken();
 
@@ -695,7 +695,7 @@ export async function publishSubmissions(): Promise<void> {
           to: destinationPath,
         });
 
-        destinationPaths[submissionId] = destinationPath;
+        submissionSourcePaths[submissionId] = metadata.document;
 
         // Track this submission as successful since it doesn't need AGOL updates
         successfulSubmissions.add(submissionId);
@@ -787,7 +787,7 @@ export async function publishSubmissions(): Promise<void> {
           to: destinationPath,
         });
 
-        destinationPaths[metadata.submissionId] = destinationPath;
+        submissionSourcePaths[metadata.submissionId] = metadata.document;
 
         // Track this submission as successful
         successfulSubmissions.add(metadata.submissionId);
@@ -819,7 +819,8 @@ export async function publishSubmissions(): Promise<void> {
 
   logger.info('[publishSubmissions] Moving sheets to public bucket', { storageMigrations });
 
-  await moveSheetsToFinalLocation(bucket, storageMigrations);
+  const successfulMigrations = await moveSheetsToFinalLocation(bucket, storageMigrations);
+  const successfulDestinationPaths = new Map(successfulMigrations.map((migration) => [migration.from, migration.to]));
 
   logger.info(
     `[publishSubmissions] Processing ${successfulSubmissions.size} successful submissions out of ${submissionsSnapshot.size} total`,
@@ -833,6 +834,20 @@ export async function publishSubmissions(): Promise<void> {
       continue;
     }
 
+    const sourcePath = submissionSourcePaths[submissionId];
+
+    if (!sourcePath) {
+      logger.warn(`[publishSubmissions] Skipping update for ${submissionId} - storage migration was not prepared`);
+      continue;
+    }
+
+    const monumentPath = successfulDestinationPaths.get(sourcePath);
+
+    if (!monumentPath) {
+      logger.warn(`[publishSubmissions] Skipping update for ${submissionId} - storage move was not successful`);
+      continue;
+    }
+
     const ref = db.collection('submissions').doc(submissionId);
 
     try {
@@ -840,7 +855,7 @@ export async function publishSubmissions(): Promise<void> {
         published: true,
         'status.publishedAt': DateTime.now().setZone('America/Denver').toJSDate(),
         'status.publishedBy': 'System',
-        monument: destinationPaths[submissionId],
+        monument: monumentPath,
       });
 
       logger.info(`[publishSubmissions] Updated submission ${submissionId} to published`);
