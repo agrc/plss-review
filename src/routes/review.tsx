@@ -53,7 +53,16 @@ const getFirestoreDocument = async (id: string | undefined, firestore: Firestore
     throw new Error('BLM Point ID is missing in submission data');
   }
 
-  const fileRef = ref(storage, submissionData.monument);
+  let fileRef;
+  // monument hasn't always been properly updated, fallback to dynamically building path if it doesn't exist
+  if (submissionData.monument) {
+    fileRef = ref(storage, submissionData.monument);
+  } else {
+    const baseRef = ref(storage, 'under-review');
+    const folderRef = ref(baseRef, submissionData.blm_point_id);
+    const userRef = ref(folderRef, submissionData.submitted_by.id);
+    fileRef = ref(userRef, `${id}.pdf`);
+  }
 
   const pdf = await Spinner.minDelay(getDownloadURL(fileRef), 350);
 
