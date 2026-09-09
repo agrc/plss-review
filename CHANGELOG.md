@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3-rc.3](https://github.com/agrc/plss-review/compare/v1.1.3-rc.2...v1.1.3-rc.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* fallback to dynamic pdf path if monument path does not exist ([65d6bd0](https://github.com/agrc/plss-review/commit/65d6bd04d23571651e1027f819b285485604441b))
+
 ## [1.1.3-rc.2](https://github.com/agrc/plss-review/compare/v1.1.3-rc.1...v1.1.3-rc.2) (2026-09-08)
 
 
