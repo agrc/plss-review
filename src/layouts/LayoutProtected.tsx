@@ -9,6 +9,8 @@ import '../index.css';
 import { forNewSubmissions } from '../queries';
 
 const TAB_QUERY_STORAGE_KEY = 'plss-review:tab-query-by-route';
+const TAB_COUNT_STALE_TIME_MS = 60_000;
+const TAB_COUNT_CACHE_TIME_MS = 5 * TAB_COUNT_STALE_TIME_MS;
 
 export const buildTabRoutes = (receivedCount: number = 0) => [
   { id: 'received', path: '/secure/received', label: `Received (${receivedCount})` },
@@ -56,8 +58,8 @@ export default function ProtectedLayout() {
       return snapshot.data().count;
     },
     enabled: !!firestore,
-    staleTime: 60_000,
-    gcTime: 5 * 60_000,
+    staleTime: TAB_COUNT_STALE_TIME_MS,
+    gcTime: TAB_COUNT_CACHE_TIME_MS,
   });
 
   const tabRoutes = buildTabRoutes(receivedCount);
