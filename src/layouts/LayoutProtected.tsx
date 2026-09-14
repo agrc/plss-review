@@ -1,14 +1,17 @@
-import { Tab, TabList, TabPanel, Tabs, useFirebaseAuth } from '@ugrc/utah-design-system';
+import { useQuery } from '@tanstack/react-query';
+import { Tab, TabList, TabPanel, Tabs, useFirebaseAuth, useFirestore } from '@ugrc/utah-design-system';
+import { getCountFromServer } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import type { Key } from 'react-stately';
 import SubmissionAnalytics from '../components/SubmissionAnalytics';
 import '../index.css';
+import { forNewSubmissions } from '../queries';
 
 const TAB_QUERY_STORAGE_KEY = 'plss-review:tab-query-by-route';
 
-const tabRoutes = [
-  { id: 'received', path: '/secure/received', label: 'Received' },
+export const buildTabRoutes = (receivedCount: number = 0) => [
+  { id: 'received', path: '/secure/received', label: `Received (${receivedCount})` },
   { id: 'county', path: '/secure/county', label: 'Under County Review' },
   { id: 'approved', path: '/secure/approved', label: 'County Approved' },
   { id: 'rejected', path: '/secure/rejected', label: 'Rejected' },
@@ -41,9 +44,23 @@ const writeStoredTabQueries = (value: Record<string, string>) => {
 
 export default function ProtectedLayout() {
   const { currentUser } = useFirebaseAuth();
+  const { firestore } = useFirestore();
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { data: receivedCount = 0 } = useQuery({
+    queryKey: ['tabCount', 'received', firestore],
+    queryFn: async () => {
+      const snapshot = await getCountFromServer(forNewSubmissions(firestore));
+      return snapshot.data().count;
+    },
+    enabled: !!firestore,
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
+  });
+
+  const tabRoutes = buildTabRoutes(receivedCount);
 
   useEffect(() => {
     if (!currentUser) {

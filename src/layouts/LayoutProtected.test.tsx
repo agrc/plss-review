@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import ProtectedLayout from './LayoutProtected';
+import ProtectedLayout, { buildTabRoutes } from './LayoutProtected';
 
 const mocks = vi.hoisted(() => ({
   navigateMock: vi.fn(),
@@ -46,14 +46,21 @@ const installWindowStub = (initialSearch: string, initialStoredQueries: Record<s
   return windowStub;
 };
 
+vi.mock('@tanstack/react-query', () => ({
+  useQuery: () => ({
+    data: 8,
+  }),
+}));
+
 vi.mock('@ugrc/utah-design-system', () => ({
   useFirebaseAuth: () => ({ currentUser: { uid: 'test-user' } }),
+  useFirestore: () => ({ firestore: { path: 'test-firestore' } }),
   Tabs: (props: { onSelectionChange?: (key: string) => void }) => {
     mocks.tabsProps = props;
     return null;
   },
-  TabList: () => null,
-  Tab: () => null,
+  TabList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Tab: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   TabPanel: () => null,
 }));
 
@@ -72,6 +79,17 @@ describe('LayoutProtected tab query persistence', () => {
     mocks.navigateMock.mockReset();
     mocks.tabsProps = null;
     mocks.location.pathname = '/secure/received';
+  });
+
+  it('formats the received tab with a live count while leaving other tabs static', () => {
+    const routes = buildTabRoutes(8);
+
+    expect(routes.map((route) => route.label)).toEqual([
+      'Received (8)',
+      'Under County Review',
+      'County Approved',
+      'Rejected',
+    ]);
   });
 
   it('restores destination tab query and stores current tab query on tab switch', () => {
