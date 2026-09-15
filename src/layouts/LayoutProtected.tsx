@@ -6,17 +6,17 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 import type { Key } from 'react-stately';
 import SubmissionAnalytics from '../components/SubmissionAnalytics';
 import '../index.css';
-import { forNewSubmissions } from '../queries';
+import { forApprovedSubmissions, forCountySubmissions, forNewSubmissions, forRejectedSubmissions } from '../queries';
 
 const TAB_QUERY_STORAGE_KEY = 'plss-review:tab-query-by-route';
 const TAB_COUNT_STALE_TIME_MS = 60_000;
 const TAB_COUNT_CACHE_TIME_MS = 5 * TAB_COUNT_STALE_TIME_MS;
 
-export const buildTabRoutes = (receivedCount: number = 0) => [
-  { id: 'received', path: '/secure/received', label: `Received (${receivedCount})` },
-  { id: 'county', path: '/secure/county', label: 'Under County Review' },
-  { id: 'approved', path: '/secure/approved', label: 'County Approved' },
-  { id: 'rejected', path: '/secure/rejected', label: 'Rejected' },
+export const buildTabRoutes = (counts: Record<string, number> = {}) => [
+  { id: 'received', path: '/secure/received', label: `Received (${counts.received ?? 0})` },
+  { id: 'county', path: '/secure/county', label: `Under County Review (${counts.county ?? 0})` },
+  { id: 'approved', path: '/secure/approved', label: `County Approved (${counts.approved ?? 0})` },
+  { id: 'rejected', path: '/secure/rejected', label: `Rejected (${counts.rejected ?? 0})` },
 ];
 
 const readStoredTabQueries = (): Record<string, string> => {
@@ -51,18 +51,29 @@ export default function ProtectedLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { data: receivedCount = 0 } = useQuery({
-    queryKey: ['tabCount', 'received', firestore],
+  const { data: tabCounts = {} } = useQuery({
+    queryKey: ['tabCounts', firestore],
     queryFn: async () => {
-      const snapshot = await getCountFromServer(forNewSubmissions(firestore));
-      return snapshot.data().count;
+      const [received, county, approved, rejected] = await Promise.all([
+        getCountFromServer(forNewSubmissions(firestore)),
+        getCountFromServer(forCountySubmissions(firestore)),
+        getCountFromServer(forApprovedSubmissions(firestore)),
+        getCountFromServer(forRejectedSubmissions(firestore)),
+      ]);
+
+      return {
+        received: received.data().count,
+        county: county.data().count,
+        approved: approved.data().count,
+        rejected: rejected.data().count,
+      };
     },
     enabled: !!firestore,
     staleTime: TAB_COUNT_STALE_TIME_MS,
     gcTime: TAB_COUNT_CACHE_TIME_MS,
   });
 
-  const tabRoutes = buildTabRoutes(receivedCount);
+  const tabRoutes = buildTabRoutes(tabCounts);
 
   useEffect(() => {
     if (!currentUser) {
