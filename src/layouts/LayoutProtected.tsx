@@ -9,9 +9,6 @@ import '../index.css';
 import { forApprovedSubmissions, forCountySubmissions, forNewSubmissions, forRejectedSubmissions } from '../queries';
 
 const TAB_QUERY_STORAGE_KEY = 'plss-review:tab-query-by-route';
-const TAB_COUNT_STALE_TIME_MS = 60_000;
-const TAB_COUNT_CACHE_TIME_MS = 5 * TAB_COUNT_STALE_TIME_MS;
-const TAB_COUNT_REFRESH_INTERVAL_MS = 60_000;
 
 export const buildTabRoutes = (counts: Record<string, number> = {}) => [
   { id: 'received', path: '/secure/received', label: `Received (${counts.received ?? 0})` },
