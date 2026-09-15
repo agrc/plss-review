@@ -113,6 +113,7 @@ export default function County() {
       await queryClient.prefetchQuery({
         queryKey: ['monuments', { type: 'county' }],
       });
+      await queryClient.invalidateQueries({ queryKey: ['tabCounts'] });
 
       if (variables.approved) {
         await queryClient.invalidateQueries({

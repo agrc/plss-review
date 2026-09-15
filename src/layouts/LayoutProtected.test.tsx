@@ -48,7 +48,7 @@ const installWindowStub = (initialSearch: string, initialStoredQueries: Record<s
 
 vi.mock('@tanstack/react-query', () => ({
   useQuery: () => ({
-    data: 8,
+    data: { received: 8, county: 3, approved: 12, rejected: 7 },
   }),
 }));
 
@@ -81,14 +81,14 @@ describe('LayoutProtected tab query persistence', () => {
     mocks.location.pathname = '/secure/received';
   });
 
-  it('formats the received tab with a live count while leaving other tabs static', () => {
-    const routes = buildTabRoutes(8);
+  it('formats all tabs with live counts', () => {
+    const routes = buildTabRoutes({ received: 8, county: 3, approved: 12, rejected: 7 });
 
     expect(routes.map((route) => route.label)).toEqual([
       'Received (8)',
-      'Under County Review',
-      'County Approved',
-      'Rejected',
+      'Under County Review (3)',
+      'County Approved (12)',
+      'Rejected (7)',
     ]);
   });
 

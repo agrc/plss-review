@@ -230,11 +230,7 @@ export default function Review() {
         queryKey: ['monuments', { type: sourceTab }],
       });
 
-      if (sourceTab === 'received') {
-        await queryClient.invalidateQueries({
-          queryKey: ['tabCount', 'received'],
-        });
-      }
+      await queryClient.invalidateQueries({ queryKey: ['tabCounts'] });
 
       if (variables.approved) {
         const destinationTab = fromCountyReview ? 'approved' : 'county';
@@ -265,7 +261,7 @@ export default function Review() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'rejected' }] });
       await queryClient.invalidateQueries({ queryKey: ['monuments', { type: 'received' }] });
-      await queryClient.invalidateQueries({ queryKey: ['tabCount', 'received'] });
+      await queryClient.invalidateQueries({ queryKey: ['tabCounts'] });
       await queryClient.prefetchQuery({ queryKey: ['monuments', { type: 'received' }] });
       await navigate('/secure/rejected');
     },
