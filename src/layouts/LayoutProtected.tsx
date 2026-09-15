@@ -70,11 +70,6 @@ export default function ProtectedLayout() {
       };
     },
     enabled: !!firestore,
-    staleTime: TAB_COUNT_STALE_TIME_MS,
-    gcTime: TAB_COUNT_CACHE_TIME_MS,
-    refetchInterval: TAB_COUNT_REFRESH_INTERVAL_MS,
-    refetchIntervalInBackground: false,
-    refetchOnWindowFocus: true,
   });
 
   const tabRoutes = buildTabRoutes(tabCounts);
