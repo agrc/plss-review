@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.4](https://github.com/agrc/plss-review/compare/v1.1.3...v1.1.4) (2026-09-16)
+
+
+### Features
+
+* add cache invalidation for received tab for correct count ([30ad8a1](https://github.com/agrc/plss-review/commit/30ad8a19226d716039b67c3ca16d34b2feb7aec3))
+* add count of records to received tab ([5f64e0e](https://github.com/agrc/plss-review/commit/5f64e0e6c3aae5f873a99174bfa07e7aa99a93d2))
+* add to other 3 tabs ([0d9d2ef](https://github.com/agrc/plss-review/commit/0d9d2ef49e59bd664f6a0a4e0d7e7f012eef2fb6))
+* adding refetch for accuracy when records are upated ([84e90ee](https://github.com/agrc/plss-review/commit/84e90eea62d1b11e273f5d5cbf846526ba9429ec))
+
 ## [1.1.4-rc.1](https://github.com/agrc/plss-review/compare/v1.1.3...v1.1.4-rc.1) (2026-09-16)
 
 
