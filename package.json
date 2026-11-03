@@ -68,7 +68,7 @@
     "@ugrc/tailwind-preset": "^1.2.0",
     "@ugrc/tsconfigs": "^1.0.4",
     "@vitejs/plugin-react": "^5.2.0",
-    "@vitest/coverage-v8": "5.0.5",
+    "@vitest/coverage-v8": "5.1.0",
     "@vitest/ui": "^5.1.0",
     "autoprefixer": "^10.6.2",
     "concurrently": "^10.0.6",
