@@ -1,6 +1,6 @@
 allowBuilds:
   '@firebase/util': true
-  '@parcel/watcher': set this to true or false
+  '@parcel/watcher': true
   '@vaadin/vaadin-usage-statistics': true
   esbuild: true
   protobufjs: true
