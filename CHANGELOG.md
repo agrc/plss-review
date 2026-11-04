@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/agrc/plss-review/compare/v1.1.4...v1.1.5) (2026-11-04)
+
+
+### Dependencies
+
+* Update @vitest/coverage-v8 to version 5.1.0 ([5614c09](https://github.com/agrc/plss-review/commit/5614c09e65f537bf3c85871259748e557e7cdda2))
+
 ## [1.1.4](https://github.com/agrc/plss-review/compare/v1.1.3...v1.1.4) (2026-09-16)
 
 
